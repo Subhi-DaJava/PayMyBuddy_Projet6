@@ -3,10 +3,12 @@ package com.openclassrooms.pay_my_buddy.model;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 
 @Entity
 @DynamicUpdate
+@Transactional
 @Table(name = "transaction")
 public class Transaction {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,20 +19,21 @@ public class Transaction {
     private String description;
 
     @Column(name = "local_date")
-    private LocalDate localDate;
+    private LocalDate dateTransaction;
 
     @ManyToOne
-    private User userPayed;
+    @JoinColumn(name="userId", nullable = false)
+    private User userPay;
 
     public Transaction() {
     }
 
-    public Transaction(int id, double amount, String description, LocalDate localDate, User userPayed) {
+    public Transaction(int id, double amount, String description, LocalDate dateTransaction, User userPay) {
         this.id = id;
         this.amount = amount;
         this.description = description;
-        this.localDate = localDate;
-        this.userPayed = userPayed;
+        this.dateTransaction = dateTransaction;
+        this.userPay = userPay;
     }
 
     public int getId() {
@@ -57,19 +60,19 @@ public class Transaction {
         this.description = description;
     }
 
-    public LocalDate getLocalDate() {
-        return localDate;
+    public LocalDate getDateTransaction() {
+        return dateTransaction;
     }
 
-    public void setLocalDate(LocalDate localDate) {
-        this.localDate = localDate;
+    public void setDateTransaction(LocalDate dateTransaction) {
+        this.dateTransaction = dateTransaction;
     }
 
-    public User getUserPayed() {
-        return userPayed;
+    public User getUserPay() {
+        return userPay;
     }
 
-    public void setUserPayed(User userPayed) {
-        this.userPayed = userPayed;
+    public void setUserPay(User userPay) {
+        this.userPay = userPay;
     }
 }

@@ -8,10 +8,13 @@ import java.util.List;
 public interface TransactionService {
 
     Transaction addTransaction(Transaction transaction);
-    List<Transaction> findAllTransactionByUser(User user);
-    Transaction findTransactionById(int id);
-    void addTransactionToUser(int userId, int transactionId);
 
-    void sendMoney(int userPayId, int userRecipientId, double amount);
+    List<Transaction> findAllTransactionByUser(User user);
+
+    Transaction findTransactionById(int id);
+
+    void sendMoney(int userPayId, String userName, double amount, String description);
+
+    Transaction updateTransaction(int id, Transaction transaction);
 
 }
