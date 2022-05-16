@@ -1,12 +1,13 @@
 package com.openclassrooms.pay_my_buddy.service;
 
+import com.openclassrooms.pay_my_buddy.exception.EmailNotNullException;
 import com.openclassrooms.pay_my_buddy.model.User;
 
 import java.util.Set;
 
 public interface UserService {
 
-    User saveUser(User user);
+    User saveUser(User user) throws EmailNotNullException;
 
     User findUserByEmail(String email);
 
@@ -14,9 +15,9 @@ public interface UserService {
 
     User findUserById(int id);
 
-    User updateUser(int id, User user);
+    User updateUser(int id, User user) throws EmailNotNullException;
 
-    Set<User> getAllContactsByUser(User user);
+    Set<User> getAllContactsByUser(int userId);
 
-    void addUserToContact(String userEmail, String buddyEmail);
+    Boolean addUserToContact(String userEmail, String buddyEmail);
 }

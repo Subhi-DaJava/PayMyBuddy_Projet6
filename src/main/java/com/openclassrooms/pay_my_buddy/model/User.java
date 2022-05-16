@@ -1,5 +1,6 @@
 package com.openclassrooms.pay_my_buddy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.DynamicUpdate;
@@ -43,7 +44,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_id")
     )
-    @JsonIgnoreProperties("contacts")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Set<User> contacts = new HashSet<>();
 
     @OneToMany(targetEntity = Transaction.class, mappedBy="userPay")

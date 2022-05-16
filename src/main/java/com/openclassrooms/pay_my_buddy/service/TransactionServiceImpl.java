@@ -1,5 +1,6 @@
 package com.openclassrooms.pay_my_buddy.service;
 
+import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
 import com.openclassrooms.pay_my_buddy.model.Transaction;
 import com.openclassrooms.pay_my_buddy.model.User;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,11 +28,19 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<Transaction> findAllTransactionByUser(User user) {
-        if(userRepository.findUserByEmail(user.getEmail()) != null){
-            List<Transaction> transactions = user.getTransactions();
+    public List<Transaction> findAllTransactionByUser(int userId) {
+        User userById = userRepository.findById(userId).orElse(null);
+        if(userById == null){
+            throw new UserNotExistingException("This ID not found !! ");
+        }
+        if( userById != null){
+            List<Transaction> transactions = userById.getTransactions();
+            if (transactions.isEmpty()){
+                return new ArrayList<>();
+            }
             return transactions;
         }
+
         return null;
     }
 
@@ -39,12 +49,18 @@ public class TransactionServiceImpl implements TransactionService{
         return transactionRepository.findById(id).orElse(null);
     }
 
+    /**
+     *
+     * @param userPayId User qui fait la transaction
+     * @param userName User qui reçoit la somme
+     * @param amount La somme transférée
+     * @param description La description de transaction, le motif ou le détail
+     */
     @Override
     public void sendMoney(int userPayId, String userName, double amount, String description) {
         User userPayed = userRepository.findById(userPayId).orElse(null);
         Set<User> contacts = userPayed.getContacts();
         for(User contact : contacts){
-
             if (contact.getUserName().equals(userName) && userPayed.getBalance() > amount){
                 contact.setBalance(contact.getBalance() + amount);
                 userRepository.save(contact);
@@ -54,6 +70,7 @@ public class TransactionServiceImpl implements TransactionService{
                 transaction.setDateTransaction(LocalDate.now());
                 transaction.setDescription(description);
                 transaction.setAmount(amount);
+                transaction.setBuddyName(userName);
                 Transaction transactionSaved = addTransaction(transaction);
 
                 List<Transaction> userPayedTransactions = userPayed.getTransactions();
