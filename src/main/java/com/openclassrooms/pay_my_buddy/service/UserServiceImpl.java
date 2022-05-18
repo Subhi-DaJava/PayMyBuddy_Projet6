@@ -6,17 +6,19 @@ import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
 import com.openclassrooms.pay_my_buddy.model.User;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService{
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -25,27 +27,32 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User saveUser(User user) throws EmailNotNullException {
-        User userCheck = findUserByEmail(user.getEmail());
-
+        logger.debug("SaveUser method starts here !!");
+        User userCheck = userRepository.findUserByEmail(user.getEmail());
         if(userCheck == null){
-            userRepository.save(user);
-            return user;
+            logger.info("This user "+user+" is successfully saved in the DB !!");
+                userRepository.save(user);
+                return user;
         }
-        else if(userCheck != null)
+        if(user.getEmail() == null || user.getUserName() == null)
             throw new UserExistingException("This user already exist in the DB.");
 
-        else if(user.getEmail().isEmpty()){
-            throw new EmailNotNullException("This field should not be null !!! ");
-        }
-        else
-            return null;
+        return null;
     }
 
     @Override
     public User findUserByEmail(String email) {
+        logger.debug("This method starts here !!");
         User user = userRepository.findUserByEmail(email);
-        if (user == null)
-            return null;
+        if (user == null){
+            logger.debug("This user doesn't exist in DB which email ["+email+"]");
+            throw new UserNotExistingException("This user which email ["+email+"] doesn't exist yet in DB !!");
+        }
+        //déjà validator check the input : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' not supported]
+        if(email == null){
+            logger.debug("Email should not be null or not be empty !!");
+            throw new EmailNotNullException("Email is null or empty !!");
+        }
         return user;
     }
 
@@ -96,15 +103,28 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Boolean addUserToContact(String userEmail, String buddyEmail) {
+        logger.debug("This addUserToContacts starts here !!");
+        User userContact = userRepository.findUserByEmail(buddyEmail);
+        User user = userRepository.findUserByEmail(userEmail);
 
-        User userExisting = findUserByEmail(buddyEmail);
-        if(userExisting != null){
-            return findUserByEmail(userEmail).getContacts().add(userExisting);
+        if(userContact != null && user != null){
+            if(user.getContacts().contains(userContact)){
+                logger.debug("UserContact is already added !!");
+                throw new UserExistingException("This contact is added !!");
+            }
+            logger.info("This userContact which email ["+buddyEmail+"] is successfully added to this user which email ["+userEmail+"]");
+            return user.getContacts().add(userContact);
+
+        }
+        if(user != null && userContact == null){
+            logger.debug("UserContact doesn't exist in the DB !!");
+            throw new UserNotExistingException("This userContact which email ["+buddyEmail+"] doesn't exist yet in the DB");
+        }
+        if (buddyEmail == null || buddyEmail.isEmpty()){
+            logger.debug("buddyEmail should not be null or be empty neither !!");
+            throw new EmailNotNullException("Not null or not empty !!");
         }
 
-        if(findUserByEmail(buddyEmail) == null){
-           throw new UserNotExistingException("This buddy doesn't added to DB !");
-        }
         return false;
     }
 }

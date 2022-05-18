@@ -1,6 +1,5 @@
 package com.openclassrooms.pay_my_buddy.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -14,7 +13,8 @@ import java.time.LocalDate;
 @Table(name = "transaction")
 public class Transaction {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "id")
+    private int transId;
 
     private double amount;
 
@@ -31,24 +31,27 @@ public class Transaction {
     @Column(name = "recipient_name")
     private String buddyName;
 
+    @Column(name="buddy_email")
+    private String buddyEmail;
+
     public Transaction() {
     }
 
-    public Transaction(int id, double amount, String description, LocalDate dateTransaction, User userPay, String buddyName) {
-        this.id = id;
+    public Transaction(double amount, String description, LocalDate dateTransaction, User userPay, String buddyName, String buddyEmail) {
         this.amount = amount;
         this.description = description;
         this.dateTransaction = dateTransaction;
         this.userPay = userPay;
         this.buddyName = buddyName;
+        this.buddyEmail = buddyEmail;
     }
 
-    public int getId() {
-        return id;
+    public int getTransId() {
+        return transId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTransId(int id) {
+        this.transId = id;
     }
 
     public double getAmount() {
@@ -89,5 +92,13 @@ public class Transaction {
 
     public void setBuddyName(String buddyName) {
         this.buddyName = buddyName;
+    }
+
+    public String getBuddyEmail() {
+        return buddyEmail;
+    }
+
+    public void setBuddyEmail(String buddyEmail) {
+        this.buddyEmail = buddyEmail;
     }
 }

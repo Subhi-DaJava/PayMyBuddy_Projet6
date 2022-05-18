@@ -17,7 +17,9 @@ public class TransactionController {
 
     @PostMapping("/transactions/send_money")
     public void sendMoney(@RequestParam int payedId, @RequestParam String userName, @RequestParam double amount, @RequestParam String description){
-        //payedId null, suerName null, amount 0, -, description null or no
+        if (payedId <=0 || userName == null || amount <= 0){
+            return;
+        }
         transactionService.sendMoney(payedId,userName,amount,description);
     }
 
@@ -31,8 +33,7 @@ public class TransactionController {
         List<Transaction> transactionsByUser = transactionService.findAllTransactionByUser(userId);
 
         if (transactionsByUser.isEmpty()){
-            List<Transaction> transactionsEmpty = new ArrayList<>();
-            return ResponseEntity.ok().body(transactionsEmpty);
+            return ResponseEntity.ok().body(new ArrayList<>());
         }
         else if(transactionsByUser == null){
             throw new UserNotExistingException("This userId : "+userId+" doesn't exist DB !");

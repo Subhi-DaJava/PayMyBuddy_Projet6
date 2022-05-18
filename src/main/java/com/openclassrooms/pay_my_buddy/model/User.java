@@ -1,12 +1,11 @@
 package com.openclassrooms.pay_my_buddy.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 @Entity(name = "User")
@@ -26,11 +25,14 @@ public class User {
     private String lastName;
 
     @Column(name = "user_name", unique = true, length = 100)
+    @NotBlank(message = "UserName may not be empty and null")
     private String userName;
 
     @Column(name = "email", unique = true, length = 100)
+    @NotBlank(message = "Email may not be empty and null")
     private String email;
 
+    @NotBlank(message = "Password may not be empty and null")
     private String password;
 
     private double balance;
@@ -50,11 +52,16 @@ public class User {
     @OneToMany(targetEntity = Transaction.class, mappedBy="userPay")
     private List<Transaction> transactions = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user")
+    private UserBankAccount userBankAccount;
+
     public User() {
     }
 
-    public User(int id, String firstName, String lastName, String userName, String email, String password, double balance, Set<User> contacts, List<Transaction> transactions) {
-        this.userId = id;
+    public User(String firstName, String lastName,
+                String userName, String email, String password,
+                double balance, Set<User> contacts, List<Transaction> transactions,
+                UserBankAccount userBankAccount) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -63,6 +70,7 @@ public class User {
         this.balance = balance;
         this.contacts = contacts;
         this.transactions = transactions;
+        this.userBankAccount = userBankAccount;
     }
 
     public int getUserId() {
@@ -136,4 +144,14 @@ public class User {
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
+
+    public UserBankAccount getUserBankAccount() {
+        return userBankAccount;
+    }
+
+    public void setUserBankAccount(UserBankAccount userBankAccount) {
+        this.userBankAccount = userBankAccount;
+    }
+
+
 }

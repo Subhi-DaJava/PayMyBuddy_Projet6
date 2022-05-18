@@ -13,5 +13,10 @@ VALUES
     (3,1),
     (2,1);
 
+INSERT INTO user_bank_account(balance,account_name, user_id)
+VALUES
+    (20000,'L_Gina',1),
+    (25000,'S_Foncek',2),
+    (45000,'A_Feeling',3);
 
 

@@ -31,7 +31,7 @@ public class TransactionServiceImpl implements TransactionService{
     public List<Transaction> findAllTransactionByUser(int userId) {
         User userById = userRepository.findById(userId).orElse(null);
         if(userById == null){
-            throw new UserNotExistingException("This ID not found !! ");
+            throw new UserNotExistingException("This userId ["+userId+"] doesn't exist yet !!");
         }
         if( userById != null){
             List<Transaction> transactions = userById.getTransactions();
@@ -58,9 +58,13 @@ public class TransactionServiceImpl implements TransactionService{
      */
     @Override
     public void sendMoney(int userPayId, String userName, double amount, String description) {
+        if (userPayId <=0 || userName == null || amount <= 0){
+            return;
+        }
         User userPayed = userRepository.findById(userPayId).orElse(null);
         Set<User> contacts = userPayed.getContacts();
         for(User contact : contacts){
+            //Attente à améliorer le code, if (userPayId.getBalance <= amount)
             if (contact.getUserName().equals(userName) && userPayed.getBalance() > amount){
                 contact.setBalance(contact.getBalance() + amount);
                 userRepository.save(contact);
@@ -71,6 +75,7 @@ public class TransactionServiceImpl implements TransactionService{
                 transaction.setDescription(description);
                 transaction.setAmount(amount);
                 transaction.setBuddyName(userName);
+                transaction.setBuddyEmail(contact.getEmail());
                 Transaction transactionSaved = addTransaction(transaction);
 
                 List<Transaction> userPayedTransactions = userPayed.getTransactions();
@@ -83,7 +88,7 @@ public class TransactionServiceImpl implements TransactionService{
 
 
             } else
-                throw new RuntimeException("Not found or the balance is not enough");
+                throw new UserNotExistingException("User Not found or the balance is not enough");
         }
     }
 
