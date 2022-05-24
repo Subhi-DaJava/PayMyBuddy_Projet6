@@ -28,8 +28,8 @@ public class TransferController {
             return ResponseEntity.ok().body(transfer);
     }
 
-    @GetMapping("/user_bank_account/transfers/{bank_account_Id}")
-    public ResponseEntity<List<Transfer>> findAllTransfersByOneUserBankAccount(@PathVariable Integer bank_account_Id){
+    @GetMapping("/user-bank-account/transfers")
+    public ResponseEntity<List<Transfer>> findAllTransfersByOneUserBankAccount(@RequestParam Integer bank_account_Id){
         List<Transfer> transfers = transferService.findAllTransfersByOneUserBankAccountId(bank_account_Id);
         if(transfers == null )
             throw new UserNotExistingException("This bank_account_id ["+bank_account_Id+"] doesn't exist yet !!");
@@ -40,7 +40,7 @@ public class TransferController {
             return ResponseEntity.ok().body(transfers);
     }
 
-    @PostMapping("/transfers/money_to_pay_my_buddy")
+    @PostMapping("/transfers/money-transfer/pay-my-buddy")
     public ResponseEntity<Transfer> transferMoneyToPayMyBuddyUser(
             @RequestParam Integer bankAccountId, @RequestParam Integer userId, @RequestParam double amount, @RequestParam String description){
         if (bankAccountId <= 0 || userId <= 0 || amount <= 0){
@@ -59,7 +59,7 @@ public class TransferController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("transfers/money_to_bank_account")
+    @PostMapping("transfers/money-transfer-to-bankAccount")
     public ResponseEntity<Transfer> transferMoneyToUserBankAccount(
             @RequestParam Integer userId, @RequestParam Integer bankAccountId, @RequestParam double amount, @RequestParam String description){
         if (bankAccountId <= 0 || userId <= 0 || amount <= 0){

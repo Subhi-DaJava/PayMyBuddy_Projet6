@@ -16,17 +16,13 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @PostMapping("/transactions/send_money")
-    public void sendMoney(@RequestParam int payedId, @RequestParam String userName, @RequestParam double amount, @RequestParam String description){
+    public void sendMoneyToBuddy(@RequestParam int payedId, @RequestParam String userName, @RequestParam double amount, @RequestParam String description){
         if (payedId <=0 || userName == null || amount <= 0){
             return;
         }
-        transactionService.sendMoney(payedId,userName,amount,description);
+        transactionService.sendMoneyToBuddy(payedId,userName,amount,description);
     }
 
-    @PostMapping("/transactions/{id}")
-    public Transaction updateTransaction(@PathVariable int id, @RequestBody Transaction transaction){
-        return transactionService.updateTransaction(id,transaction);
-    }
 
     @GetMapping("/transactions/user/{userId}")
     public ResponseEntity<List<Transaction>> getAllTransactionsByUser(@PathVariable Integer userId){

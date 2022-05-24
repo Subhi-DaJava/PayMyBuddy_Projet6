@@ -1,5 +1,6 @@
 package com.openclassrooms.pay_my_buddy.service;
 
+import com.openclassrooms.pay_my_buddy.constant.FeeApplication;
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
 import com.openclassrooms.pay_my_buddy.model.Transaction;
 import com.openclassrooms.pay_my_buddy.model.User;
@@ -57,7 +58,7 @@ public class TransactionServiceImpl implements TransactionService{
      * @param description La description de transaction, le motif ou le détail
      */
     @Override
-    public void sendMoney(int userPayId, String userName, double amount, String description) {
+    public void sendMoneyToBuddy(int userPayId, String userName, double amount, String description) {
         if (userPayId <=0 || userName == null || amount <= 0){
             return;
         }
@@ -69,19 +70,21 @@ public class TransactionServiceImpl implements TransactionService{
                 contact.setBalance(contact.getBalance() + amount);
                 userRepository.save(contact);
 
+                double totalFeePayed = amount * FeeApplication.FEE;
+
                 Transaction transaction = new Transaction();
                 transaction.setUserPay(userPayed);
                 transaction.setDateTransaction(LocalDate.now());
                 transaction.setDescription(description);
                 transaction.setAmount(amount);
-                transaction.setBuddyName(userName);
-                transaction.setBuddyEmail(contact.getEmail());
+                transaction.setBuddyId(contact.getUserId());
+                transaction.setTotalFeePayed(totalFeePayed);
                 Transaction transactionSaved = addTransaction(transaction);
 
                 List<Transaction> userPayedTransactions = userPayed.getTransactions();
                 userPayedTransactions.add(transaction);
                 userPayed.setTransactions(userPayedTransactions);
-                userPayed.setBalance(userPayed.getBalance() - amount);
+                userPayed.setBalance(userPayed.getBalance() - amount - totalFeePayed);
                 User userSaved = userRepository.save(userPayed);
                 transactionSaved.setUserPay(userSaved);
                 addTransaction(transactionSaved);
@@ -92,16 +95,6 @@ public class TransactionServiceImpl implements TransactionService{
         }
     }
 
-    @Override
-    public Transaction updateTransaction(int id,Transaction transaction) {
-        Transaction transactionUpdating = findTransactionById(id);
-        transactionUpdating.setAmount(transaction.getAmount());
-        transactionUpdating.setUserPay(transaction.getUserPay());
-        transactionUpdating.setDescription(transaction.getDescription());
-        transactionUpdating.setDateTransaction(transaction.getDateTransaction());
-
-        return transactionRepository.save(transactionUpdating);
-    }
 
 
 }

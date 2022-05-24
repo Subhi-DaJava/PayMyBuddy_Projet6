@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -19,8 +20,8 @@ public class UserBankAccountController {
     @Autowired
     private UserBankAccountService userBankAccountService;
 
-    @PostMapping("/user_bank_accounts")
-    public ResponseEntity<UserBankAccount> createUserBankAccount(@RequestBody UserBankAccount userBankAccount){
+    @PostMapping("/user-bank-accounts")
+    public ResponseEntity<UserBankAccount> createUserBankAccount(@Valid @RequestBody UserBankAccount userBankAccount){
         UserBankAccount userBankAccountCreated = userBankAccountService.saveUserBankAccount(userBankAccount);
 
         if (userBankAccountCreated != null){
@@ -36,7 +37,7 @@ public class UserBankAccountController {
         }
     }
 
-    @GetMapping("/user_bank_accounts/{accountId}")
+    @GetMapping("/user-bank-accounts/{accountId}")
     public ResponseEntity<UserBankAccount> findUserBankAccountById(@PathVariable Integer accountId){
         UserBankAccount userBankAccount = userBankAccountService.findUserBankAccountById(accountId);
         if (userBankAccount == null)
@@ -45,13 +46,13 @@ public class UserBankAccountController {
             return ResponseEntity.ok().body(userBankAccount);
     }
 
-    @GetMapping("/user_bank_accounts/users/accountId")
+    @GetMapping("/user-bank-accounts/users/accountId")
     public ResponseEntity<User> findUserByUserAccountId(@PathVariable Integer accountId){
         return ResponseEntity.ok().body(userBankAccountService.findUserByUserBankAccountId(accountId));
     }
 
 
-    @PutMapping("/user_bank_accounts/users")
+    @PutMapping("/user-bank-accounts/users")
     public ResponseEntity<UserBankAccount> addUserToUserBankAccount(@RequestParam Integer userId, @RequestParam Integer bankAccountId){
         logger.debug("This methode starts here");
         UserBankAccount userBankAccount = userBankAccountService.addUserToUserBankAccount(userId, bankAccountId);

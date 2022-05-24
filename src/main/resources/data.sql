@@ -13,10 +13,10 @@ VALUES
     (3,1),
     (2,1);
 
-INSERT INTO user_bank_account(balance,account_name, user_id)
+INSERT INTO user_bank_account(bank_name, bank_location, code_iban, code_bic,balance, user_id)
 VALUES
-    (20000,'L_Gina',1),
-    (25000,'S_Foncek',2),
-    (45000,'A_Feeling',3);
+    ('LCL','Paris 75015','FR76','FR75',20000,1),
+    ('CIC','Lyon', 'FR50','FR70',35000,2),
+    ('CréditAgricole','Paris 75018','FR18','FR20',15600,3);
 
 

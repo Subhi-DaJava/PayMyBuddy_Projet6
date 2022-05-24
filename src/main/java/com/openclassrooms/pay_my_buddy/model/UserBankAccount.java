@@ -1,45 +1,57 @@
 package com.openclassrooms.pay_my_buddy.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "user_bank_account")
 @Transactional
 public class UserBankAccount {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "bank_account_id")
     private int bankAccountId;
 
+    @NotBlank
+    @Column(name = "bank_name")
+    private String bankName;
+
+    @Column(name = "bank_location")
+    private String bankLocation;
+
+    @Column(name = "code_iban", unique = true, length = 100)
+    @NotBlank
+    private String codeIBAN;
+
+    @NotBlank
+    @Column(name = "code_bic", unique = true, length = 100)
+    private String codeBIC;
+
     private double balance;
-    @Column(name = "account_name",unique = true, length = 100)
-    private String accountName;
 
     @OneToOne
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
 
     @OneToMany(mappedBy = "userBankAccount")
     private List<Transfer> transfers = new ArrayList<>();
 
-
     public UserBankAccount() {
     }
 
-    public UserBankAccount(double balance, String accountName, User user, List<Transfer> transfers) {
+    public UserBankAccount(int bankAccountId, String bankName, String bankLocation, String codeIBAN, String codeBIC, double balance, User user, List<Transfer> transfers) {
+        this.bankAccountId = bankAccountId;
+        this.bankName = bankName;
+        this.bankLocation = bankLocation;
+        this.codeIBAN = codeIBAN;
+        this.codeBIC = codeBIC;
         this.balance = balance;
-        this.accountName = accountName;
         this.user = user;
         this.transfers = transfers;
-    }
-
-    public String getAccountName() {
-        return accountName;
-    }
-
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
     }
 
     public int getBankAccountId() {
@@ -48,6 +60,38 @@ public class UserBankAccount {
 
     public void setBankAccountId(int bankAccountId) {
         this.bankAccountId = bankAccountId;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public String getBankLocation() {
+        return bankLocation;
+    }
+
+    public void setBankLocation(String bankLocation) {
+        this.bankLocation = bankLocation;
+    }
+
+    public String getCodeIBAN() {
+        return codeIBAN;
+    }
+
+    public void setCodeIBAN(String codeIBAN) {
+        this.codeIBAN = codeIBAN;
+    }
+
+    public String getCodeBIC() {
+        return codeBIC;
+    }
+
+    public void setCodeBIC(String codeBIC) {
+        this.codeBIC = codeBIC;
     }
 
     public double getBalance() {
@@ -73,13 +117,4 @@ public class UserBankAccount {
     public void setTransfers(List<Transfer> transfers) {
         this.transfers = transfers;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserBankAccount that = (UserBankAccount) o;
-        return bankAccountId == that.bankAccountId && Double.compare(that.balance, balance) == 0 && Objects.equals(user, that.user) && Objects.equals(transfers, that.transfers);
-    }
-
 }

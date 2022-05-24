@@ -58,10 +58,9 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName,
-                String userName, String email, String password,
-                double balance, Set<User> contacts, List<Transaction> transactions,
-                UserBankAccount userBankAccount) {
+
+    public User(int userId, String firstName, String lastName, String userName, String email, String password, double balance, Set<User> contacts, List<Transaction> transactions, UserBankAccount userBankAccount) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -77,8 +76,8 @@ public class User {
         return userId;
     }
 
-    public void setUserId(int id) {
-        this.userId = id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getFirstName() {
@@ -152,6 +151,4 @@ public class User {
     public void setUserBankAccount(UserBankAccount userBankAccount) {
         this.userBankAccount = userBankAccount;
     }
-
-
 }

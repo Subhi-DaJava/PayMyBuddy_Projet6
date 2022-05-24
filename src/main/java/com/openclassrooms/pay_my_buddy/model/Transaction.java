@@ -13,14 +13,14 @@ import java.time.LocalDate;
 @Table(name = "transaction")
 public class Transaction {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "transaction_id")
     private int transId;
 
     private double amount;
 
     private String description;
 
-    @Column(name = "local_date")
+    @Column(name = "transaction_date")
     private LocalDate dateTransaction;
 
     @ManyToOne
@@ -28,30 +28,31 @@ public class Transaction {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User userPay;
 
-    @Column(name = "recipient_name")
-    private String buddyName;
+    @Column(name = "total_fee_payed")
+    private double totalFeePayed;
 
-    @Column(name="buddy_email")
-    private String buddyEmail;
+    @Column(name = "recipient_id")
+    private int buddyId;
 
     public Transaction() {
     }
 
-    public Transaction(double amount, String description, LocalDate dateTransaction, User userPay, String buddyName, String buddyEmail) {
+    public Transaction(int transId, double amount, String description, LocalDate dateTransaction, User userPay, double totalFeePayed, int buddyId) {
+        this.transId = transId;
         this.amount = amount;
         this.description = description;
         this.dateTransaction = dateTransaction;
         this.userPay = userPay;
-        this.buddyName = buddyName;
-        this.buddyEmail = buddyEmail;
+        this.totalFeePayed = totalFeePayed;
+        this.buddyId = buddyId;
     }
 
     public int getTransId() {
         return transId;
     }
 
-    public void setTransId(int id) {
-        this.transId = id;
+    public void setTransId(int transId) {
+        this.transId = transId;
     }
 
     public double getAmount() {
@@ -86,19 +87,19 @@ public class Transaction {
         this.userPay = userPay;
     }
 
-    public String getBuddyName() {
-        return buddyName;
+    public double getTotalFeePayed() {
+        return totalFeePayed;
     }
 
-    public void setBuddyName(String buddyName) {
-        this.buddyName = buddyName;
+    public void setTotalFeePayed(double totalFeePayed) {
+        this.totalFeePayed = totalFeePayed;
     }
 
-    public String getBuddyEmail() {
-        return buddyEmail;
+    public int getBuddyId() {
+        return buddyId;
     }
 
-    public void setBuddyEmail(String buddyEmail) {
-        this.buddyEmail = buddyEmail;
+    public void setBuddyId(int buddyId) {
+        this.buddyId = buddyId;
     }
 }

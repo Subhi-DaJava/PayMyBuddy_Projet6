@@ -1,5 +1,6 @@
 package com.openclassrooms.pay_my_buddy.service;
 
+import com.openclassrooms.pay_my_buddy.constant.OperationType;
 import com.openclassrooms.pay_my_buddy.exception.TransferNotExistingException;
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
 import com.openclassrooms.pay_my_buddy.model.Transfer;
@@ -57,7 +58,6 @@ public class TransferServiceImpl implements TransferService {
         if (userBankId <= 0 || userId <= 0 || amount <= 0){
             return null;
         }
-
         UserBankAccount userBankAccount = userBankAccountRepository.findById(userBankId).orElse(null);
         User user = userRepository.findById(userId).orElse(null);
 
@@ -68,10 +68,11 @@ public class TransferServiceImpl implements TransferService {
         userRepository.save(user);
 
         Transfer transfer = new Transfer();
-        transfer.setDebit(amount);
+        transfer.setOperationType(OperationType.CREDIT);
         transfer.setDescription(description);
-        transfer.setLocalDate(LocalDate.now());
+        transfer.setTransactionDate(LocalDate.now());
         transfer.setUserBankAccount(userBankAccount);
+        transfer.setAmount(amount);
         saveTransfer(transfer);
         return transfer;
     }
@@ -81,7 +82,6 @@ public class TransferServiceImpl implements TransferService {
         if (userBankId <= 0 || userId <= 0 || amount <= 0){
             return null;
         }
-
         User user = userRepository.findById(userId).orElse(null);
         UserBankAccount userBankAccount = userBankAccountRepository.findById(userBankId).orElse(null);
 
@@ -92,10 +92,11 @@ public class TransferServiceImpl implements TransferService {
         userBankAccountRepository.save(userBankAccount);
 
         Transfer transfer = new Transfer();
-        transfer.setCredit(amount);
+        transfer.setOperationType(OperationType.DEBIT);
         transfer.setDescription(description);
-        transfer.setLocalDate(LocalDate.now());
+        transfer.setTransactionDate(LocalDate.now());
         transfer.setUserBankAccount(userBankAccount);
+        transfer.setAmount(amount);
         saveTransfer(transfer);
         return transfer;
     }

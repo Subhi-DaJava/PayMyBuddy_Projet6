@@ -37,6 +37,7 @@ public class UserController {
         User user = userService.findUserByEmail(email);
         if(user == null)
             return ResponseEntity.notFound().build();
+
         return ResponseEntity.ok().body(user);
     }
 
@@ -63,11 +64,11 @@ public class UserController {
 
     }
 
-    @PostMapping("/users/{userEmail}/{contactEmail}")
-    public ResponseEntity<Boolean> addContactToUser(@Valid @PathVariable String userEmail, @PathVariable String contactEmail){
+    @PostMapping("/users/{userId}/add-contact/{contactEmail}")
+    public ResponseEntity<Boolean> addContactToUser(@Valid @PathVariable Integer userId, @PathVariable String contactEmail){
         logger.debug("This method addContactToUser starts here !!");
-        if (userService.addUserToContact(userEmail, contactEmail)){
-            logger.info("This contactEmail ["+contactEmail+"] is successfully added to this userEmail ["+userEmail+"]");
+        if (userService.addUserToContact(userId, contactEmail)){
+            logger.info("This contactEmail ["+contactEmail+"] is successfully added to this userEmail ["+ userId +"]");
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/user_id/contact_id")
@@ -75,12 +76,12 @@ public class UserController {
                     .toUri();
             return ResponseEntity.created(location).build();
         }
-        else if(userEmail == null || contactEmail == null){
+        else if(contactEmail == null){
             logger.debug("buddyEmail should not be null or be empty neither !!");
             throw new EmailNotNullException("Not null or not empty !!");
         }
         else {
-            logger.debug("This contactEmail ["+contactEmail+"] could not be added to this userEmail +["+userEmail+"]");
+            logger.debug("This contactEmail ["+contactEmail+"] could not be added to this userEmail +["+ userId +"]");
             return ResponseEntity.notFound().build();
         }
     }

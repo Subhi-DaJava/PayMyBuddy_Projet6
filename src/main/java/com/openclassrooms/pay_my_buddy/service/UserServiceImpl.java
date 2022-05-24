@@ -31,7 +31,14 @@ public class UserServiceImpl implements UserService{
         User userCheck = userRepository.findUserByEmail(user.getEmail());
         if(userCheck == null){
             logger.info("This user "+user+" is successfully saved in the DB !!");
-                userRepository.save(user);
+            User newUser = new User();
+            newUser.setEmail(user.getEmail());
+            newUser.setFirstName(user.getFirstName());
+            newUser.setLastName(user.getLastName());
+            newUser.setUserName(user.getUserName());
+            newUser.setPassword(user.getPassword());
+            newUser.setBalance(0.0);
+            userRepository.save(user);
                 return user;
         }
         if(user.getEmail() == null || user.getUserName() == null)
@@ -44,6 +51,7 @@ public class UserServiceImpl implements UserService{
     public User findUserByEmail(String email) {
         logger.debug("This method starts here !!");
         User user = userRepository.findUserByEmail(email);
+
         if (user == null){
             logger.debug("This user doesn't exist in DB which email ["+email+"]");
             throw new UserNotExistingException("This user which email ["+email+"] doesn't exist yet in DB !!");
@@ -53,7 +61,11 @@ public class UserServiceImpl implements UserService{
             logger.debug("Email should not be null or not be empty !!");
             throw new EmailNotNullException("Email is null or empty !!");
         }
-        return user;
+        else{
+            logger.info("This user which email ["+email+"] is successfully found !!");
+            return user;
+
+        }
     }
 
     @Override
@@ -102,17 +114,17 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Boolean addUserToContact(String userEmail, String buddyEmail) {
+    public Boolean addUserToContact(int userId, String buddyEmail) {
         logger.debug("This addUserToContacts starts here !!");
         User userContact = userRepository.findUserByEmail(buddyEmail);
-        User user = userRepository.findUserByEmail(userEmail);
+        User user = userRepository.findById(userId).orElse(null);
 
         if(userContact != null && user != null){
             if(user.getContacts().contains(userContact)){
                 logger.debug("UserContact is already added !!");
                 throw new UserExistingException("This contact is added !!");
             }
-            logger.info("This userContact which email ["+buddyEmail+"] is successfully added to this user which email ["+userEmail+"]");
+            logger.info("This userContact which email ["+buddyEmail+"] is successfully added to this user which email ["+userId+"]");
             return user.getContacts().add(userContact);
 
         }
@@ -124,7 +136,6 @@ public class UserServiceImpl implements UserService{
             logger.debug("buddyEmail should not be null or be empty neither !!");
             throw new EmailNotNullException("Not null or not empty !!");
         }
-
         return false;
     }
 }

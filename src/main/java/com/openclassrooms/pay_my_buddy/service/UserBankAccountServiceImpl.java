@@ -30,6 +30,13 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
         if(userBankAccount == null){
             return null; // à améliorer
         }
+        UserBankAccount newUserBankAccount = new UserBankAccount();
+        newUserBankAccount.setBankName(userBankAccount.getBankName());
+        newUserBankAccount.setBankLocation(userBankAccount.getBankLocation());
+        newUserBankAccount.setCodeBIC(userBankAccount.getCodeBIC());
+        newUserBankAccount.setCodeIBAN(userBankAccount.getCodeIBAN());
+        newUserBankAccount.setBalance(userBankAccount.getBalance());
+
         return userBankAccountRepository.save(userBankAccount);
     }
 
@@ -68,8 +75,8 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
         else if(userBankAccount.getUser() == null && user.getUserBankAccount() == null){
             logger.info("This user which UserId ["+userId+"] successfully added to this userBankAccount which id ["+bankAccountId+"]");
             userBankAccount.setUser(user);
-            userBankAccount.setAccountName(user.getUserName());
             saveUserBankAccount(userBankAccount);
+            user.setUserBankAccount(userBankAccount);
             return userBankAccount;
         }
         return null;

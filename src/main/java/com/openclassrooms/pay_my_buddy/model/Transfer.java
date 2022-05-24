@@ -1,6 +1,7 @@
 package com.openclassrooms.pay_my_buddy.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.openclassrooms.pay_my_buddy.constant.OperationType;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -10,15 +11,18 @@ import java.time.LocalDate;
 @Table(name = "transfer")
 public class Transfer {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transfer_id")
     private int transferId;
 
-    private double debit;
+    @Column(name = "operation_type")
+    @Enumerated(EnumType.STRING)
+    private OperationType operationType;
 
-    private double credit;
+    private double amount;
 
     private String description;
 
-    private LocalDate localDate;
+    private LocalDate transactionDate;
 
     @ManyToOne
     @JoinColumn(name = "bankAccountId", nullable = false)
@@ -28,11 +32,12 @@ public class Transfer {
     public Transfer() {
     }
 
-    public Transfer(double debit, double credit, String description, LocalDate localDate, UserBankAccount userBankAccount) {
-        this.debit = debit;
-        this.credit = credit;
+    public Transfer(int transferId, OperationType operationType, double amount, String description, LocalDate transactionDate, UserBankAccount userBankAccount) {
+        this.transferId = transferId;
+        this.operationType = operationType;
+        this.amount = amount;
         this.description = description;
-        this.localDate = localDate;
+        this.transactionDate = transactionDate;
         this.userBankAccount = userBankAccount;
     }
 
@@ -44,36 +49,20 @@ public class Transfer {
         this.transferId = transferId;
     }
 
-    public double getDebit() {
-        return debit;
+    public OperationType getOperationType() {
+        return operationType;
     }
 
-    public void setDebit(double debit) {
-        this.debit = debit;
+    public void setOperationType(OperationType operationType) {
+        this.operationType = operationType;
     }
 
-    public double getCredit() {
-        return credit;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setCredit(double credit) {
-        this.credit = credit;
-    }
-
-    public LocalDate getLocalDate() {
-        return localDate;
-    }
-
-    public void setLocalDate(LocalDate localDate) {
-        this.localDate = localDate;
-    }
-
-    public UserBankAccount getUserBankAccount() {
-        return userBankAccount;
-    }
-
-    public void setUserBankAccount(UserBankAccount userBankAccount) {
-        this.userBankAccount = userBankAccount;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public String getDescription() {
@@ -82,5 +71,21 @@ public class Transfer {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDate getTransactionDate() {
+        return transactionDate;
+    }
+
+    public void setTransactionDate(LocalDate transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+
+    public UserBankAccount getUserBankAccount() {
+        return userBankAccount;
+    }
+
+    public void setUserBankAccount(UserBankAccount userBankAccount) {
+        this.userBankAccount = userBankAccount;
     }
 }

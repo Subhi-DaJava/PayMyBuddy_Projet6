@@ -12,8 +12,7 @@ public interface TransactionService {
 
     Transaction findTransactionById(int id);
 
-    void sendMoney(int userPayId, String userName, double amount, String description);
+    void sendMoneyToBuddy(int userPayId, String userName, double amount, String description);
 
-    Transaction updateTransaction(int id, Transaction transaction);
 
 }
