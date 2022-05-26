@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.1.3/css/bootstrap.min.css">
+    <script src="/webjars/bootstrap/5.1.3/js/bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="stylesheetPerso.css">
+
+</head>
+<body>
+
+<div class="container">
+    <div class="card mt-5 mb-5 col-4 mx-auto">
+        <div class="card-body">
+                <div class="card-header w-50 mx-auto mt-5 mb-5 text-white text-center">Pay My Buddy</div>
+            <!--formulaire login-->
+            <form>
+                <div class="input-group flex mb-4 mt-5 bg-white">
+                    <span class="input-group-text bg-white" id="addon-1"><i class="bi bi-envelope"></i></span>
+                    <input id="email" class="form-control" type="email" name="email" placeholder="Email" aria-describedby="wrapping">
+                </div>
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text bg-white" id="addon-2"><i class="bi bi-asterisk"></i></span>
+                    <input id="password" class="form-control" type="password" name="password" placeholder="Password">
+                </div>
+                    <div class="form-check mt-5 mb-5 offset-md-4">
+                        <input class="form-check-input" type="checkbox" id="exempleCheck" checked>
+                        <label class="form-check-label" for="exempleCheck">Remember me</label>
+                    </div>
+                <div class="mt-5 mb-3 offset-md-4">
+                    <button type="submit" class="btn btn-primary fw-bold px-5 mb-3">Login</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

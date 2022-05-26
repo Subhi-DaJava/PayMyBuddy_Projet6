@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -16,7 +17,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
-@RestController
+@Controller
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{email}")
-    public ResponseEntity<User> getUserByEmail(@Valid @PathVariable String email){
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email){
         User user = userService.findUserByEmail(email);
         if(user == null)
             return ResponseEntity.notFound().build();
@@ -43,6 +44,7 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<User> saveUser(@Valid @RequestBody User user) throws EmailNotNullException {
+
         logger.debug("This saveUser starts here !!");
         if(user.getEmail() == null || user.getUserName() == null)
             throw new UserExistingException("This user already exist in the DB.");
@@ -93,6 +95,11 @@ public class UserController {
             return ResponseEntity.ok().body(new HashSet<>());
         }
         return ResponseEntity.ok().body(allContactsByUser);
+    }
+
+    @GetMapping("/login")
+    public String login(){
+        return "login";
     }
 
 }
