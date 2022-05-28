@@ -6,24 +6,26 @@ import com.openclassrooms.pay_my_buddy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@Transactional
 public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
     @PostMapping("/transactions/send_money")
     public void sendMoneyToBuddy(@RequestParam int payedId, @RequestParam String userName, @RequestParam double amount, @RequestParam String description){
+
         if (payedId <=0 || userName == null || amount <= 0){
             return;
         }
-        transactionService.sendMoneyToBuddy(payedId,userName,amount,description);
+       transactionService.sendMoneyToBuddy(payedId,userName,amount,description);
     }
-
 
     @GetMapping("/transactions/user/{userId}")
     public ResponseEntity<List<Transaction>> getAllTransactionsByUser(@PathVariable Integer userId){

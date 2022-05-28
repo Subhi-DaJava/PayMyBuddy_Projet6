@@ -1,10 +1,9 @@
 package com.openclassrooms.pay_my_buddy.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
 
@@ -46,7 +45,6 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_id")
     )
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Set<User> contacts = new HashSet<>();
 
     @OneToMany(targetEntity = Transaction.class, mappedBy="userPay")

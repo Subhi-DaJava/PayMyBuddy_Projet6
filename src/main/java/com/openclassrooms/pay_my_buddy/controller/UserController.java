@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -18,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Controller
+@Transactional
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -97,9 +99,9 @@ public class UserController {
         return ResponseEntity.ok().body(allContactsByUser);
     }
 
-    @GetMapping("/login")
+/*    @GetMapping("/login")
     public String login(){
         return "login";
-    }
+    }*/
 
 }

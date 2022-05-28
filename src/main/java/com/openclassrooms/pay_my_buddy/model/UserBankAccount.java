@@ -1,7 +1,5 @@
 package com.openclassrooms.pay_my_buddy.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
@@ -34,7 +32,6 @@ public class UserBankAccount {
     private double balance;
 
     @OneToOne
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
 
     @OneToMany(mappedBy = "userBankAccount")

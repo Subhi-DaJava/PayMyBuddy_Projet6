@@ -8,15 +8,14 @@ import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Service
-@Transactional
 public class TransactionServiceImpl implements TransactionService{
     @Autowired
     private TransactionRepository transactionRepository;
@@ -58,43 +57,47 @@ public class TransactionServiceImpl implements TransactionService{
      * @param description La description de transaction, le motif ou le détail
      */
     @Override
+    @Transactional
     public void sendMoneyToBuddy(int userPayId, String userName, double amount, String description) {
+
         if (userPayId <=0 || userName == null || amount <= 0){
             return;
         }
+        User contact = userRepository.findUserByUserName(userName);
         User userPayed = userRepository.findById(userPayId).orElse(null);
+
         Set<User> contacts = userPayed.getContacts();
-        for(User contact : contacts){
-            //Attente à améliorer le code, if (userPayId.getBalance <= amount)
-            if (contact.getUserName().equals(userName) && userPayed.getBalance() > amount){
-                contact.setBalance(contact.getBalance() + amount);
-                userRepository.save(contact);
 
-                double totalFeePayed = amount * FeeApplication.FEE;
+        if(contacts.contains(contact) && userPayed.getBalance() > amount){
 
-                Transaction transaction = new Transaction();
-                transaction.setUserPay(userPayed);
-                transaction.setDateTransaction(LocalDate.now());
-                transaction.setDescription(description);
-                transaction.setAmount(amount);
-                transaction.setBuddyId(contact.getUserId());
-                transaction.setTotalFeePayed(totalFeePayed);
-                Transaction transactionSaved = addTransaction(transaction);
+            contact.setBalance(contact.getBalance() + amount);
+            userRepository.save(contact);
 
-                List<Transaction> userPayedTransactions = userPayed.getTransactions();
-                userPayedTransactions.add(transaction);
-                userPayed.setTransactions(userPayedTransactions);
-                userPayed.setBalance(userPayed.getBalance() - amount - totalFeePayed);
-                User userSaved = userRepository.save(userPayed);
-                transactionSaved.setUserPay(userSaved);
-                addTransaction(transactionSaved);
+            double totalFeePayed = amount * FeeApplication.FEE;
 
+            Transaction transaction = new Transaction();
 
-            } else
-                throw new UserNotExistingException("User Not found or the balance is not enough");
+            transaction.setUserPay(userPayed);
+            transaction.setDateTransaction(LocalDate.now());
+            transaction.setDescription(description);
+            transaction.setAmount(amount);
+            transaction.setBuddyId(contact.getUserId());
+            transaction.setTotalFeePayed(totalFeePayed);
+
+            transactionRepository.save(transaction);
+
+            List<Transaction> userPayedTransactions = userPayed.getTransactions();
+
+            userPayedTransactions.add(transaction);
+
+            userPayed.setTransactions(userPayedTransactions);
+            userPayed.setBalance(userPayed.getBalance() - amount - totalFeePayed);
+            userRepository.save(userPayed);
         }
+        else {
+            throw new RuntimeException("This userName is not found +"+userName);
+        }
+
+
     }
-
-
-
 }

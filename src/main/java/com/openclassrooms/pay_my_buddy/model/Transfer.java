@@ -1,10 +1,8 @@
 package com.openclassrooms.pay_my_buddy.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.openclassrooms.pay_my_buddy.constant.OperationType;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 @Entity
 @Transactional
@@ -26,7 +24,6 @@ public class Transfer {
 
     @ManyToOne
     @JoinColumn(name = "bankAccountId", nullable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserBankAccount userBankAccount;
 
     public Transfer() {

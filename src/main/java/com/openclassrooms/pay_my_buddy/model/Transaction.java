@@ -1,10 +1,9 @@
 package com.openclassrooms.pay_my_buddy.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 
 @Entity
@@ -25,7 +24,6 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name="userId", nullable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User userPay;
 
     @Column(name = "total_fee_payed")
