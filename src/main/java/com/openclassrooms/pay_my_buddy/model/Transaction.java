@@ -11,7 +11,8 @@ import java.time.LocalDate;
 @Transactional
 @Table(name = "transaction")
 public class Transaction {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
     private int transId;
 
@@ -23,7 +24,7 @@ public class Transaction {
     private LocalDate dateTransaction;
 
     @ManyToOne
-    @JoinColumn(name="userId", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private User userPay;
 
     @Column(name = "total_fee_payed")

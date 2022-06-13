@@ -1,12 +1,15 @@
 package com.openclassrooms.pay_my_buddy.service;
 
 import com.openclassrooms.pay_my_buddy.constant.FeeApplication;
+import com.openclassrooms.pay_my_buddy.dto.TransactionDTO;
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
 import com.openclassrooms.pay_my_buddy.model.Transaction;
 import com.openclassrooms.pay_my_buddy.model.User;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class TransactionServiceImpl implements TransactionService{
+public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
@@ -28,17 +31,31 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<Transaction> findAllTransactionByUser(int userId) {
+    public List<TransactionDTO> findAllTransactionByUser(int userId) {
+        List<TransactionDTO> transactionDTOList = new ArrayList<>();
+
         User userById = userRepository.findById(userId).orElse(null);
-        if(userById == null){
-            throw new UserNotExistingException("This userId ["+userId+"] doesn't exist yet !!");
+        if (userById == null) {
+            throw new UserNotExistingException("This userId [" + userId + "] doesn't exist yet !!");
         }
-        if( userById != null){
+        if (userById != null) {
+
             List<Transaction> transactions = userById.getTransactions();
-            if (transactions.isEmpty()){
+
+            for (Transaction transaction : transactions) {
+
+                User userBuddy = userRepository.findById(transaction.getBuddyId()).orElse(null);
+
+                TransactionDTO transactionDTO = new TransactionDTO(userBuddy.getUserName(), transaction.getDescription(), transaction.getAmount());
+
+                transactionDTOList.add(transactionDTO);
+            }
+
+            if (transactions.isEmpty()) {
                 return new ArrayList<>();
             }
-            return transactions;
+
+            return transactionDTOList;
         }
 
         return null;
@@ -46,21 +63,21 @@ public class TransactionServiceImpl implements TransactionService{
 
     @Override
     public Transaction findTransactionById(int id) {
+
         return transactionRepository.findById(id).orElse(null);
     }
 
     /**
-     *
-     * @param userPayId User qui fait la transaction
-     * @param userName User qui reçoit la somme
-     * @param amount La somme transférée
+     * @param userPayId   User qui fait la transaction
+     * @param userName    User qui reçoit la somme
+     * @param amount      La somme transférée
      * @param description La description de transaction, le motif ou le détail
      */
     @Override
     @Transactional
     public void sendMoneyToBuddy(int userPayId, String userName, double amount, String description) {
 
-        if (userPayId <=0 || userName == null || amount <= 0){
+        if (userPayId <= 0 || userName == null || amount <= 0) {
             return;
         }
         User contact = userRepository.findUserByUserName(userName);
@@ -68,7 +85,7 @@ public class TransactionServiceImpl implements TransactionService{
 
         Set<User> contacts = userPayed.getContacts();
 
-        if(contacts.contains(contact) && userPayed.getBalance() > amount){
+        if (contacts.contains(contact) && userPayed.getBalance() > amount) {
 
             contact.setBalance(contact.getBalance() + amount);
             userRepository.save(contact);
@@ -93,11 +110,22 @@ public class TransactionServiceImpl implements TransactionService{
             userPayed.setTransactions(userPayedTransactions);
             userPayed.setBalance(userPayed.getBalance() - amount - totalFeePayed);
             userRepository.save(userPayed);
-        }
-        else {
-            throw new RuntimeException("This userName is not found +"+userName);
+        } else {
+            throw new RuntimeException("This userName is not found +" + userName);
         }
 
 
     }
+
+    @Override
+    public Page<Transaction> findTransactionDTO(User user, Pageable pageable) {
+
+        Page<Transaction> transactionsDTO = transactionRepository.findTransactionByUserPay(user, pageable);
+
+        Page<TransactionDTO> transactionDTOS;
+
+
+        return null;
+    }
+
 }

@@ -7,10 +7,7 @@ VALUES
 INSERT INTO contact (user_id, contact_id)
 VALUES
     (1,2),
-    (1,3),
-    (2,3),
     (3,2),
-    (3,1),
     (2,1);
 
 INSERT INTO user_bank_account(bank_name, bank_location, code_iban, code_bic,balance, user_id)

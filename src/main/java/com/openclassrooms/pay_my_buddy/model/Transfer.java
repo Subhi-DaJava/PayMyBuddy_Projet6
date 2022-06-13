@@ -1,14 +1,17 @@
 package com.openclassrooms.pay_my_buddy.model;
+
 import com.openclassrooms.pay_my_buddy.constant.OperationType;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+
 @Entity
 @Transactional
 @Table(name = "transfer")
 public class Transfer {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transfer_id")
     private int transferId;
 

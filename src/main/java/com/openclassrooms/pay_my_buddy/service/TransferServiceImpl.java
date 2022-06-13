@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 @Transactional
 public class TransferServiceImpl implements TransferService {
@@ -35,27 +36,30 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Transfer findTransferById(int id) {
         Transfer transfer = transferRepository.findById(id).orElse(null);
-        if(transfer == null)
-            throw new TransferNotExistingException("This id ["+id+"] doesn't exist yet !!");
-        else
+        if (transfer == null) {
+            throw new TransferNotExistingException("This id [" + id + "] doesn't exist yet !!");
+        } else {
             return transfer;
+        }
     }
 
     @Override
     public List<Transfer> findAllTransfersByOneUserBankAccountId(int id) {
         UserBankAccount userBankAccount = userBankAccountRepository.findById(id).orElse(null);
-        if(userBankAccount == null)
-            throw new UserNotExistingException("This userBankAccount ["+id+"] doesn't exist yet !!");
+        if (userBankAccount == null) {
+            throw new UserNotExistingException("This userBankAccount [" + id + "] doesn't exist yet !!");
+        }
         List<Transfer> transfersByUserAccountId = userBankAccount.getTransfers();
-        if(transfersByUserAccountId.isEmpty())
+        if (transfersByUserAccountId.isEmpty()) {
             return new ArrayList<>();
-        else
+        } else {
             return transfersByUserAccountId;
+        }
     }
 
     @Override
     public Transfer transferMoneyToPayMyBuddyUser(int userBankId, int userId, double amount, String description) {
-        if (userBankId <= 0 || userId <= 0 || amount <= 0){
+        if (userBankId <= 0 || userId <= 0 || amount <= 0) {
             return null;
         }
         UserBankAccount userBankAccount = userBankAccountRepository.findById(userBankId).orElse(null);
@@ -79,7 +83,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Transfer transferMoneyToUserBankAccount(int userId, int userBankId, double amount, String description) {
-        if (userBankId <= 0 || userId <= 0 || amount <= 0){
+        if (userBankId <= 0 || userId <= 0 || amount <= 0) {
             return null;
         }
         User user = userRepository.findById(userId).orElse(null);

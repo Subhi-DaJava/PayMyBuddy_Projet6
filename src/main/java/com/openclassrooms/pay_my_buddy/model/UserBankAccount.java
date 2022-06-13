@@ -10,7 +10,8 @@ import java.util.List;
 @Table(name = "user_bank_account")
 @Transactional
 public class UserBankAccount {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bank_account_id")
     private int bankAccountId;
 

@@ -19,5 +19,5 @@ public interface UserService {
 
     Set<User> getAllContactsByUser(int userId);
 
-    Boolean addUserToContact(int userId, String buddyEmail);
+    void addUserToContact(int userId, String buddyEmail);
 }

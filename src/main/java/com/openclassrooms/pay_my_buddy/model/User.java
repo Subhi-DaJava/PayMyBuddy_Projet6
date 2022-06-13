@@ -20,7 +20,7 @@ public class User {
     @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name" )
+    @Column(name = "last_name")
     private String lastName;
 
     @Column(name = "user_name", unique = true, length = 100)
@@ -37,17 +37,17 @@ public class User {
     private double balance;
 
     @ManyToMany(fetch = FetchType.LAZY,
-    cascade = {
-            CascadeType.MERGE,
-            CascadeType.PERSIST
-    })
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.PERSIST
+            })
     @JoinTable(name = "contact",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_id")
     )
     private Set<User> contacts = new HashSet<>();
 
-    @OneToMany(targetEntity = Transaction.class, mappedBy="userPay")
+    @OneToMany(targetEntity = Transaction.class, mappedBy = "userPay")
     private List<Transaction> transactions = new ArrayList<>();
 
     @OneToOne(mappedBy = "user")

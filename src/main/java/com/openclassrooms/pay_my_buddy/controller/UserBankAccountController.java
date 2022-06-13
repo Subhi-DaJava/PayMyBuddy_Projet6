@@ -22,45 +22,45 @@ public class UserBankAccountController {
     private UserBankAccountService userBankAccountService;
 
     @PostMapping("/user-bank-accounts")
-    public ResponseEntity<UserBankAccount> createUserBankAccount(@Valid @RequestBody UserBankAccount userBankAccount){
+    public ResponseEntity<UserBankAccount> createUserBankAccount(@Valid @RequestBody UserBankAccount userBankAccount) {
         UserBankAccount userBankAccountCreated = userBankAccountService.saveUserBankAccount(userBankAccount);
 
-        if (userBankAccountCreated != null){
+        if (userBankAccountCreated != null) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{bank_account_id}")
                     .buildAndExpand(userBankAccountCreated.getBankAccountId())
                     .toUri();
             return ResponseEntity.created(location).body(userBankAccountCreated);
-        }
-        else {
+        } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/user-bank-accounts/{accountId}")
-    public ResponseEntity<UserBankAccount> findUserBankAccountById(@PathVariable Integer accountId){
+    public ResponseEntity<UserBankAccount> findUserBankAccountById(@PathVariable Integer accountId) {
         UserBankAccount userBankAccount = userBankAccountService.findUserBankAccountById(accountId);
-        if (userBankAccount == null)
+        if (userBankAccount == null) {
             return ResponseEntity.notFound().build();
-        else
+        } else {
             return ResponseEntity.ok().body(userBankAccount);
+        }
     }
 
     @GetMapping("/user-bank-accounts/users/accountId")
-    public ResponseEntity<User> findUserByUserAccountId(@PathVariable Integer accountId){
+    public ResponseEntity<User> findUserByUserAccountId(@PathVariable Integer accountId) {
         return ResponseEntity.ok().body(userBankAccountService.findUserByUserBankAccountId(accountId));
     }
 
 
     @PutMapping("/user-bank-accounts/users")
-    public ResponseEntity<UserBankAccount> addUserToUserBankAccount(@RequestParam Integer userId, @RequestParam Integer bankAccountId){
+    public ResponseEntity<UserBankAccount> addUserToUserBankAccount(@RequestParam Integer userId, @RequestParam Integer bankAccountId) {
         logger.debug("This methode starts here");
         UserBankAccount userBankAccount = userBankAccountService.addUserToUserBankAccount(userId, bankAccountId);
 
-        if(userBankAccount == null){
+        if (userBankAccount == null) {
             logger.debug("Not succeed, problems : maybe userId and bankAccountId already associated or the Ids don't exist !!!");
-            throw new UserNotExistingException("This userId ["+userId+"], or that bankAccountId ["+bankAccountId+" doesn't exist !!");
+            throw new UserNotExistingException("This userId [" + userId + "], or that bankAccountId [" + bankAccountId + " doesn't exist !!");
         }
         return ResponseEntity.ok().body(userBankAccount);
     }

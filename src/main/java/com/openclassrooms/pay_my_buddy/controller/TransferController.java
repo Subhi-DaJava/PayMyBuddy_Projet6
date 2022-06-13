@@ -21,35 +21,36 @@ public class TransferController {
     private TransferService transferService;
 
     @GetMapping("/transfers/{transId}")
-    public ResponseEntity<Transfer> findByTransferId(@PathVariable Integer transId){
+    public ResponseEntity<Transfer> findByTransferId(@PathVariable Integer transId) {
         Transfer transfer = transferService.findTransferById(transId);
-        if (transfer == null)
-            throw new TransferNotExistingException("This transId ["+transId+ "] doesn't exist yet !!");
-        else
+        if (transfer == null) {
+            throw new TransferNotExistingException("This transId [" + transId + "] doesn't exist yet !!");
+        } else {
             return ResponseEntity.ok().body(transfer);
+        }
     }
 
     @GetMapping("/user-bank-account/transfers")
-    public ResponseEntity<List<Transfer>> findAllTransfersByOneUserBankAccount(@RequestParam Integer bank_account_Id){
+    public ResponseEntity<List<Transfer>> findAllTransfersByOneUserBankAccount(@RequestParam Integer bank_account_Id) {
         List<Transfer> transfers = transferService.findAllTransfersByOneUserBankAccountId(bank_account_Id);
-        if(transfers == null )
-            throw new UserNotExistingException("This bank_account_id ["+bank_account_Id+"] doesn't exist yet !!");
-
-        else if (transfers.isEmpty()){
+        if (transfers == null) {
+            throw new UserNotExistingException("This bank_account_id [" + bank_account_Id + "] doesn't exist yet !!");
+        } else if (transfers.isEmpty()) {
             return ResponseEntity.ok().body(new ArrayList<>());
-        }else
+        } else {
             return ResponseEntity.ok().body(transfers);
+        }
     }
 
     @PostMapping("/transfers/money-transfer/pay-my-buddy")
     public ResponseEntity<Transfer> transferMoneyToPayMyBuddyUser(
-            @RequestParam Integer bankAccountId, @RequestParam Integer userId, @RequestParam double amount, @RequestParam String description){
-        if (bankAccountId <= 0 || userId <= 0 || amount <= 0){
+            @RequestParam Integer bankAccountId, @RequestParam Integer userId, @RequestParam double amount, @RequestParam String description) {
+        if (bankAccountId <= 0 || userId <= 0 || amount <= 0) {
             return ResponseEntity.notFound().build();
         }
 
-        Transfer transfer = transferService.transferMoneyToPayMyBuddyUser(bankAccountId,userId,amount,description);
-        if(transfer != null){
+        Transfer transfer = transferService.transferMoneyToPayMyBuddyUser(bankAccountId, userId, amount, description);
+        if (transfer != null) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/transferId")
@@ -62,12 +63,12 @@ public class TransferController {
 
     @PostMapping("transfers/money-transfer-to-bankAccount")
     public ResponseEntity<Transfer> transferMoneyToUserBankAccount(
-            @RequestParam Integer userId, @RequestParam Integer bankAccountId, @RequestParam double amount, @RequestParam String description){
-        if (bankAccountId <= 0 || userId <= 0 || amount <= 0){
+            @RequestParam Integer userId, @RequestParam Integer bankAccountId, @RequestParam double amount, @RequestParam String description) {
+        if (bankAccountId <= 0 || userId <= 0 || amount <= 0) {
             return ResponseEntity.notFound().build();
         }
-        Transfer transfer = transferService.transferMoneyToUserBankAccount(userId,bankAccountId,amount,description);
-        if(transfer != null){
+        Transfer transfer = transferService.transferMoneyToUserBankAccount(userId, bankAccountId, amount, description);
+        if (transfer != null) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/transferId")
