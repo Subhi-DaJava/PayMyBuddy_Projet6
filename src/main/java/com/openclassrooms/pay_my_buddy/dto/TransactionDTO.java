@@ -1,7 +1,7 @@
 package com.openclassrooms.pay_my_buddy.dto;
 
 public class TransactionDTO {
-    private String userName;
+    private String buddyName;
     private String description;
     private double amount;
 
@@ -9,17 +9,17 @@ public class TransactionDTO {
     }
 
     public TransactionDTO(String userName, String description, double amount) {
-        this.userName = userName;
+        this.buddyName = userName;
         this.description = description;
         this.amount = amount;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getBuddyName() {
+        return buddyName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setBuddyName(String buddyName) {
+        this.buddyName = buddyName;
     }
 
     public String getDescription() {

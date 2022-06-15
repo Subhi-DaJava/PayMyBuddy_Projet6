@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
 
     Page<Transaction> findTransactionByUserPay(User user, Pageable pageable);
+
 }

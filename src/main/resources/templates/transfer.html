@@ -62,29 +62,30 @@
             Send Money
         </div>
         <div class="col col-md-2">
-            <a class="ml-auto btn btn-primary" th:href="@{addConnection}">
+            <a class="ml-auto btn btn-primary" th:href="@{/addConnection}">
                 Add Connection</a>
         </div>
     </div>
 
     <!--Select-->
-    <form method="post" th:action="@{transfer}">
-
+    <form method="post" th:action="@{/send-money}">
 
         <div class="row bg-light mx-auto">
 
             <div class="col mx-5 mt-5">
-                <input name="description" type="text" placeholder="description" th:name="description"/>
+                <input type="hidden" name="userEmail" th:value="${userEmail}" th:text="${userEmail}"/>
+            </div>
+            <div class="col mx-5 mt-5">
+                <input class="form-control" type="text" placeholder="description" name="description" th:value="description" th:text="${description}"/>
             </div>
             <div class="col mt-5 mb-5 mx-5">
-                <select class="form-select" aria-label="Default select example" name="contacts" th:name="contacts">
+                <select class="form-select" aria-label="Default select example" th:name="buddyEmail">
                     <option selected>Select A Connection</option>
-                    <option th:value="*{userName}" th:each="contact:${contacts}" th:object="${contact}"
-                            th:text="*{userName}"></option>
+                    <option th:each="userBuddy:${userBuddyList}" th:text="${userBuddy.email}"></option>
                 </select>
             </div>
             <div class="input-group col mt-5 mb-5 mx-5">
-                <input id="select" class="user-select-auto" type="number" name="amount" th:name="amount"/>
+                <input id="select" class="user-select-auto" type="number" name="amount" th:value="amount" th:text="${amount}"/>
                 <span class="input-group-text bg-white bor border-dark border-2">€</span>
             </div>
             <div class="col mt-5 mb-5 mx-5">
@@ -108,7 +109,7 @@
             </thead>
             <tbody class="py-5">
             <tr th:each="transaction:${transactions}">
-                <th th:text="${transaction.buddyId}"></th>
+                <th th:text="${transaction.buddyEmail}"></th>
                 <th th:text="${transaction.description}"></th>
                 <th th:text="${transaction.amount}"></th>
             </tr>
@@ -127,7 +128,7 @@
             <li th:each="page,status:${pages}">
                 <a th:class="${status.index==currentPage?'btn btn-primary':'btn btn-outline-info'}"
                    th:text="${status.index}"
-                   th:href="@{listTransaction(page=${status.index})}"></a>
+                   th:href="@{transfer(userEmail=${userEmail}, page=${status.index})}"></a>
             </li>
             <li class="page-item">
                 <a class="page-link" href="#" aria-label="Next">
@@ -137,10 +138,7 @@
         </ul>
     </nav>
 
-
 </div>
-
 </div>
-
 </body>
 </html>

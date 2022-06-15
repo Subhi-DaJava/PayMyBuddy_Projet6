@@ -12,12 +12,11 @@ public interface TransactionService {
 
     Transaction addTransaction(Transaction transaction);
 
-    List<TransactionDTO> findAllTransactionByUser(int userId);
+    List<TransactionDTO> findAllTransactionByUser(String userEmail);
 
-    Transaction findTransactionById(int id);
 
-    void sendMoneyToBuddy(int userPayId, String userName, double amount, String description);
+    void sendMoneyToBuddy(String userEmail, String contactEmail, double amount, String description);
 
-    Page<Transaction> findTransactionDTO(User user, Pageable pageable);
+    /*Page<Transaction> findTransactionDTO(User user, Pageable pageable);*/
 
 }

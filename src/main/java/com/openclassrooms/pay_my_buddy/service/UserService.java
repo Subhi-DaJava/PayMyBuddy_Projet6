@@ -15,9 +15,9 @@ public interface UserService {
 
     User findUserById(int id);
 
-    User updateUser(int id, User user) throws EmailNotNullException;
+    User updateUser(User user) throws EmailNotNullException;
 
     Set<User> getAllContactsByUser(int userId);
 
-    void addUserToContact(int userId, String buddyEmail);
+    void addUserToContact(String userEmail, String buddyEmail);
 }

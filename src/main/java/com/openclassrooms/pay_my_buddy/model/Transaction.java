@@ -31,19 +31,19 @@ public class Transaction {
     private double totalFeePayed;
 
     @Column(name = "recipient_id")
-    private int buddyId;
+    private String buddyEmail;
 
     public Transaction() {
     }
 
-    public Transaction(int transId, double amount, String description, LocalDate dateTransaction, User userPay, double totalFeePayed, int buddyId) {
+    public Transaction(int transId, double amount, String description, LocalDate dateTransaction, User userPay, double totalFeePayed, String buddyEmail) {
         this.transId = transId;
         this.amount = amount;
         this.description = description;
         this.dateTransaction = dateTransaction;
         this.userPay = userPay;
         this.totalFeePayed = totalFeePayed;
-        this.buddyId = buddyId;
+        this.buddyEmail = buddyEmail;
     }
 
     public int getTransId() {
@@ -94,11 +94,11 @@ public class Transaction {
         this.totalFeePayed = totalFeePayed;
     }
 
-    public int getBuddyId() {
-        return buddyId;
+    public String getBuddyEmail() {
+        return buddyEmail;
     }
 
-    public void setBuddyId(int buddyId) {
-        this.buddyId = buddyId;
+    public void setBuddyEmail(String buddyEmail) {
+        this.buddyEmail = buddyEmail;
     }
 }

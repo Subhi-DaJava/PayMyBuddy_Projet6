@@ -3,8 +3,10 @@ package com.openclassrooms.pay_my_buddy.controller;
 import com.openclassrooms.pay_my_buddy.dto.TransactionDTO;
 
 import com.openclassrooms.pay_my_buddy.model.Transaction;
+import com.openclassrooms.pay_my_buddy.model.User;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
 import com.openclassrooms.pay_my_buddy.service.TransactionService;
+import com.openclassrooms.pay_my_buddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,51 +20,32 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/pay-my-buddy")
+/*@RequestMapping("/pay-my-buddy")*/
 public class TransactionController {
+    @Autowired
+    private UserService userService;
     @Autowired
     private TransactionService transactionService;
     @Autowired
     private TransactionRepository transactionRepository;
 
-    @PostMapping("/transactions/send_money")
-    public void sendMoneyToBuddy(@RequestParam int payedId, @RequestParam String userName, @RequestParam double amount, @RequestParam String description) {
+    @PostMapping("/send-money")
+    public String sendMoneyToBuddy(Model model,
+                                   String userEmail,
+                                  String buddyEmail,
+                                   double amount,
+                                 String description,
+                                   @RequestParam(defaultValue = "0") int page) {
+        //User connection = userService.findUserByEmail(buddyEmail);
+      /*  User user = userService.findUserByEmail(userEmail);
+        double userBalance = user.getBalance();
 
-        if (payedId <= 0 || userName == null || amount <= 0) {
-            return;
-        }
-        transactionService.sendMoneyToBuddy(payedId, userName, amount, description);
+        if (buddyEmail == null || amount <= 0 || buddyEmail == null || userBalance > amount) {
+            return "error/Bad_Operation";
+        }*/
+        model.addAttribute("buddyEmail", buddyEmail);
+        transactionService.sendMoneyToBuddy(userEmail, buddyEmail, amount, description);
+        return "redirect:/transfer?userEmail="+userEmail+"&page="+page;
     }
-
-
-
-
-
-/*    @GetMapping("/transactions/user/{userId}")
-    public String  getAllTransactionsByUser(Model model, @PathVariable("userId") Integer userId){
-
-        List<TransactionDTO> transactionsByUser =
-               transactionService.findAllTransactionByUser(userId);
-
-        model.addAttribute("transactions", transactionsByUser);
-
-
-        return "/transfer";
-    }*/
-
-
-    @GetMapping(path = "/listTransaction")
-    public String allTransaction(Model model,
-                                 @RequestParam(name = "page", defaultValue = "0", required = false) int page,
-                                 @RequestParam(name = "size", defaultValue = "3", required = false) int size) {
-
-        Page<Transaction> listTransaction = transactionRepository.findAll(PageRequest.of(page, size));
-        model.addAttribute("transactions", listTransaction.getContent());
-        model.addAttribute("pages", new int[listTransaction.getTotalPages()]);
-        model.addAttribute("currentPage", page);
-        return "redirect:/transfer?page=" + page + "&size=" + size;
-
-    }
-
 
 }

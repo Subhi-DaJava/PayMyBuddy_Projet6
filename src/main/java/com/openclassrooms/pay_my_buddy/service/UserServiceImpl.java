@@ -35,37 +35,42 @@ public class UserServiceImpl implements UserService {
             newUser.setEmail(user.getEmail());
             newUser.setFirstName(user.getFirstName());
             newUser.setLastName(user.getLastName());
-            newUser.setUserName(user.getUserName());
             newUser.setPassword(user.getPassword());
             newUser.setBalance(0.0);
             userRepository.save(user);
             return user;
         }
-        if (user.getEmail() == null || user.getUserName() == null) {
-            throw new UserExistingException("This user already exist in the DB.");
+        if ( user.getEmail() == null) {
+            logger.debug("UserEmail should not be null");
+           throw new EmailNotNullException("The field email should not be null");
+        }
+        if( userCheck != null){
+            logger.debug("This user, email={}, exists already", user.getEmail());
+            throw new UserExistingException("This user already exists in the DB.");
         }
 
-        return null;
+        return userCheck;
     }
 
     @Override
     public User findUserByEmail(String email) {
-        logger.debug("This method starts here !!");
+        logger.debug("This method findUserByEmail starts here !!");
         User user = userRepository.findUserByEmail(email);
 
         if (user == null) {
             logger.debug("This user doesn't exist in DB which email [" + email + "]");
-            throw new UserNotExistingException("This user which email [" + email + "] doesn't exist yet in DB !!");
+            /*throw new UserNotExistingException("This user which email [" + email + "] doesn't exist yet in DB !!");*/
         }
         //déjà validator check the input : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' not supported]
         if (email == null) {
             logger.debug("Email should not be null or not be empty !!");
-            throw new EmailNotNullException("Email is null or empty !!");
-        } else {
-            logger.info("This user which email [" + email + "] is successfully found !!");
-            return user;
-
+            //throw new EmailNotNullException("Email is null or empty !!");
         }
+
+        logger.info("This user which email [" + email + "] is successfully found !!");
+        return user;
+
+
     }
 
     @Override
@@ -86,9 +91,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(int id, User user) throws EmailNotNullException {
+    public User updateUser(User user) throws EmailNotNullException {
 
-        User userUpdating = findUserById(id);
+        User userUpdating = findUserByEmail(user.getEmail());
         if (userUpdating == null) {
             throw new RuntimeException("Could not update, check the User information");
         }
@@ -115,17 +120,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUserToContact(int userId, String buddyEmail) {
+    public void addUserToContact(String userEmail, String buddyEmail) {
         logger.debug("This addUserToContacts starts here !!");
         User userContact = userRepository.findUserByEmail(buddyEmail);
-        User user = userRepository.findById(userId).orElse(null);
+        User user = userRepository.findUserByEmail(userEmail);
 
         if (userContact != null && user != null) {
             if (user.getContacts().contains(userContact)) {
                 logger.debug("UserContact is already added !!");
-                throw new UserExistingException("This contact is added !!");
+              /*  throw new UserExistingException("This contact is added !!");*/
             }
-            logger.info("This userContact which email [" + buddyEmail + "] is successfully added to this user which email [" + userId + "]");
+            logger.info("This userContact which email [" + buddyEmail + "] is successfully added to this user which email [" + userEmail + "]");
             user.getContacts().add(userContact);
             return;
 

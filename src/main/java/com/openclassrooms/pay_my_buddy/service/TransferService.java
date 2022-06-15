@@ -12,7 +12,7 @@ public interface TransferService {
 
     List<Transfer> findAllTransfersByOneUserBankAccountId(int id);
 
-    Transfer transferMoneyToPayMyBuddyUser(int userBankId, int userId, double amount, String description);
+    Transfer transferMoneyToPayMyBuddyUser(String userEmail, String buddyEmail, double amount, String description);
 
     Transfer transferMoneyToUserBankAccount(int userId, int userBankId, double amount, String description);
 

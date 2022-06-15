@@ -28,6 +28,7 @@ public class TransferServiceImpl implements TransferService {
     @Autowired
     private UserRepository userRepository;
 
+
     @Override
     public Transfer saveTransfer(Transfer transfer) {
         return transferRepository.save(transfer);
@@ -58,11 +59,16 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public Transfer transferMoneyToPayMyBuddyUser(int userBankId, int userId, double amount, String description) {
-        if (userBankId <= 0 || userId <= 0 || amount <= 0) {
+    public Transfer transferMoneyToPayMyBuddyUser(String userEmail, String buddyEmail, double amount, String description) {
+
+        User userPay = userRepository.findUserByEmail(userEmail);
+        User userBuddy = userRepository.findUserByEmail(buddyEmail);
+
+   /*     if (userEmail == null || buddyEmail == null || amount <= 0 || userPay.getBalance() < amount) {
             return null;
         }
         UserBankAccount userBankAccount = userBankAccountRepository.findById(userBankId).orElse(null);
+
         User user = userRepository.findById(userId).orElse(null);
 
         userBankAccount.setBalance(userBankAccount.getBalance() - amount);
@@ -78,7 +84,8 @@ public class TransferServiceImpl implements TransferService {
         transfer.setUserBankAccount(userBankAccount);
         transfer.setAmount(amount);
         saveTransfer(transfer);
-        return transfer;
+        return transfer;*/
+        return null;
     }
 
     @Override

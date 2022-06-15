@@ -44,12 +44,13 @@ public class TransferController {
 
     @PostMapping("/transfers/money-transfer/pay-my-buddy")
     public ResponseEntity<Transfer> transferMoneyToPayMyBuddyUser(
-            @RequestParam Integer bankAccountId, @RequestParam Integer userId, @RequestParam double amount, @RequestParam String description) {
-        if (bankAccountId <= 0 || userId <= 0 || amount <= 0) {
+            @RequestParam String userEmail, @RequestParam String buddyEmail, @RequestParam double amount, @RequestParam String description) {
+
+        if (userEmail == null || buddyEmail == null || amount <= 0) {
             return ResponseEntity.notFound().build();
         }
 
-        Transfer transfer = transferService.transferMoneyToPayMyBuddyUser(bankAccountId, userId, amount, description);
+        Transfer transfer = transferService.transferMoneyToPayMyBuddyUser(userEmail, buddyEmail, amount, description);
         if (transfer != null) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()

@@ -7,6 +7,8 @@ import com.openclassrooms.pay_my_buddy.model.Transaction;
 import com.openclassrooms.pay_my_buddy.model.User;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,8 @@ import java.util.Set;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
+    private static final Logger logger = LoggerFactory.getLogger("TransactionImpl.class");
+
     @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
@@ -31,23 +35,24 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionDTO> findAllTransactionByUser(int userId) {
+    public List<TransactionDTO> findAllTransactionByUser(String userEmail) {
+        logger.debug("This findAllTransactionByUser starts here");
         List<TransactionDTO> transactionDTOList = new ArrayList<>();
 
-        User userById = userRepository.findById(userId).orElse(null);
-        if (userById == null) {
-            throw new UserNotExistingException("This userId [" + userId + "] doesn't exist yet !!");
+        User userByEmail = userRepository.findUserByEmail(userEmail);
+        if (userByEmail == null) {
+            logger.debug("UserEmail={} should not be null", userEmail);
+            throw new UserNotExistingException("This userEmail [" + userEmail + "] doesn't exist yet !!");
         }
-        if (userById != null) {
-
-            List<Transaction> transactions = userById.getTransactions();
-
+        if (userByEmail != null) {
+            List<Transaction> transactions = userByEmail.getTransactions();
             for (Transaction transaction : transactions) {
-
-                User userBuddy = userRepository.findById(transaction.getBuddyId()).orElse(null);
-
-                TransactionDTO transactionDTO = new TransactionDTO(userBuddy.getUserName(), transaction.getDescription(), transaction.getAmount());
-
+                /*
+                  Chercher le buddyEmail pour trouver le contact
+                 */
+                String userBuddyEmail = transaction.getBuddyEmail();
+                User userContact = userRepository.findUserByEmail(userBuddyEmail);
+                TransactionDTO transactionDTO = new TransactionDTO(userContact.getFirstName()+" "+userContact.getLastName(), transaction.getDescription(), transaction.getAmount());
                 transactionDTOList.add(transactionDTO);
             }
 
@@ -61,29 +66,25 @@ public class TransactionServiceImpl implements TransactionService {
         return null;
     }
 
-    @Override
-    public Transaction findTransactionById(int id) {
 
-        return transactionRepository.findById(id).orElse(null);
-    }
-
-    /**
-     * @param userPayId   User qui fait la transaction
-     * @param userName    User qui reçoit la somme
-     * @param amount      La somme transférée
-     * @param description La description de transaction, le motif ou le détail
-     */
     @Override
     @Transactional
-    public void sendMoneyToBuddy(int userPayId, String userName, double amount, String description) {
+    public void sendMoneyToBuddy(String userEmail, String userContactEmail, double amount, String description) {
+        logger.debug("This methode sendMoneyToBuddy starts here");
 
-        if (userPayId <= 0 || userName == null || amount <= 0) {
+        if (userEmail == null || userEmail == null || amount <= 0) {
             return;
         }
-        User contact = userRepository.findUserByUserName(userName);
-        User userPayed = userRepository.findById(userPayId).orElse(null);
+        User contact = userRepository.findUserByEmail(userContactEmail);
+
+        User userPayed = userRepository.findUserByEmail(userEmail);
 
         Set<User> contacts = userPayed.getContacts();
+
+        if (contact == null) {
+            logger.debug("Connection email={} doesn't exist in the DB" + userContactEmail);
+            throw new UserNotExistingException("This user with email={} doesn't exist" + userContactEmail);
+        }
 
         if (contacts.contains(contact) && userPayed.getBalance() > amount) {
 
@@ -98,7 +99,7 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setDateTransaction(LocalDate.now());
             transaction.setDescription(description);
             transaction.setAmount(amount);
-            transaction.setBuddyId(contact.getUserId());
+            transaction.setBuddyEmail(contact.getEmail());
             transaction.setTotalFeePayed(totalFeePayed);
 
             transactionRepository.save(transaction);
@@ -110,14 +111,10 @@ public class TransactionServiceImpl implements TransactionService {
             userPayed.setTransactions(userPayedTransactions);
             userPayed.setBalance(userPayed.getBalance() - amount - totalFeePayed);
             userRepository.save(userPayed);
-        } else {
-            throw new RuntimeException("This userName is not found +" + userName);
+
         }
 
-
-    }
-
-    @Override
+/*    @Override
     public Page<Transaction> findTransactionDTO(User user, Pageable pageable) {
 
         Page<Transaction> transactionsDTO = transactionRepository.findTransactionByUserPay(user, pageable);
@@ -126,6 +123,7 @@ public class TransactionServiceImpl implements TransactionService {
 
 
         return null;
-    }
+    }*/
 
+    }
 }

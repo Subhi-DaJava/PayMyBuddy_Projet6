@@ -23,10 +23,6 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "user_name", unique = true, length = 100)
-    @NotBlank(message = "UserName may not be empty and null")
-    private String userName;
-
     @Column(name = "email", unique = true, length = 100)
     @NotBlank(message = "Email may not be empty and null")
     private String email;
@@ -56,12 +52,10 @@ public class User {
     public User() {
     }
 
-
-    public User(int userId, String firstName, String lastName, String userName, String email, String password, double balance, Set<User> contacts, List<Transaction> transactions, UserBankAccount userBankAccount) {
+    public User(int userId, String firstName, String lastName, String email, String password, double balance, Set<User> contacts, List<Transaction> transactions, UserBankAccount userBankAccount) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userName = userName;
         this.email = email;
         this.password = password;
         this.balance = balance;
@@ -92,14 +86,6 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getEmail() {

@@ -12,15 +12,15 @@
         <div class="card-header">
             <h3>Add Connection</h3>
             <div class="card-body">
-                <form method="post" th:action="@{addBuddy}">
+                <form method="post" th:action="@{/addBuddy}">
                     <div class="col-4">
-                        <label for="userId">User Add Id</label>
-                        <input id="userId" class="form-control" type="text" name="userId" placeholder="UserId" required
-                               th:name="user_Id">
+                        <label for="userEmail">User Add Email</label>
+                        <input id="userEmail" class="form-control" type="text" name="userEmail" placeholder="userEmail" required th:name="userEmail"
+                               th:text="${userEmail}">
 
                         <label for="contactEmail">Contact email </label>
-                        <input id="contactEmail" class="form-control" type="text" name="contactEmail"
-                               placeholder="contactEmail" required th:name="contact_Email">
+                        <input id="contactEmail" class="form-control" type="text" th:text="${contactEmail}" name="contactEmail"
+                               placeholder="contactEmail" required th:name="contactEmail">
 
                     </div>
                     <!-- submit appelle addBuddy-->
