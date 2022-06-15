@@ -24,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -139,9 +140,33 @@ public class UserController {
 
         Page<Transaction> listTransaction = transactionRepository.findTransactionByUserPay(userPay, PageRequest.of(page, size));
 
-        List<TransactionDTO> transactionDTOList = transactionService.findAllTransactionByUser(userPay.getEmail());
-        model.addAttribute("transactionDTO", transactionDTOList);
 
+
+     /*   List<User> buddyList = new ArrayList<>();
+
+        List<Transaction> transList = listTransaction.getContent();
+        for(Transaction trans : transList){
+            User checkBuddy = userService.findUserByEmail(trans.getBuddyEmail());
+            buddyList.add(checkBuddy);
+        }
+
+*/
+     /*   List<TransactionDTO> newDto = new ArrayList<>();
+        for (Transaction dto : listTransaction){
+            TransactionDTO dtoCreate = new TransactionDTO();
+            dtoCreate = transactionService.
+
+        }*/
+
+
+
+
+
+        List<TransactionDTO> transactionDTOList = transactionService.findAllTransactionByUser(userEmail);
+
+        model.addAttribute("transactionDTOList", transactionDTOList);
+
+        model.addAttribute("totalPage", listTransaction.getTotalPages());
         model.addAttribute("transactions", listTransaction.getContent());
         model.addAttribute("pages", new int[listTransaction.getTotalPages()]);
         model.addAttribute("currentPage", page);
@@ -151,6 +176,10 @@ public class UserController {
         model.addAttribute("amount", amount);
         model.addAttribute("description", description);
         model.addAttribute("buddyEmail",buddyEmail);
+
+
+
+        //model.addAttribute("buddyList", buddyList);
 
         return "transfer";
     }

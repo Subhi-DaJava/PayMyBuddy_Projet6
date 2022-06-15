@@ -12,4 +12,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 
     Page<Transaction> findTransactionByUserPay(User user, Pageable pageable);
 
+
 }
