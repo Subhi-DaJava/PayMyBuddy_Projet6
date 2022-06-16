@@ -28,18 +28,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) throws EmailNotNullException {
         logger.debug("SaveUser method starts here !!");
+
         User userCheck = userRepository.findUserByEmail(user.getEmail());
-        if (userCheck == null) {
-            logger.info("This user " + user + " is successfully saved in the DB !!");
-            User newUser = new User();
-            newUser.setEmail(user.getEmail());
-            newUser.setFirstName(user.getFirstName());
-            newUser.setLastName(user.getLastName());
-            newUser.setPassword(user.getPassword());
-            newUser.setBalance(0.0);
-            userRepository.save(user);
-            return user;
-        }
+
         if ( user.getEmail() == null) {
             logger.debug("UserEmail should not be null");
            throw new EmailNotNullException("The field email should not be null");
@@ -49,7 +40,19 @@ public class UserServiceImpl implements UserService {
             throw new UserExistingException("This user already exists in the DB.");
         }
 
-        return userCheck;
+        logger.info("This user " + user + " is successfully saved in the DB !!");
+
+        userCheck = new User();
+
+        userCheck.setFirstName(user.getFirstName());
+        userCheck.setLastName(user.getLastName());
+        userCheck.setEmail(user.getEmail());
+        userCheck.setPassword(user.getPassword());
+        //userCheck.setBalance(0.0);
+        userRepository.save(user);
+
+        return user;
+
     }
 
     @Override
@@ -137,7 +140,7 @@ public class UserServiceImpl implements UserService {
         }
         if (user != null && userContact == null) {
             logger.debug("UserContact doesn't exist in the DB !!");
-            throw new UserNotExistingException("This userContact which email [" + buddyEmail + "] doesn't exist yet in the DB");
+            //throw new UserNotExistingException("This userContact which email [" + buddyEmail + "] doesn't exist yet in the DB");
         }
         if (buddyEmail == null || buddyEmail.isEmpty()) {
             logger.debug("buddyEmail should not be null or be empty neither !!");

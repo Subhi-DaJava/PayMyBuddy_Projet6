@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 import java.util.Set;
 
 @Controller
@@ -39,15 +37,27 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @GetMapping("/admin/saveUser")
+    public String saveUser(Model model){
+        model.addAttribute("newUser", new User());
+        return "save-user-form";
+    }
+
     @PostMapping("/admin/saveUser")
-    public String saveUser(@Valid @RequestBody User user) throws EmailNotNullException {
+    public String saveUser(Model model,
+                           User user,
+                           @RequestParam(defaultValue = "0") int page) throws EmailNotNullException {
         logger.debug("This saveUser starts here !!");
         if (user.getEmail() == null || user.getPassword() == null) {
             logger.debug("UserEmail should not be null");
-            return "redirect:/formSaveUser";
+            return "save-user-form";
         }
         userService.saveUser(user);
-        return "redirect:/user/home";
+
+        model.addAttribute("userEmail", user.getEmail());
+        model.addAttribute("page", page);
+
+        return "redirect:/transfer?userEmail=" + user.getEmail() + "&page=" + page;
 
     }
 
@@ -58,7 +68,15 @@ public class UserController {
                            @RequestParam(defaultValue = "0") int page) {
 
         logger.debug("This method addContactToUser starts here !!");
+
+        User userBuddy = userService.findUserByEmail(contactEmail);
+        if(contactEmail == null || userBuddy == null){
+            logger.debug("UserBuddy={} should not be null or userBuddy doesn't exist in DB wich the email", contactEmail);
+            return "error/Bad_Operation";
+        }
+
         userService.addUserToContact(userEmail, contactEmail);
+        logger.info("UserEmail={} seuccessfully added the userBuddy={}", userEmail, contactEmail);
 
         return "redirect:/transfer?userEmail=" + userEmail + "&page=" + page;
     }
@@ -75,14 +93,6 @@ public class UserController {
 
 
         return "formAddConnection";
-    }
-
-    @GetMapping("/showTransfer")
-    public String transfer(@RequestParam(name = "userEmail", required = false) String userEmail,
-                           @RequestParam(name = "page", defaultValue = "0") int page,
-                           @RequestParam(name = "size", defaultValue = "3") int size)
-     {
-        return "redirect:/transfer?userEmail="+userEmail+"&page="+page+"&size="+size;
     }
 
     @GetMapping("/transfer")

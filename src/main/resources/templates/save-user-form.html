@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Transfer</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheetPerso.css">
+    <script src="/webjars/bootstrap/5.1.3/js/bootstrap.bundle.js"></script>
+</head>
+<body>
+<!--Principal-->
+<div class="container">
+    <nav class="navbar navbar-light navbar-expand py-0">
+        <div class="container px-0">
+            <ul class="nav navbar-nav left py-0">
+                <li>
+                    <div class="card-header text-white p-1"
+                         style="background-image: linear-gradient(45deg, #0ba29d, #c3ec52)">Pay My Buddy
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Transfer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Log off</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <nav class="navbar navbar-expand bg-light py-0">
+        <div class="container px-0">
+            <ul class="nav navbar-nav">
+                <li class="nav-item py-0">
+                    <a class="nav-link active py-0 px-2" aria-current="page" href="#">Home</a>
+                </li>
+                <p class="nav-link py-0"> / </p>
+                <li class="nav-item py-0">
+                    <a class="nav-link py-0" href="#">Transfer</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="card">
+        <div class="card-header">
+            <h3>Save the App Users</h3>
+        </div>
+        <div class="card-body">
+                <form method="post" th:action="@{/admin/saveUser}">
+                    <div>
+                        <label for="firstName">First Name</label>
+                        <input id="firstName" class="form-control" type="text" name="firstName" th:value="${newUser.firstName}"/>
+                        <span class="text-danger" th:errors="${newUser.firstName}"></span>
+                    </div>
+                    <div>
+                        <label for="lastName">Last Name</label>
+                        <input id="lastName" class="form-control" name="lastName" type="text" th:value="${newUser.lastName}"/>
+                        <span class="text-danger" th:errors="${newUser.lastName}"></span>
+                    </div>
+
+                    <div>
+                        <label for="email">Email</label>
+                        <input id="email" class="form-control" name="email" type="email" th:value="${newUser.email}"/>
+                        <span class="text-danger" th:errors="${newUser.email}"></span>
+
+                    </div>
+
+                    <div>
+                        <label for="password">Password</label>
+                        <input id="password" class="form-control" name="password" type="text" th:value="${newUser.password}"/>
+                        <span class="text-danger" th:errrors="${newUser.password}"></span>
+                    </div>
+
+             <!--       <div>
+                        <label for="rePassword">Re Password</label>
+                        <input id="rePassword" class="form-control" name="rePassword" type="text" th:value="${newUser.password}"/>
+                        <span class="text-danger" th:errors="${newUser.password}"></span>
+                    </div>-->
+
+                    <div>
+                        <button type="submit" class="btn btn-primary">Save A New AppUser</button>
+                    </div>
+
+                </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
