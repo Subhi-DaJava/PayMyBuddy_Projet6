@@ -110,18 +110,18 @@
             </thead>
             <tbody class="py-5">
 
-            <tr th:each="transactionDTO:${transactionDTOList}">
+        <!--    <tr th:each="transactionDTO:${transactionDTOList}">
                 <th th:text="${transactionDTO.buddyName}" ></th>
                 <th th:text="${transactionDTO.description}"></th>
                 <th th:text="${transactionDTO.amount + '€'}"></th>
-            </tr>
+            </tr>-->
 
 
-          <!--  <tr th:each="transaction:${transactions}">
+            <tr th:each="transaction:${transactions}">
                 <th th:text="${transaction.buddyEmail }" ></th>
                 <th th:text="${transaction.description}"></th>
                 <th th:text="${transaction.amount + '€'}"></th>
-            </tr>-->
+            </tr>
 
             </tbody>
         </table>

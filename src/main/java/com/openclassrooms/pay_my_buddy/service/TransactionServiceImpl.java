@@ -112,16 +112,5 @@ public class TransactionServiceImpl implements TransactionService {
 
         }
 
-/*    @Override
-    public Page<Transaction> findTransactionDTO(User user, Pageable pageable) {
-
-        Page<Transaction> transactionsDTO = transactionRepository.findTransactionByUserPay(user, pageable);
-
-        Page<TransactionDTO> transactionDTOS;
-
-
-        return null;
-    }*/
-
     }
 }
