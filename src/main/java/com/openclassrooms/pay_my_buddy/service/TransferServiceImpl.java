@@ -4,7 +4,7 @@ import com.openclassrooms.pay_my_buddy.constant.OperationType;
 import com.openclassrooms.pay_my_buddy.exception.TransferNotExistingException;
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
 import com.openclassrooms.pay_my_buddy.model.Transfer;
-import com.openclassrooms.pay_my_buddy.model.User;
+import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 import com.openclassrooms.pay_my_buddy.repository.TransferRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserBankAccountRepository;
@@ -61,8 +61,8 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Transfer transferMoneyToPayMyBuddyUser(String userEmail, String buddyEmail, double amount, String description) {
 
-        User userPay = userRepository.findUserByEmail(userEmail);
-        User userBuddy = userRepository.findUserByEmail(buddyEmail);
+        AppUser appUserPay = userRepository.findUserByEmail(userEmail);
+        AppUser appUserBuddy = userRepository.findUserByEmail(buddyEmail);
 
    /*     if (userEmail == null || buddyEmail == null || amount <= 0 || userPay.getBalance() < amount) {
             return null;
@@ -93,11 +93,11 @@ public class TransferServiceImpl implements TransferService {
         if (userBankId <= 0 || userId <= 0 || amount <= 0) {
             return null;
         }
-        User user = userRepository.findById(userId).orElse(null);
+        AppUser appUser = userRepository.findById(userId).orElse(null);
         UserBankAccount userBankAccount = userBankAccountRepository.findById(userBankId).orElse(null);
 
-        user.setBalance(user.getBalance() - amount);
-        userRepository.save(user);
+        appUser.setBalance(appUser.getBalance() - amount);
+        userRepository.save(appUser);
 
         userBankAccount.setBalance(userBankAccount.getBalance() + amount);
         userBankAccountRepository.save(userBankAccount);

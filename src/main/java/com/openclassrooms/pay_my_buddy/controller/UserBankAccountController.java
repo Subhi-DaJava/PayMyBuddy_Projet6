@@ -1,7 +1,7 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
-import com.openclassrooms.pay_my_buddy.model.User;
+import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 import com.openclassrooms.pay_my_buddy.service.UserBankAccountService;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public class UserBankAccountController {
     }
 
     @GetMapping("/user-bank-accounts/users/accountId")
-    public ResponseEntity<User> findUserByUserAccountId(@PathVariable Integer accountId) {
+    public ResponseEntity<AppUser> findUserByUserAccountId(@PathVariable Integer accountId) {
         return ResponseEntity.ok().body(userBankAccountService.findUserByUserBankAccountId(accountId));
     }
 

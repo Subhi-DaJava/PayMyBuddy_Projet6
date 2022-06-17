@@ -2,7 +2,7 @@ package com.openclassrooms.pay_my_buddy.service;
 
 import com.openclassrooms.pay_my_buddy.exception.UserExistingException;
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
-import com.openclassrooms.pay_my_buddy.model.User;
+import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 import com.openclassrooms.pay_my_buddy.repository.UserBankAccountRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserRepository;
@@ -51,29 +51,29 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
     }
 
     @Override
-    public User findUserByUserBankAccountId(int id) {
+    public AppUser findUserByUserBankAccountId(int id) {
         UserBankAccount userBankAccount = findUserBankAccountById(id);
-        User user = userBankAccount.getUser();
-        return user;
+        AppUser appUser = userBankAccount.getAppUser();
+        return appUser;
     }
 
     @Override
     public UserBankAccount addUserToUserBankAccount(int userId, int bankAccountId) {
         logger.debug("This methode starts here");
         UserBankAccount userBankAccount = findUserBankAccountById(bankAccountId);
-        User user = userRepository.findById(userId).orElse(null);
+        AppUser appUser = userRepository.findById(userId).orElse(null);
 
-        if (userBankAccount == null || user == null) {
+        if (userBankAccount == null || appUser == null) {
             logger.debug("This userId [" + userId + "], or the bankAccountId [" + bankAccountId + "] doesn't exist yet !!");
             throw new UserNotExistingException("This userId [" + userId + "], or the bankAccountId [" + bankAccountId + "] doesn't exist yet !!");
-        } else if (userBankAccount.getUser() != null && user.getUserBankAccount() != null) {
+        } else if (userBankAccount.getAppUser() != null && appUser.getUserBankAccount() != null) {
             logger.debug("Already associated or associated with other userId!");
             throw new UserExistingException("This userId [" + userId + "] already added to this userBankAccount which bankAccountId [" + bankAccountId + "] !!");
-        } else if (userBankAccount.getUser() == null && user.getUserBankAccount() == null) {
+        } else if (userBankAccount.getAppUser() == null && appUser.getUserBankAccount() == null) {
             logger.info("This user which UserId [" + userId + "] successfully added to this userBankAccount which id [" + bankAccountId + "]");
-            userBankAccount.setUser(user);
+            userBankAccount.setAppUser(appUser);
             saveUserBankAccount(userBankAccount);
-            user.setUserBankAccount(userBankAccount);
+            appUser.setUserBankAccount(userBankAccount);
             return userBankAccount;
         }
         return null;

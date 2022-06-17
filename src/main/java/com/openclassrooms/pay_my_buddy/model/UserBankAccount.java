@@ -33,7 +33,7 @@ public class UserBankAccount {
     private double balance;
 
     @OneToOne
-    private User user;
+    private AppUser appUser;
 
     @OneToMany(mappedBy = "userBankAccount")
     private List<Transfer> transfers = new ArrayList<>();
@@ -41,14 +41,14 @@ public class UserBankAccount {
     public UserBankAccount() {
     }
 
-    public UserBankAccount(int bankAccountId, String bankName, String bankLocation, String codeIBAN, String codeBIC, double balance, User user, List<Transfer> transfers) {
+    public UserBankAccount(int bankAccountId, String bankName, String bankLocation, String codeIBAN, String codeBIC, double balance, AppUser appUser, List<Transfer> transfers) {
         this.bankAccountId = bankAccountId;
         this.bankName = bankName;
         this.bankLocation = bankLocation;
         this.codeIBAN = codeIBAN;
         this.codeBIC = codeBIC;
         this.balance = balance;
-        this.user = user;
+        this.appUser = appUser;
         this.transfers = transfers;
     }
 
@@ -100,12 +100,12 @@ public class UserBankAccount {
         this.balance = balance;
     }
 
-    public User getUser() {
-        return user;
+    public AppUser getAppUser() {
+        return appUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 
     public List<Transfer> getTransfers() {

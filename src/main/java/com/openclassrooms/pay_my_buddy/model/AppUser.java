@@ -7,15 +7,15 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
 
-@Entity(name = "User")
+@Entity(name = "AppUser")
 @DynamicUpdate
 @Transactional
-@Table(name = "user")
-public class User {
+@Table(name = "users")
+public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int userId;
+    private int appUserid;
 
     @Column(name = "first_name")
     private String firstName;
@@ -32,44 +32,47 @@ public class User {
 
     private double balance;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.MERGE,
-                    CascadeType.PERSIST
-            })
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "contact",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "contact_id")
+            inverseJoinColumns = @JoinColumn(name = "target_id")
     )
-    private Set<User> contacts = new HashSet<>();
+    private Set<AppUser> contacts = new HashSet<>();
 
-    @OneToMany(targetEntity = Transaction.class, mappedBy = "userPay")
-    private List<Transaction> transactions = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "source")
+    private List<Transaction> transactionsSources = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "target")
+    private List<Transaction> transactionsTarget = new ArrayList<>();
+
+    @OneToOne(mappedBy = "appUser")
     private UserBankAccount userBankAccount;
 
-    public User() {
+    public AppUser() {
+
     }
 
-    public User(int userId, String firstName, String lastName, String email, String password, double balance, Set<User> contacts, List<Transaction> transactions, UserBankAccount userBankAccount) {
-        this.userId = userId;
+    public AppUser(int appUserid, String firstName, String lastName, String email, String password, double balance, Set<AppUser> contacts, List<Transaction> transactionsSources, List<Transaction> transactionsTarget, UserBankAccount userBankAccount) {
+        this.appUserid = appUserid;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.balance = balance;
         this.contacts = contacts;
-        this.transactions = transactions;
+        this.transactionsSources = transactionsSources;
+        this.transactionsTarget = transactionsTarget;
         this.userBankAccount = userBankAccount;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getAppUserid() {
+        return appUserid;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setAppUserid(int appUserid) {
+        this.appUserid = appUserid;
     }
 
     public String getFirstName() {
@@ -112,20 +115,28 @@ public class User {
         this.balance = balance;
     }
 
-    public Set<User> getContacts() {
+    public Set<AppUser> getContacts() {
         return contacts;
     }
 
-    public void setContacts(Set<User> contacts) {
+    public void setContacts(Set<AppUser> contacts) {
         this.contacts = contacts;
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+    public List<Transaction> getTransactionsSources() {
+        return transactionsSources;
     }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
+    public void setTransactionsSources(List<Transaction> transactionsSources) {
+        this.transactionsSources = transactionsSources;
+    }
+
+    public List<Transaction> getTransactionsTarget() {
+        return transactionsTarget;
+    }
+
+    public void setTransactionsTarget(List<Transaction> transactionsTarget) {
+        this.transactionsTarget = transactionsTarget;
     }
 
     public UserBankAccount getUserBankAccount() {

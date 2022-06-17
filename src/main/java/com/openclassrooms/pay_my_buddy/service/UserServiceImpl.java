@@ -3,7 +3,7 @@ package com.openclassrooms.pay_my_buddy.service;
 import com.openclassrooms.pay_my_buddy.exception.EmailNotNullException;
 import com.openclassrooms.pay_my_buddy.exception.UserExistingException;
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
-import com.openclassrooms.pay_my_buddy.model.User;
+import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserRepository;
 import org.slf4j.Logger;
@@ -26,41 +26,41 @@ public class UserServiceImpl implements UserService {
     private TransactionRepository transactionRepository;
 
     @Override
-    public User saveUser(User user) throws EmailNotNullException {
+    public AppUser saveUser(AppUser appUser) throws EmailNotNullException {
         logger.debug("SaveUser method starts here !!");
 
-        User userCheck = userRepository.findUserByEmail(user.getEmail());
+        AppUser appUserCheck = userRepository.findUserByEmail(appUser.getEmail());
 
-        if ( user.getEmail() == null) {
+        if ( appUser.getEmail() == null) {
             logger.debug("UserEmail should not be null");
            throw new EmailNotNullException("The field email should not be null");
         }
-        if( userCheck != null){
-            logger.debug("This user, email={}, exists already", user.getEmail());
+        if( appUserCheck != null){
+            logger.debug("This user, email={}, exists already", appUser.getEmail());
             throw new UserExistingException("This user already exists in the DB.");
         }
 
-        logger.info("This user " + user + " is successfully saved in the DB !!");
+        logger.info("This user " + appUser + " is successfully saved in the DB !!");
 
-        userCheck = new User();
+        appUserCheck = new AppUser();
 
-        userCheck.setFirstName(user.getFirstName());
-        userCheck.setLastName(user.getLastName());
-        userCheck.setEmail(user.getEmail());
-        userCheck.setPassword(user.getPassword());
+        appUserCheck.setFirstName(appUser.getFirstName());
+        appUserCheck.setLastName(appUser.getLastName());
+        appUserCheck.setEmail(appUser.getEmail());
+        appUserCheck.setPassword(appUser.getPassword());
         //userCheck.setBalance(0.0);
-        userRepository.save(user);
+        userRepository.save(appUser);
 
-        return user;
+        return appUser;
 
     }
 
     @Override
-    public User findUserByEmail(String email) {
+    public AppUser findUserByEmail(String email) {
         logger.debug("This method findUserByEmail starts here !!");
-        User user = userRepository.findUserByEmail(email);
+        AppUser appUser = userRepository.findUserByEmail(email);
 
-        if (user == null) {
+        if (appUser == null) {
             logger.debug("This user doesn't exist in DB which email [" + email + "]");
             /*throw new UserNotExistingException("This user which email [" + email + "] doesn't exist yet in DB !!");*/
         }
@@ -71,74 +71,74 @@ public class UserServiceImpl implements UserService {
         }
 
         logger.info("This user which email [" + email + "] is successfully found !!");
-        return user;
+        return appUser;
 
 
     }
 
     @Override
-    public User login(String email, String password) {
-        User userByEmail = findUserByEmail(email);
-        if (userByEmail == null) {
+    public AppUser login(String email, String password) {
+        AppUser appUserByEmail = findUserByEmail(email);
+        if (appUserByEmail == null) {
             return null;
-        } else if (!userByEmail.getPassword().equals(password)) {
+        } else if (!appUserByEmail.getPassword().equals(password)) {
             return null;
         } else {
-            return userByEmail;
+            return appUserByEmail;
         }
     }
 
     @Override
-    public User findUserById(int id) {
+    public AppUser findUserById(int id) {
         return userRepository.findById(id).orElse(null);
     }
 
     @Override
-    public User updateUser(User user) throws EmailNotNullException {
+    public AppUser updateUser(AppUser appUser) throws EmailNotNullException {
 
-        User userUpdating = findUserByEmail(user.getEmail());
-        if (userUpdating == null) {
+        AppUser appUserUpdating = findUserByEmail(appUser.getEmail());
+        if (appUserUpdating == null) {
             throw new RuntimeException("Could not update, check the User information");
         }
-        userUpdating.setBalance(user.getBalance());
-        userUpdating.setEmail(user.getEmail());
-        userUpdating.setLastName(user.getLastName());
-        userUpdating.setFirstName(user.getFirstName());
-        userUpdating.setPassword(user.getPassword());
+        appUserUpdating.setBalance(appUser.getBalance());
+        appUserUpdating.setEmail(appUser.getEmail());
+        appUserUpdating.setLastName(appUser.getLastName());
+        appUserUpdating.setFirstName(appUser.getFirstName());
+        appUserUpdating.setPassword(appUser.getPassword());
 
-        return saveUser(userUpdating);
+        return saveUser(appUserUpdating);
     }
 
     @Override
-    public Set<User> getAllContactsByUser(int userId) {
-        User userById = findUserById(userId);
-        if (userById == null) {
+    public Set<AppUser> getAllContactsByUser(int userId) {
+        AppUser appUserById = findUserById(userId);
+        if (appUserById == null) {
             throw new UserNotExistingException("This id doesn't exist !!!");
         }
-        Set<User> userContacts = userById.getContacts();
-        if (userContacts.isEmpty()) {
+        Set<AppUser> appUserContacts = appUserById.getContacts();
+        if (appUserContacts.isEmpty()) {
             return new HashSet<>();
         }
-        return userContacts;
+        return appUserContacts;
     }
 
     @Override
     public void addUserToContact(String userEmail, String buddyEmail) {
         logger.debug("This addUserToContacts starts here !!");
-        User userContact = userRepository.findUserByEmail(buddyEmail);
-        User user = userRepository.findUserByEmail(userEmail);
+        AppUser appUserContact = userRepository.findUserByEmail(buddyEmail);
+        AppUser appUser = userRepository.findUserByEmail(userEmail);
 
-        if (userContact != null && user != null) {
-            if (user.getContacts().contains(userContact)) {
+        if (appUserContact != null && appUser != null) {
+            if (appUser.getContacts().contains(appUserContact)) {
                 logger.debug("UserContact is already added !!");
               /*  throw new UserExistingException("This contact is added !!");*/
             }
             logger.info("This userContact which email [" + buddyEmail + "] is successfully added to this user which email [" + userEmail + "]");
-            user.getContacts().add(userContact);
+            appUser.getContacts().add(appUserContact);
             return;
 
         }
-        if (user != null && userContact == null) {
+        if (appUser != null && appUserContact == null) {
             logger.debug("UserContact doesn't exist in the DB !!");
             //throw new UserNotExistingException("This userContact which email [" + buddyEmail + "] doesn't exist yet in the DB");
         }

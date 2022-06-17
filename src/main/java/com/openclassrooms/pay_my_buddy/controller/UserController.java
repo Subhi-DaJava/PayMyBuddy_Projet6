@@ -1,8 +1,8 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
 import com.openclassrooms.pay_my_buddy.exception.EmailNotNullException;
+import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Transaction;
-import com.openclassrooms.pay_my_buddy.model.User;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserRepository;
 import com.openclassrooms.pay_my_buddy.service.TransactionService;
@@ -21,7 +21,7 @@ import java.util.Set;
 
 @Controller
 @Transactional
-/*@RequestMapping("/pay-my-buddy")*/
+@RequestMapping("/pay-my-buddy")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -39,25 +39,25 @@ public class UserController {
 
     @GetMapping("/admin/saveUser")
     public String saveUser(Model model){
-        model.addAttribute("newUser", new User());
+        model.addAttribute("newUser", new AppUser());
         return "save-user-form";
     }
 
     @PostMapping("/admin/saveUser")
     public String saveUser(Model model,
-                           User user,
+                           AppUser appUser,
                            @RequestParam(defaultValue = "0") int page) throws EmailNotNullException {
         logger.debug("This saveUser starts here !!");
-        if (user.getEmail() == null || user.getPassword() == null) {
+        if (appUser.getEmail() == null || appUser.getPassword() == null) {
             logger.debug("UserEmail should not be null");
             return "save-user-form";
         }
-        userService.saveUser(user);
+        userService.saveUser(appUser);
 
-        model.addAttribute("userEmail", user.getEmail());
+        model.addAttribute("userEmail", appUser.getEmail());
         model.addAttribute("page", page);
 
-        return "redirect:/transfer?userEmail=" + user.getEmail() + "&page=" + page;
+        return "redirect:/transfer?userEmail=" + appUser.getEmail() + "&page=" + page;
 
     }
 
@@ -69,8 +69,8 @@ public class UserController {
 
         logger.debug("This method addContactToUser starts here !!");
 
-        User userBuddy = userService.findUserByEmail(contactEmail);
-        if(contactEmail == null || userBuddy == null){
+        AppUser appUserBuddy = userService.findUserByEmail(contactEmail);
+        if(contactEmail == null || appUserBuddy == null){
             logger.debug("UserBuddy={} should not be null or userBuddy doesn't exist in DB wich the email", contactEmail);
             return "error/Bad_Operation";
         }
@@ -106,56 +106,30 @@ public class UserController {
                                    ) {
         logger.debug("This showPageTransfer starts here");
 
-        User userPay = userService.findUserByEmail(userEmail);
-        Set<User> userBuddyList = userPay.getContacts();
+        AppUser appUserPay = userService.findUserByEmail(userEmail);
+        Set<AppUser> appUserBuddyList = appUserPay.getContacts();
 
+        Page<Transaction> listTransaction = transactionRepository.findAll(PageRequest.of(page, size));
 
-        Page<Transaction> listTransaction = transactionRepository.findTransactionByUserPay(userPay, PageRequest.of(page, size));
-
-
-
-     /*   List<User> buddyList = new ArrayList<>();
-
-        List<Transaction> transList = listTransaction.getContent();
-        for(Transaction trans : transList){
-            User checkBuddy = userService.findUserByEmail(trans.getBuddyEmail());
-            buddyList.add(checkBuddy);
-        }
-
-*/
-     /*   List<TransactionDTO> newDto = new ArrayList<>();
-        for (Transaction dto : listTransaction){
-            TransactionDTO dtoCreate = new TransactionDTO();
-            dtoCreate = transactionService.
-
-        }*/
-
-
-        /*List<TransactionDTO> transactionDTOList = transactionService.findAllTransactionByUser(userEmail);*/
-
-        /*model.addAttribute("transactionDTOList", transactionDTOList);*/
 
         model.addAttribute("totalPage", listTransaction.getTotalPages());
         model.addAttribute("transactions", listTransaction.getContent());
         model.addAttribute("pages", new int[listTransaction.getTotalPages()]);
         model.addAttribute("currentPage", page);
 
-        model.addAttribute("userBuddyList", userBuddyList);
+        model.addAttribute("userBuddyList", appUserBuddyList);
         model.addAttribute("userEmail", userEmail);
         model.addAttribute("amount", amount);
         model.addAttribute("description", description);
         model.addAttribute("buddyEmail",buddyEmail);
 
-
-        //model.addAttribute("buddyList", buddyList);
-
         return "transfer";
     }
-
 
     @GetMapping("/login")
     public String login() {
         return "login";
     }
+
 
 }

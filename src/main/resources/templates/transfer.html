@@ -82,11 +82,11 @@
             <div class="col mt-5 mb-5 mx-5">
                 <select class="form-select" aria-label="Default select example" th:name="buddyEmail">
                     <option selected>Select A Connection</option>
-                    <option th:each="userBuddy:${userBuddyList}" th:text="${userBuddy.email}"></option>
+                    <option th:each="appUserBuddy:${appUserBuddyList}" th:text="${appUserBuddy.email}"></option>
                 </select>
             </div>
             <div class="input-group col mt-5 mb-5 mx-5">
-                <input id="select" class="user-select-auto w-50" type="number" name="amount" placeholder="0" th:value="amount" th:text="${amount}"/>
+                <input id="select" class="appUser-select-auto w-50" type="number" name="amount" placeholder="0" th:value="amount" th:text="${amount}"/>
                 <span class="input-group-text bg-white bor border-dark border-2">€</span>
             </div>
             <div class="col mt-5 mb-5 mx-5">

@@ -1,6 +1,6 @@
 package com.openclassrooms.pay_my_buddy.service;
 
-import com.openclassrooms.pay_my_buddy.model.User;
+import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 
 public interface UserBankAccountService {
@@ -9,7 +9,7 @@ public interface UserBankAccountService {
 
     UserBankAccount findUserBankAccountById(int id);
 
-    User findUserByUserBankAccountId(int id);
+    AppUser findUserByUserBankAccountId(int id);
 
     UserBankAccount addUserToUserBankAccount(int userId, int bankAccountId);
 }

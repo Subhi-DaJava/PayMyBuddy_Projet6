@@ -14,7 +14,7 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
-    private int transId;
+    private int id;
 
     private double amount;
 
@@ -23,35 +23,37 @@ public class Transaction {
     @Column(name = "transaction_date")
     private LocalDate dateTransaction;
 
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private User userPay;
+    @OneToOne
+    @JoinColumn(name = "source")
+    private AppUser source;
 
     @Column(name = "total_fee_payed")
     private double totalFeePayed;
 
-    @Column(name = "recipient_id")
-    private String buddyEmail;
+
+    @OneToOne
+    @JoinColumn(name ="target")
+    private AppUser target;
 
     public Transaction() {
     }
 
-    public Transaction(int transId, double amount, String description, LocalDate dateTransaction, User userPay, double totalFeePayed, String buddyEmail) {
-        this.transId = transId;
+    public Transaction(int id, double amount, String description, LocalDate dateTransaction, AppUser source, double totalFeePayed, AppUser target) {
+        this.id = id;
         this.amount = amount;
         this.description = description;
         this.dateTransaction = dateTransaction;
-        this.userPay = userPay;
+        this.source = source;
         this.totalFeePayed = totalFeePayed;
-        this.buddyEmail = buddyEmail;
+        this.target = target;
     }
 
-    public int getTransId() {
-        return transId;
+    public int getId() {
+        return id;
     }
 
-    public void setTransId(int transId) {
-        this.transId = transId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public double getAmount() {
@@ -78,12 +80,12 @@ public class Transaction {
         this.dateTransaction = dateTransaction;
     }
 
-    public User getUserPay() {
-        return userPay;
+    public AppUser getSource() {
+        return source;
     }
 
-    public void setUserPay(User userPay) {
-        this.userPay = userPay;
+    public void setSource(AppUser source) {
+        this.source = source;
     }
 
     public double getTotalFeePayed() {
@@ -94,11 +96,11 @@ public class Transaction {
         this.totalFeePayed = totalFeePayed;
     }
 
-    public String getBuddyEmail() {
-        return buddyEmail;
+    public AppUser getTarget() {
+        return target;
     }
 
-    public void setBuddyEmail(String buddyEmail) {
-        this.buddyEmail = buddyEmail;
+    public void setTarget(AppUser target) {
+        this.target = target;
     }
 }
