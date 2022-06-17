@@ -49,6 +49,11 @@ public class User {
     @OneToOne(mappedBy = "user")
     private UserBankAccount userBankAccount;
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn (name="user_id"), inverseJoinColumns= @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
     public User() {
     }
 
@@ -62,6 +67,19 @@ public class User {
         this.contacts = contacts;
         this.transactions = transactions;
         this.userBankAccount = userBankAccount;
+    }
+
+    public User(int userId, String firstName, String lastName, String email, String password, double balance, Set<User> contacts, List<Transaction> transactions, UserBankAccount userBankAccount, Set<Role> roles) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.balance = balance;
+        this.contacts = contacts;
+        this.transactions = transactions;
+        this.userBankAccount = userBankAccount;
+        this.roles = roles;
     }
 
     public int getUserId() {
@@ -134,5 +152,13 @@ public class User {
 
     public void setUserBankAccount(UserBankAccount userBankAccount) {
         this.userBankAccount = userBankAccount;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
