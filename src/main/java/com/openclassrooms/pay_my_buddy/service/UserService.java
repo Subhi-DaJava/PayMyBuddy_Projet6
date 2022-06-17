@@ -20,4 +20,6 @@ public interface UserService {
     Set<AppUser> getAllContactsByUser(int userId);
 
     void addUserToContact(String userEmail, String buddyEmail);
+
+    
 }

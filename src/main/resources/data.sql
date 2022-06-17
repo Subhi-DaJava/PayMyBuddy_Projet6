@@ -1,8 +1,9 @@
 INSERT INTO users (first_name, last_name, email, password, balance)
 VALUES
-    ('Laurent','GINA','laurentgina@gmail.com','laurent2022',3000),
-    ('Sophie','FONCEK','sophiefoncek@gmail.com','sophie2021',4000),
-    ('Agathe','FEELING','agathefeeling@gmail.com','agathe2000',5000);
+    ('Laurent','GINA','laurentgina@gmail.com','user',3000),
+    ('Sophie','FONCEK','sophiefoncek@gmail.com','user',4000),
+    ('Agathe','FEELING','agathefeeling@gmail.com','user',5000),
+    ('Admin','ADAM','admin@gmail.com','admin',0.0);
 
 INSERT INTO contact (user_id, target_id)
 VALUES
@@ -15,5 +16,15 @@ VALUES
     ('LCL','Paris 75015','FR76','FR75',20000,1),
     ('CIC','Lyon', 'FR50','FR70',35000,2),
     ('CréditAgricole','Paris 75018','FR18','FR20',15600,3);
+
+INSERT INTO role (role_name)
+VALUES ('USER'),
+       ('ADMIN');
+
+INSERT INTO users_roles (app_user_id, roles_id)
+VALUES (1, 1),
+       (2, 1),
+       (3, 1),
+       (4, 2);
 
 

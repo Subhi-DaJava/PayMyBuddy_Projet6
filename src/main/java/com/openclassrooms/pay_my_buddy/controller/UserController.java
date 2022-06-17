@@ -78,7 +78,7 @@ public class UserController {
         userService.addUserToContact(userEmail, contactEmail);
         logger.info("UserEmail={} seuccessfully added the userBuddy={}", userEmail, contactEmail);
 
-        return "redirect:/transfer?userEmail=" + userEmail + "&page=" + page;
+        return "redirect:/pay-my-buddy/transfer?userEmail=" + userEmail + "&page=" + page;
     }
 
     @GetMapping("/addConnection")
@@ -129,6 +129,12 @@ public class UserController {
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    @GetMapping("/dashboard")
+    public String adminDashboard(){
+
+        return "dashboard";
     }
 
 

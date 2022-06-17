@@ -15,7 +15,7 @@
             </div>
 
             <div class="card-body">
-                <form method="post" th:action="@{/addBuddy}">
+                <form method="post" th:action="@{/pay-my-buddy/addBuddy}">
                     <div class="col-4">
                         <label class="mb-1" for="userEmail" th:text="${userEmail}"></label>
                         <input id="userEmail" class="form-control" type="text" name="userEmail" placeholder="userEmail" th:name="${userEmail}" required >

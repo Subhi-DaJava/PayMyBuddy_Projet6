@@ -50,11 +50,14 @@ public class AppUser {
     @OneToOne(mappedBy = "appUser")
     private UserBankAccount userBankAccount;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> roles = new ArrayList<>();
+
     public AppUser() {
 
     }
 
-    public AppUser(int appUserid, String firstName, String lastName, String email, String password, double balance, Set<AppUser> contacts, List<Transaction> transactionsSources, List<Transaction> transactionsTarget, UserBankAccount userBankAccount) {
+    public AppUser(int appUserid, String firstName, String lastName, String email, String password, double balance, Set<AppUser> contacts, List<Transaction> transactionsSources, List<Transaction> transactionsTarget, UserBankAccount userBankAccount, List<Role> roles) {
         this.appUserid = appUserid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -65,6 +68,7 @@ public class AppUser {
         this.transactionsSources = transactionsSources;
         this.transactionsTarget = transactionsTarget;
         this.userBankAccount = userBankAccount;
+        this.roles = roles;
     }
 
     public int getAppUserid() {
@@ -145,5 +149,13 @@ public class AppUser {
 
     public void setUserBankAccount(UserBankAccount userBankAccount) {
         this.userBankAccount = userBankAccount;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
