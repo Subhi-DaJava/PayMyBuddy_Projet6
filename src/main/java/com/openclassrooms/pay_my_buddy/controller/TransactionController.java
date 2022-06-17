@@ -40,12 +40,13 @@ public class TransactionController {
         User user = userService.findUserByEmail(userEmail);
         double userBalance = user.getBalance();
 
-        if (buddyEmail == null || amount <= 0 || userBalance > amount || connection == null) {
+        if (buddyEmail == null || amount <= 0 || userBalance < amount || connection == null) {
             logger.debug("UserEmail={} should not bu null or buddyEmail={} neither, or amount should be positif number, userBalance greater than amount," +
                     " and userBuddy should be in DB", userEmail, buddyEmail);
             return "error/Bad_Operation";
         }
         model.addAttribute("buddyEmail", buddyEmail);
+
         transactionService.sendMoneyToBuddy(userEmail, buddyEmail, amount, description);
         return "redirect:/transfer?userEmail="+userEmail+"&page="+page;
     }
