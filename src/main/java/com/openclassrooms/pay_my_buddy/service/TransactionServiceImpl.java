@@ -1,7 +1,6 @@
 package com.openclassrooms.pay_my_buddy.service;
 
 import com.openclassrooms.pay_my_buddy.constant.FeeApplication;
-import com.openclassrooms.pay_my_buddy.dto.TransactionDTO;
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Transaction;
@@ -36,9 +35,9 @@ public class TransactionServiceImpl implements TransactionService {
         if (userEmail == null || userEmail == null || amount <= 0) {
             return;
         }
-        AppUser contact = userRepository.findUserByEmail(userContactEmail);
+        AppUser contact = userRepository.findByEmail(userContactEmail);
 
-        AppUser appUserPayed = userRepository.findUserByEmail(userEmail);
+        AppUser appUserPayed = userRepository.findByEmail(userEmail);
 
         Set<AppUser> contacts = appUserPayed.getContacts();
 

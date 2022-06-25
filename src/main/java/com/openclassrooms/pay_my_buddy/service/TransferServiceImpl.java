@@ -61,8 +61,8 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Transfer transferMoneyToPayMyBuddyUser(String userEmail, String buddyEmail, double amount, String description) {
 
-        AppUser appUserPay = userRepository.findUserByEmail(userEmail);
-        AppUser appUserBuddy = userRepository.findUserByEmail(buddyEmail);
+        AppUser appUserPay = userRepository.findByEmail(userEmail);
+        AppUser appUserBuddy = userRepository.findByEmail(buddyEmail);
 
    /*     if (userEmail == null || buddyEmail == null || amount <= 0 || userPay.getBalance() < amount) {
             return null;

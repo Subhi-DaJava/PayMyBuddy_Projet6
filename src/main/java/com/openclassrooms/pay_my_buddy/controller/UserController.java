@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -21,7 +24,7 @@ import java.util.Set;
 
 @Controller
 @Transactional
-@RequestMapping("/pay-my-buddy")
+/*@RequestMapping("/pay-my-buddy")*/
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -48,6 +51,9 @@ public class UserController {
                            AppUser appUser,
                            @RequestParam(defaultValue = "0") int page) throws EmailNotNullException {
         logger.debug("This saveUser starts here !!");
+
+        //TODO: (@ModelAttribute("appUser") AppUser appUser)
+
         if (appUser.getEmail() == null || appUser.getPassword() == null) {
             logger.debug("UserEmail should not be null");
             return "save-user-form";
@@ -61,27 +67,28 @@ public class UserController {
 
     }
 
-    @PostMapping("/addBuddy")
+    @PostMapping("/user/addBuddy")
     public String addBuddy(Model model,
                           String userEmail,
                           String contactEmail,
                            @RequestParam(defaultValue = "0") int page) {
+        //TODO: load AppUser
 
         logger.debug("This method addContactToUser starts here !!");
 
-        AppUser appUserBuddy = userService.findUserByEmail(contactEmail);
+        AppUser appUserBuddy = userService.findAppUserByEmail(contactEmail);
         if(contactEmail == null || appUserBuddy == null){
             logger.debug("UserBuddy={} should not be null or userBuddy doesn't exist in DB wich the email", contactEmail);
             return "error/Bad_Operation";
         }
 
-        userService.addUserToContact(userEmail, contactEmail);
-        logger.info("UserEmail={} seuccessfully added the userBuddy={}", userEmail, contactEmail);
+        userService.addAppUserToContact(userEmail, contactEmail);
+        logger.info("UserEmail={} successfully added the userBuddy={}", userEmail, contactEmail);
 
         return "redirect:/pay-my-buddy/transfer?userEmail=" + userEmail + "&page=" + page;
     }
 
-    @GetMapping("/addConnection")
+    @GetMapping("/user/addConnection")
     public String addConnection(Model model,
                                 @RequestParam(name = "userEmail", defaultValue = "userEmail") String userEmail,
                                 @RequestParam(name = "contactEmail", defaultValue = "contactEmail") String contactEmail) {
@@ -95,7 +102,7 @@ public class UserController {
         return "formAddConnection";
     }
 
-    @GetMapping("/transfer")
+    @GetMapping("/user/transfer")
     public String showPageTransfer(Model model,
                                    @RequestParam(name = "userEmail", value = "userEmail") String userEmail,
                                    String amount,
@@ -105,8 +112,10 @@ public class UserController {
                                    @RequestParam(name = "size", defaultValue = "3", required = false) int size
                                    ) {
         logger.debug("This showPageTransfer starts here");
+        
+        //TODO: load user by userEmail and transaction
 
-        AppUser appUserPay = userService.findUserByEmail(userEmail);
+        AppUser appUserPay = userService.findAppUserByEmail(userEmail);
         Set<AppUser> appUserBuddyList = appUserPay.getContacts();
 
         Page<Transaction> listTransaction = transactionRepository.findAll(PageRequest.of(page, size));
@@ -128,14 +137,23 @@ public class UserController {
 
     @GetMapping("/login")
     public String login() {
-        return "login";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            return "/login";
+        }
+        return "redirect:/user/transfer";
     }
 
-    @GetMapping("/dashboard")
+    @GetMapping("/amdin/dashboard")
     public String adminDashboard(){
 
         return "dashboard";
     }
 
+    @GetMapping("/home")
+    public String homePage(){
+
+        return "Welcome to home page";
+    }
 
 }

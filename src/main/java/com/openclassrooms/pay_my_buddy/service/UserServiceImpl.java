@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     public AppUser saveUser(AppUser appUser) throws EmailNotNullException {
         logger.debug("SaveUser method starts here !!");
 
-        AppUser appUserCheck = userRepository.findUserByEmail(appUser.getEmail());
+        AppUser appUserCheck = userRepository.findByEmail(appUser.getEmail());
 
         if ( appUser.getEmail() == null) {
             logger.debug("UserEmail should not be null");
@@ -48,17 +48,18 @@ public class UserServiceImpl implements UserService {
         appUserCheck.setLastName(appUser.getLastName());
         appUserCheck.setEmail(appUser.getEmail());
         appUserCheck.setPassword(appUser.getPassword());
-        //userCheck.setBalance(0.0);
-        userRepository.save(appUser);
+        appUserCheck.setBalance(0.0);
 
-        return appUser;
+        AppUser appUserSaved = userRepository.save(appUserCheck);
+
+        return appUserSaved;
 
     }
 
     @Override
-    public AppUser findUserByEmail(String email) {
+    public AppUser findAppUserByEmail(String email) {
         logger.debug("This method findUserByEmail starts here !!");
-        AppUser appUser = userRepository.findUserByEmail(email);
+        AppUser appUser = userRepository.findByEmail(email);
 
         if (appUser == null) {
             logger.debug("This user doesn't exist in DB which email [" + email + "]");
@@ -78,25 +79,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AppUser login(String email, String password) {
-        AppUser appUserByEmail = findUserByEmail(email);
-        if (appUserByEmail == null) {
+        AppUser appAppUserByEmail = findAppUserByEmail(email);
+        if (appAppUserByEmail == null) {
             return null;
-        } else if (!appUserByEmail.getPassword().equals(password)) {
+        } else if (!appAppUserByEmail.getPassword().equals(password)) {
             return null;
         } else {
-            return appUserByEmail;
+            return appAppUserByEmail;
         }
     }
 
     @Override
-    public AppUser findUserById(int id) {
+    public AppUser findAppUserById(int id) {
         return userRepository.findById(id).orElse(null);
     }
 
     @Override
-    public AppUser updateUser(AppUser appUser) throws EmailNotNullException {
+    public AppUser updateAppUser(AppUser appUser) throws EmailNotNullException {
 
-        AppUser appUserUpdating = findUserByEmail(appUser.getEmail());
+        AppUser appUserUpdating = findAppUserByEmail(appUser.getEmail());
         if (appUserUpdating == null) {
             throw new RuntimeException("Could not update, check the User information");
         }
@@ -110,8 +111,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<AppUser> getAllContactsByUser(int userId) {
-        AppUser appUserById = findUserById(userId);
+    public Set<AppUser> getAllContactsByAppUser(int userId) {
+        AppUser appUserById = findAppUserById(userId);
         if (appUserById == null) {
             throw new UserNotExistingException("This id doesn't exist !!!");
         }
@@ -123,10 +124,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUserToContact(String userEmail, String buddyEmail) {
+    public void addAppUserToContact(String userEmail, String buddyEmail) {
         logger.debug("This addUserToContacts starts here !!");
-        AppUser appUserContact = userRepository.findUserByEmail(buddyEmail);
-        AppUser appUser = userRepository.findUserByEmail(userEmail);
+        AppUser appUserContact = userRepository.findByEmail(buddyEmail);
+        AppUser appUser = userRepository.findByEmail(userEmail);
 
         if (appUserContact != null && appUser != null) {
             if (appUser.getContacts().contains(appUserContact)) {

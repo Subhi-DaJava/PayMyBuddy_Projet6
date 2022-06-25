@@ -9,17 +9,17 @@ public interface UserService {
 
     AppUser saveUser(AppUser appUser) throws EmailNotNullException;
 
-    AppUser findUserByEmail(String email);
+    AppUser findAppUserByEmail(String email);
 
     AppUser login(String email, String password);
 
-    AppUser findUserById(int id);
+    AppUser findAppUserById(int id);
 
-    AppUser updateUser(AppUser appUser) throws EmailNotNullException;
+    AppUser updateAppUser(AppUser appUser) throws EmailNotNullException;
 
-    Set<AppUser> getAllContactsByUser(int userId);
+    Set<AppUser> getAllContactsByAppUser(int userId);
 
-    void addUserToContact(String userEmail, String buddyEmail);
+    void addAppUserToContact(String userEmail, String buddyEmail);
 
     
 }

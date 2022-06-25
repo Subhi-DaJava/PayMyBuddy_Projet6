@@ -10,4 +10,5 @@ public class PayMyBuddyApplication {
         SpringApplication.run(PayMyBuddyApplication.class, args);
     }
 
+
 }

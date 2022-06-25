@@ -1,5 +1,6 @@
 package com.openclassrooms.pay_my_buddy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,11 +29,12 @@ public class AppUser {
     private String email;
 
     @NotBlank(message = "Password may not be empty and null")
+    @JsonIgnore
     private String password;
 
     private double balance;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "contact",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "target_id")
@@ -50,7 +52,10 @@ public class AppUser {
     @OneToOne(mappedBy = "appUser")
     private UserBankAccount userBankAccount;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
 
     public AppUser() {
@@ -69,6 +74,27 @@ public class AppUser {
         this.transactionsTarget = transactionsTarget;
         this.userBankAccount = userBankAccount;
         this.roles = roles;
+    }
+
+    public AppUser(String firstName, String lastName, String email, String password, double balance, Set<AppUser> contacts, List<Transaction> transactionsSources, List<Transaction> transactionsTarget, UserBankAccount userBankAccount, List<Role> roles) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.balance = balance;
+        this.contacts = contacts;
+        this.transactionsSources = transactionsSources;
+        this.transactionsTarget = transactionsTarget;
+        this.userBankAccount = userBankAccount;
+        this.roles = roles;
+    }
+
+    public AppUser(String firstName, String lastName, String email, String password, double balance) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.balance = balance;
     }
 
     public int getAppUserid() {
@@ -157,5 +183,22 @@ public class AppUser {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public String toString() {
+        return "AppUser{" +
+                "appUserid=" + appUserid +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", balance=" + balance +
+                ", contacts=" + contacts +
+                ", transactionsSources=" + transactionsSources +
+                ", transactionsTarget=" + transactionsTarget +
+                ", userBankAccount=" + userBankAccount +
+                ", roles=" + roles +
+                '}';
     }
 }

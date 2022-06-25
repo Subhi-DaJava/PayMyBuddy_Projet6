@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/pay-my-buddy")
+/*@RequestMapping("/pay-my-buddy")*/
 public class TransactionController {
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
@@ -27,7 +27,7 @@ public class TransactionController {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    @PostMapping("/send-money")
+    @PostMapping("/user/send-money")
     public String sendMoneyToBuddy(Model model,
                                    String userEmail,
                                    String buddyEmail,
@@ -36,8 +36,8 @@ public class TransactionController {
                                    @RequestParam(defaultValue = "0") int page) {
         logger.debug("This send-money in TransactionController starts here");
 
-        AppUser connection = userService.findUserByEmail(buddyEmail);
-        AppUser appUser = userService.findUserByEmail(userEmail);
+        AppUser connection = userService.findAppUserByEmail(buddyEmail);
+        AppUser appUser = userService.findAppUserByEmail(userEmail);
 
         double userBalance = appUser.getBalance();
 

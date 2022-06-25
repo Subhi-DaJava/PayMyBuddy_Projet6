@@ -48,6 +48,13 @@ public class Transaction {
         this.target = target;
     }
 
+    public Transaction(double amount, String description, LocalDate dateTransaction, double totalFeePayed) {
+        this.amount = amount;
+        this.description = description;
+        this.dateTransaction = dateTransaction;
+        this.totalFeePayed = totalFeePayed;
+    }
+
     public int getId() {
         return id;
     }

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
 <head>
     <meta charset="UTF-8">
     <title>Transfer</title>
@@ -26,6 +28,10 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="#">Transfer</a>
                 </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                   <span sec:authentication="name"></span>
+                    <!--  <i><span sec:authentication="principal.autorities>Roles</span></>i>"  -->
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Profile</a>
                 </li>
@@ -33,7 +39,8 @@
                     <a class="nav-link" href="#">Contact</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Log off</a>
+                    <!--<form th:action="@{/logout}" method="post"> <input type="submit" value="Logout"/> </form> -->
+                    <a class="nav-link" method="post" th:action="@{/logout}">Log off</a>
                 </li>
             </ul>
         </div>
@@ -62,14 +69,14 @@
         <div class="col">
             Send Money
         </div>
-        <div class="col col-md-2">
+        <div class="col col-md-2" sec:authorize="hasAuthority('USER')">
             <a class="ml-auto btn btn-primary" th:href="@{/pay-my-buddy/addConnection}">
                 Add Connection</a>
         </div>
     </div>
 
     <!--Select-->
-    <form method="post" th:action="@{/pay-my-buddy/send-money}">
+    <form sec:authorize="hasAuthority('USER')" method="post" th:action="@{/pay-my-buddy/send-money}">
 
         <div class="row bg-light mx-auto">
 
