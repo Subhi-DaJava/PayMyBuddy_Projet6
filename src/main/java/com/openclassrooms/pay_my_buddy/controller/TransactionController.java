@@ -29,10 +29,10 @@ public class TransactionController {
 
     @PostMapping("/user/send-money")
     public String sendMoneyToBuddy(Model model,
-                                   String userEmail,
-                                   String buddyEmail,
-                                   double amount,
-                                   String description,
+                                   @ModelAttribute("userEmail") String userEmail,
+                                   @ModelAttribute("buddyEmail") String buddyEmail,
+                                   @ModelAttribute("amount") double amount,
+                                   @ModelAttribute("description") String description,
                                    @RequestParam(defaultValue = "0") int page) {
         logger.debug("This send-money in TransactionController starts here");
 
@@ -50,7 +50,7 @@ public class TransactionController {
 
         transactionService.sendMoneyToBuddy(userEmail, buddyEmail, amount, description);
 
-        return "redirect:/transfer?userEmail="+userEmail+"&page="+page;
+        return "redirect:/transfer?page="+page;
     }
 
 }

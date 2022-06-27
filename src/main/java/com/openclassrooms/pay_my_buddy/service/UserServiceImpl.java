@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
             //throw new UserNotExistingException("This userContact which email [" + buddyEmail + "] doesn't exist yet in the DB");
         }
         if (buddyEmail == null || buddyEmail.isEmpty()) {
-            logger.debug("buddyEmail should not be null or be empty neither !!");
+            logger.debug("BuddyEmail should not be null or be empty neither !!");
             throw new EmailNotNullException("Not null or not empty !!");
         }
     }

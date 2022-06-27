@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -63,51 +62,53 @@ public class UserController {
         model.addAttribute("userEmail", appUser.getEmail());
         model.addAttribute("page", page);
 
-        return "redirect:/transfer?userEmail=" + appUser.getEmail() + "&page=" + page;
+        return "redirect:/transfer?page=" + page;
 
     }
 
-    @PostMapping("/user/addBuddy")
+    @PostMapping("/addBuddy")
     public String addBuddy(Model model,
-                          String userEmail,
-                          String contactEmail,
+                           @ModelAttribute("userEmail") String userEmail,
+                           @ModelAttribute("contactEmail") String contactEmail,
                            @RequestParam(defaultValue = "0") int page) {
         //TODO: load AppUser
 
-        logger.debug("This method addContactToUser starts here !!");
+        logger.debug("This method addContactToUser(from UserController) starts here !!");
 
         AppUser appUserBuddy = userService.findAppUserByEmail(contactEmail);
+
+
         if(contactEmail == null || appUserBuddy == null){
-            logger.debug("UserBuddy={} should not be null or userBuddy doesn't exist in DB wich the email", contactEmail);
+            logger.debug("UserBuddyEmail={} should not be null or userBuddy doesn't exist in DB which the email.(from UserController)", contactEmail);
             return "error/Bad_Operation";
         }
 
         userService.addAppUserToContact(userEmail, contactEmail);
         logger.info("UserEmail={} successfully added the userBuddy={}", userEmail, contactEmail);
 
-        return "redirect:/pay-my-buddy/transfer?userEmail=" + userEmail + "&page=" + page;
+        return "redirect:/transfer?page=" + page;
     }
 
-    @GetMapping("/user/addConnection")
+    @GetMapping("/addConnection")
     public String addConnection(Model model,
-                                @RequestParam(name = "userEmail", defaultValue = "userEmail") String userEmail,
-                                @RequestParam(name = "contactEmail", defaultValue = "contactEmail") String contactEmail) {
+                                @ModelAttribute("contactEmail") String contactEmail) {
         logger.debug("This GetMapping methode addConnection starts here");
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String appUserEmail = authentication.getName();
 
-        model.addAttribute("userEmail", userEmail);
+        model.addAttribute("userEmail", appUserEmail);
         model.addAttribute("contactEmail", contactEmail);
-
 
         return "formAddConnection";
     }
 
-    @GetMapping("/user/transfer")
+    @GetMapping("/transfer")
     public String showPageTransfer(Model model,
-                                   @RequestParam(name = "userEmail", value = "userEmail") String userEmail,
-                                   String amount,
-                                   String description,
-                                   String buddyEmail,
+                                   @ModelAttribute("userEmail") String userEmail,
+                                   @ModelAttribute("amount") String amount,
+                                   @ModelAttribute("description") String description,
+                                   @ModelAttribute("buddyEmail") String buddyEmail,
                                    @RequestParam(name = "page", defaultValue = "0", required = false) int page,
                                    @RequestParam(name = "size", defaultValue = "3", required = false) int size
                                    ) {
@@ -115,7 +116,11 @@ public class UserController {
         
         //TODO: load user by userEmail and transaction
 
-        AppUser appUserPay = userService.findAppUserByEmail(userEmail);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String appUserEmail = authentication.getName();
+        AppUser appUserPay = userService.findAppUserByEmail(appUserEmail);
+        String name = appUserPay.getFirstName() + " " + " " + appUserPay.getLastName();
+
         Set<AppUser> appUserBuddyList = appUserPay.getContacts();
 
         Page<Transaction> listTransaction = transactionRepository.findAll(PageRequest.of(page, size));
@@ -125,9 +130,9 @@ public class UserController {
         model.addAttribute("transactions", listTransaction.getContent());
         model.addAttribute("pages", new int[listTransaction.getTotalPages()]);
         model.addAttribute("currentPage", page);
-
+        model.addAttribute("name_user", name);
         model.addAttribute("userBuddyList", appUserBuddyList);
-        model.addAttribute("userEmail", userEmail);
+        model.addAttribute("userEmail", appUserEmail);
         model.addAttribute("amount", amount);
         model.addAttribute("description", description);
         model.addAttribute("buddyEmail",buddyEmail);
@@ -135,25 +140,11 @@ public class UserController {
         return "transfer";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-            return "/login";
-        }
-        return "redirect:/user/transfer";
-    }
-
-    @GetMapping("/amdin/dashboard")
-    public String adminDashboard(){
-
-        return "dashboard";
-    }
-
     @GetMapping("/home")
     public String homePage(){
-
-        return "Welcome to home page";
+        return "home";
     }
+
+
 
 }

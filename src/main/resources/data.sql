@@ -3,7 +3,7 @@ VALUES
     ('Laurent','GINA','laurentgina@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.',3000),
     ('Sophie','FONCEK','sophiefoncek@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.',4000),
     ('Agathe','FEELING','agathefeeling@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.',5000),
-    ('Admin','ADAM','admin@gmail.com','',0.0);
+    ('Admin','ADAM','admin@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.',0.0);
 
 INSERT INTO contact (user_id, target_id)
 VALUES

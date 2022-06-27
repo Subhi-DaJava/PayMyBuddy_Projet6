@@ -49,7 +49,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             logger.info("This appUser has any role yet !!");
         }
 
-        User user = new User(appUser.getFirstName() + " " + appUser.getLastName(), appUser.getPassword(), authorities);
+        User user = new User(appUser.getEmail(), appUser.getPassword(), authorities);
         logger.info("This user with email={} is successfully authenticated!", userEmail);
 
         return user;
