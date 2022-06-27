@@ -17,13 +17,12 @@ public class LoginController {
         }
 
         return "redirect:/transfer";
-       /* return "transfer";*/
+
     }
 
     @GetMapping("/")
     public String homePage(){
 
         return "redirect:/home";
-      /*  return "hello";*/
     }
 }

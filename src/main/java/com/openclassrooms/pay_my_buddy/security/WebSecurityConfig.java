@@ -54,9 +54,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling().accessDeniedPage("/403");
 
-        //http.authorizeHttpRequests().antMatchers("/webjars/**").permitAll();
-        //http.authorizeRequests().antMatchers("/webjars/**").permitAll();
-
         http.csrf().disable();
         http.headers().frameOptions().disable();
 

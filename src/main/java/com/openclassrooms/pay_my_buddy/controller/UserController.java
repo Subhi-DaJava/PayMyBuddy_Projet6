@@ -71,7 +71,6 @@ public class UserController {
                            @ModelAttribute("userEmail") String userEmail,
                            @ModelAttribute("contactEmail") String contactEmail,
                            @RequestParam(defaultValue = "0") int page) {
-        //TODO: load AppUser
 
         logger.debug("This method addContactToUser(from UserController) starts here !!");
 
@@ -113,8 +112,6 @@ public class UserController {
                                    @RequestParam(name = "size", defaultValue = "3", required = false) int size
                                    ) {
         logger.debug("This showPageTransfer starts here");
-        
-        //TODO: load user by userEmail and transaction
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String appUserEmail = authentication.getName();
