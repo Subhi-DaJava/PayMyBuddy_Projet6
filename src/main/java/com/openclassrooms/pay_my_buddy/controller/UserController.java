@@ -1,12 +1,12 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
+import com.openclassrooms.pay_my_buddy.dto.ProfileDTO;
 import com.openclassrooms.pay_my_buddy.exception.EmailNotNullException;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Transaction;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
-import com.openclassrooms.pay_my_buddy.repository.UserRepository;
+import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import com.openclassrooms.pay_my_buddy.service.TransactionService;
-import com.openclassrooms.pay_my_buddy.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,16 +28,11 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private TransactionService transactionService;
-
+    @Autowired
+    private SecurityService securityService;
     @Autowired
     private TransactionRepository transactionRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @GetMapping("/admin/saveUser")
     public String saveUser(Model model){
@@ -57,13 +52,12 @@ public class UserController {
             logger.debug("UserEmail should not be null");
             return "save-user-form";
         }
-        userService.saveUser(appUser);
+        securityService.saveUser(appUser);
 
         model.addAttribute("userEmail", appUser.getEmail());
         model.addAttribute("page", page);
 
         return "redirect:/transfer?page=" + page;
-
     }
 
     @PostMapping("/addBuddy")
@@ -74,15 +68,15 @@ public class UserController {
 
         logger.debug("This method addContactToUser(from UserController) starts here !!");
 
-        AppUser appUserBuddy = userService.findAppUserByEmail(contactEmail);
-
+        AppUser appUserBuddy =securityService.loadAppUserByUserEmail(contactEmail);
 
         if(contactEmail == null || appUserBuddy == null){
             logger.debug("UserBuddyEmail={} should not be null or userBuddy doesn't exist in DB which the email.(from UserController)", contactEmail);
             return "error/Bad_Operation";
         }
 
-        userService.addAppUserToContact(userEmail, contactEmail);
+
+       securityService.addAppUserToContact(userEmail, contactEmail);
         logger.info("UserEmail={} successfully added the userBuddy={}", userEmail, contactEmail);
 
         return "redirect:/transfer?page=" + page;
@@ -95,9 +89,12 @@ public class UserController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String appUserEmail = authentication.getName();
+        AppUser appUser = securityService.loadAppUserByUserEmail(appUserEmail);
+        String userName = appUser.getFirstName() + " " + " " +appUser.getLastName();
 
         model.addAttribute("userEmail", appUserEmail);
         model.addAttribute("contactEmail", contactEmail);
+        model.addAttribute("userName", userName);
 
         return "formAddConnection";
     }
@@ -115,7 +112,8 @@ public class UserController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String appUserEmail = authentication.getName();
-        AppUser appUserPay = userService.findAppUserByEmail(appUserEmail);
+        //TODO: securityService loadUserByUserName(userEmail)
+        AppUser appUserPay = securityService.loadAppUserByUserEmail(appUserEmail);
         String name = appUserPay.getFirstName() + " " + " " + appUserPay.getLastName();
 
         Set<AppUser> appUserBuddyList = appUserPay.getContacts();
@@ -142,6 +140,15 @@ public class UserController {
         return "home";
     }
 
+    @GetMapping("/myProfile")
+    public String myProfile(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
 
+        ProfileDTO profile = securityService.findProfile(userEmail);
 
+        model.addAttribute("profile", profile);
+
+        return "profile";
+    }
 }

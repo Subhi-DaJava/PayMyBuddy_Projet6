@@ -1,9 +1,7 @@
 package com.openclassrooms.pay_my_buddy.security;
 
-import com.openclassrooms.pay_my_buddy.exception.PasswordNotMatchException;
-import com.openclassrooms.pay_my_buddy.exception.RoleExistingException;
-import com.openclassrooms.pay_my_buddy.exception.UserExistingException;
-import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
+import com.openclassrooms.pay_my_buddy.dto.ProfileDTO;
+import com.openclassrooms.pay_my_buddy.exception.*;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Role;
 import com.openclassrooms.pay_my_buddy.repository.RoleRepository;
@@ -13,6 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -27,33 +29,38 @@ public class SecurityServiceImpl implements SecurityService {
         this.roleRepository = roleRepository;
     }
 
+
     @Override
-    public AppUser saveNewUser(String firstName, String lastName, String userEmail, String password, String rePassword, double balance) {
-        logger.debug("This method saveNewUser(SecurityServiceImpl) starts here");
+    public AppUser saveUser(AppUser appUser) {
+        logger.debug("SaveUser method starts here !!");
 
-        AppUser appUser = userRepository.findByEmail(userEmail);
+        AppUser appUserCheck = userRepository.findByEmail(appUser.getEmail());
 
-        if(appUser != null){
-            logger.debug("This appUser with email={} is exist already in DB", userEmail);
-            throw new UserExistingException("This email= " + userEmail + " exists in DB");
+        if ( appUser.getEmail() == null) {
+            logger.debug("UserEmail should not be null!!");
+            throw new EmailNotNullException("The field email should not be null");
         }
-        if (!password.equals(rePassword)){
-            logger.debug("rePassword doesn't match with password");
-            throw new PasswordNotMatchException("Password not match");
+        if( appUserCheck != null){
+            logger.info("This user, email={}, exists already, and update this appUser's information(from UsrServiceImpl)", appUser.getEmail());
+            appUserCheck.setFirstName(appUser.getFirstName());
+            appUserCheck.setLastName(appUser.getLastName());
+            appUserCheck.setEmail(appUser.getEmail());
+            appUserCheck.setPassword(passwordEncoder().encode(appUser.getPassword()));
+            appUserCheck.setBalance(appUser.getBalance());
+            return appUserCheck;
         }
-        logger.info("PasswordEncoder is hashing the password...");
-        String hashedPassword = passwordEncoder().encode(password);
+        appUserCheck = new AppUser();
 
-        appUser = new AppUser();
-        appUser.setFirstName(firstName);
-        appUser.setLastName(lastName);
-        appUser.setEmail(userEmail);
-        appUser.setPassword(hashedPassword);
-        appUser.setBalance(0.0);
+        appUserCheck.setFirstName(appUser.getFirstName());
+        appUserCheck.setLastName(appUser.getLastName());
+        appUserCheck.setEmail(appUser.getEmail());
+        appUserCheck.setPassword(passwordEncoder().encode(appUser.getPassword()));
+        appUserCheck.setBalance(0.0);
 
-        AppUser savedAppUser = userRepository.save(appUser);
-        logger.info("This newUser with email={} is successfully saved in DB", userEmail);
-        return savedAppUser;
+        AppUser appUserSaved = userRepository.save(appUserCheck);
+        logger.info("This user " + appUser + " is successfully saved in the DB !!(from UserServiceImpl)");
+
+        return appUserSaved;
     }
 
     @Override
@@ -95,6 +102,11 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    public void addRoleToUse(String userEmail, String roleName) {
+
+    }
+
+    @Override
     public Role loadRoleByRoleName(String roleName) {
         logger.debug("This method loadRoleByRoleName(SecurityServiceImpl) starts here");
 
@@ -105,6 +117,68 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         return role;
+    }
+
+    @Override
+    public ProfileDTO findProfile(String email) {
+        logger.debug("This method findProfile(from UserServiceImpl) starts here.");
+        ProfileDTO profileDTO = new ProfileDTO();
+
+        AppUser appUser = userRepository.findByEmail(email);
+
+        if(appUser == null){
+            logger.debug("This profile doesn't existe with this email=" +email);
+            throw new UserNotExistingException("This profile doesn't not exist with this email=" + email);
+        }
+        String userFirstName = appUser.getFirstName();
+        String userLastName = appUser.getLastName();
+        String userEmail = appUser.getEmail();
+        double balance = appUser.getBalance();
+        List<Role> roles = appUser.getRoles();
+        Set<String> userRoles = new HashSet<>();
+        for (Role role : roles) {
+            userRoles.add(role.getRoleName());
+        }
+
+        Set<AppUser> contacts = appUser.getContacts();
+        Set<String> contactEmails = new HashSet<>();
+        for (AppUser buddy : contacts) {
+            contactEmails.add(buddy.getFirstName() + " " + buddy.getLastName());
+        }
+        profileDTO.setFirstName(userFirstName);
+        profileDTO.setLastName(userLastName);
+        profileDTO.setEmail(userEmail);
+        profileDTO.setRoles(userRoles);
+        profileDTO.setContacts(contactEmails);
+        profileDTO.setBalance(balance);
+
+        return profileDTO;
+    }
+
+    @Override
+    public void addAppUserToContact(String userEmail, String buddyEmail) {
+        logger.debug("This addUserToContacts starts here !!");
+        AppUser appUserContact = userRepository.findByEmail(buddyEmail);
+        AppUser appUser = userRepository.findByEmail(userEmail);
+
+        if (appUserContact != null && appUser != null) {
+            if (appUser.getContacts().contains(appUserContact)) {
+                logger.debug("UserContact is already added !!");
+                /*  throw new UserExistingException("This contact is added !!");*/
+            }
+            logger.info("This userContact which email [" + buddyEmail + "] is successfully added to this user which email [" + userEmail + "]");
+            appUser.getContacts().add(appUserContact);
+            return;
+
+        }
+        if (appUser != null && appUserContact == null) {
+            logger.debug("UserContact doesn't exist in the DB !!");
+            //throw new UserNotExistingException("This userContact which email [" + buddyEmail + "] doesn't exist yet in the DB");
+        }
+        if (buddyEmail == null || buddyEmail.isEmpty()) {
+            logger.debug("BuddyEmail should not be null or be empty neither !!");
+            throw new EmailNotNullException("Not null or not empty !!");
+        }
     }
 
     public BCryptPasswordEncoder passwordEncoder(){

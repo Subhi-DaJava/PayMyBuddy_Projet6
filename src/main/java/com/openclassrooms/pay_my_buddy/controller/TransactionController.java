@@ -3,8 +3,8 @@ package com.openclassrooms.pay_my_buddy.controller;
 
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
+import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import com.openclassrooms.pay_my_buddy.service.TransactionService;
-import com.openclassrooms.pay_my_buddy.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class TransactionController {
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
     @Autowired
-    private UserService userService;
+    private SecurityService securityService;
     @Autowired
     private TransactionService transactionService;
     @Autowired
@@ -36,8 +36,8 @@ public class TransactionController {
                                    @RequestParam(defaultValue = "0") int page) {
         logger.debug("This send-money in TransactionController starts here");
 
-        AppUser connection = userService.findAppUserByEmail(buddyEmail);
-        AppUser appUser = userService.findAppUserByEmail(userEmail);
+        AppUser connection = securityService.loadAppUserByUserEmail(buddyEmail);
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
 
         double userBalance = appUser.getBalance();
 
