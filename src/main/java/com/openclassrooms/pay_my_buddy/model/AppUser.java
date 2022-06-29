@@ -1,6 +1,7 @@
 package com.openclassrooms.pay_my_buddy.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.openclassrooms.pay_my_buddy.constant.AuthenticationProvider;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ public class AppUser {
     @NotBlank(message = "Email may not be empty and null")
     private String email;
 
-    @NotBlank(message = "Password may not be empty and null")
+   /* @NotBlank(message = "Password may not be empty and null")*/
     @JsonIgnore
     private String password;
 
@@ -57,6 +58,18 @@ public class AppUser {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "auth_provider")
+    private AuthenticationProvider authProvider;
+
+    public AuthenticationProvider getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthenticationProvider authProvider) {
+        this.authProvider = authProvider;
+    }
 
     public AppUser() {
 

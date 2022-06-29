@@ -1,5 +1,7 @@
 package com.openclassrooms.pay_my_buddy.security;
 
+import com.openclassrooms.pay_my_buddy.security.oauth.CustomOAuth2UserService;
+import com.openclassrooms.pay_my_buddy.security.oauth.OAuth2LoginSuccessHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers("/oauth2/**").permitAll()
                 .antMatchers("/user/**", "/myProfile","/transfer", "/bank-transfer/**").hasAuthority("USER")
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/home", "/", "/signup").permitAll()
@@ -48,6 +51,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().loginPage("/login").usernameParameter("email").passwordParameter("password")
                 .permitAll()
+                .and()
+                .oauth2Login()
+                    .loginPage("/login")
+                    .userInfoEndpoint().userService(oAuth2UserService)
+                    .and()
+                    .successHandler(oAuth2LoginSuccessHandler)
                 .and()
                 .logout().permitAll()
                 .and()
@@ -61,4 +70,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+    @Autowired
+    private CustomOAuth2UserService oAuth2UserService;
+
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 }

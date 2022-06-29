@@ -1,5 +1,6 @@
 package com.openclassrooms.pay_my_buddy.security;
 
+import com.openclassrooms.pay_my_buddy.constant.AuthenticationProvider;
 import com.openclassrooms.pay_my_buddy.dto.ProfileDTO;
 import com.openclassrooms.pay_my_buddy.exception.*;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
@@ -92,7 +93,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         if(appUser == null){
             logger.debug("This appUser with userEmail={} doesn't exist in DB(From SecurityServiceImpl)", userEmail);
-            throw new UserNotExistingException("This appUser with email= " + userEmail + " not found in DB(From SecurityServiceImpl)");
+            //throw new UserNotExistingException("This appUser with email=" + userEmail + " not found in DB(From SecurityServiceImpl)");
         }
         logger.info("This appUser which email={} is successfully loaded", userEmail);
         return appUser;
@@ -198,10 +199,26 @@ public class SecurityServiceImpl implements SecurityService {
         }
     }
 
+    @Override
+    public void createNewAppUserAfterOAuthLoginSuccess(String email, String name, AuthenticationProvider provider) {
+        AppUser appUser = new AppUser();
+        appUser.setFirstName(name);
+        appUser.setEmail(email);
+        appUser.setAuthProvider(provider);
+       userRepository.save(appUser);
+    }
+
+    @Override
+    public void updateAppUserAfterOAuthLoginSuccess(AppUser appUser, String name, AuthenticationProvider provider) {
+        appUser.setFirstName(name);
+        appUser.setAuthProvider(provider);
+
+        userRepository.save(appUser);
+    }
+
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
 
 
     //TODO: une functionality pour afficher tous les emails( nom et prénom peut être) des contact d'une AppUser
