@@ -1,6 +1,6 @@
 package com.openclassrooms.pay_my_buddy.security;
 
-import com.openclassrooms.pay_my_buddy.security.oauth.CustomOAuth2UserService;
+import com.openclassrooms.pay_my_buddy.security.oauth.AppUserOAuth2UserService;
 import com.openclassrooms.pay_my_buddy.security.oauth.OAuth2LoginSuccessHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    private CustomOAuth2UserService oAuth2UserService;
+    private AppUserOAuth2UserService oAuth2UserService;
 
     @Autowired
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;

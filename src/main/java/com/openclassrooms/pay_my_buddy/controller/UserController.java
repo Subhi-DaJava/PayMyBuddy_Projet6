@@ -88,7 +88,6 @@ public class UserController {
         String appUserEmail = authentication.getName();
 
         AppUser appUserPay = securityService.loadAppUserByUserEmail(appUserEmail);
-        List<Transaction> transactions = appUserPay.getTransactionsSources();
 
         String name = appUserPay.getFirstName() + " " + " " + appUserPay.getLastName();
 

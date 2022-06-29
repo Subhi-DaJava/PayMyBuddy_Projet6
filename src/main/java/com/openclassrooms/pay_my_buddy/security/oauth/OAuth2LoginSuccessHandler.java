@@ -27,7 +27,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+        AppUserOAuth2User oAuth2User = (AppUserOAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getEmail();
         String name = oAuth2User.getName();
         //Check appUser's with this email exists or not

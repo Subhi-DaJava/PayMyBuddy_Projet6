@@ -9,14 +9,14 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-    private static final Logger logger = LoggerFactory.getLogger(CustomOAuth2User.class);
+public class AppUserOAuth2UserService extends DefaultOAuth2UserService {
+    private static final Logger logger = LoggerFactory.getLogger(AppUserOAuth2User.class);
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         logger.debug("loadUser(from CustomOAuth2UserService) method starts here.");
 
         OAuth2User  oAuth2User = super.loadUser(userRequest);
-        return new CustomOAuth2User(oAuth2User);
+        return new AppUserOAuth2User(oAuth2User);
     }
 }
