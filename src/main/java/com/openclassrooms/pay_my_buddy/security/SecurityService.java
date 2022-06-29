@@ -14,7 +14,7 @@ public interface SecurityService {
 
     void deleteAppUserById(Integer appUserId);
 
-    void addRoleToUse(String userEmail, String roleName);
+    void addRoleToUser(String userEmail, String roleName);
 
     Role loadRoleByRoleName(String roleName);
 

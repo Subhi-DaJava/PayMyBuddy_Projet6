@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
@@ -29,6 +30,9 @@ public class LoginController {
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
             return "login";
         }
+        if (authentication.getName().equals("admin@gmail.com")){
+            return "redirect:/home";
+        }
         return "redirect:/transfer";
 
     }
@@ -40,20 +44,27 @@ public class LoginController {
     }
 
     @GetMapping("/signup")
-    public String signup(Model model){
+    public String signup(Model model, String rePassword){
         logger.info("signup(from LoginController) is working ...");
 
         AppUser appUser = new AppUser();
 
         model.addAttribute("appUser", appUser);
+        model.addAttribute("rePassword", rePassword);
         return "signup";
     }
     @PostMapping("/signup")
-    public String addUser(@ModelAttribute("appUser") AppUser appUser){
+    public String addUser(@ModelAttribute("appUser") AppUser appUser,
+                          @RequestParam(name = "rePassword") String rePassword){
 
-        securityService.saveUser(appUser);
+        if(appUser.getPassword().equals(rePassword)){
+            securityService.saveUser(appUser);
+            return "redirect:/login";
+        }
+        else {
+            return "signup";
+        }
 
-        return "redirect:/login";
 
     }
 }

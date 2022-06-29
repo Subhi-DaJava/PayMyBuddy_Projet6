@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+<div class="container">
+    <div class="card mx-auto">
+        <div class="card-header">
+            <h2>Welcome to admin dashboard</h2>
+        </div>
+        <div class="card-body">
+            <a th:href="@{/admin/addRoleToUser}">Add A Role To User</a>
+            <br>
+            <a th:href="@{/home}" class="text-primary">Back To Home Page</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

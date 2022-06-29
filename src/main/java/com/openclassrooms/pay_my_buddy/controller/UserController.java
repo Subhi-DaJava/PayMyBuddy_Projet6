@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -40,30 +41,10 @@ public class UserController {
         return "save-user-form";
     }
 
-    @PostMapping("/admin/saveUser")
-    public String saveUser(Model model,
-                           AppUser appUser,
-                           @RequestParam(defaultValue = "0") int page) throws EmailNotNullException {
-        logger.debug("This saveUser starts here !!");
-
-        //TODO: (@ModelAttribute("appUser") AppUser appUser)
-
-        if (appUser.getEmail() == null || appUser.getPassword() == null) {
-            logger.debug("UserEmail should not be null");
-            return "save-user-form";
-        }
-        securityService.saveUser(appUser);
-
-        model.addAttribute("userEmail", appUser.getEmail());
-        model.addAttribute("page", page);
-
-        return "redirect:/transfer?page=" + page;
-    }
-
     @PostMapping("/addBuddy")
     public String addBuddy(Model model,
                            @ModelAttribute("userEmail") String userEmail,
-                           @ModelAttribute("contactEmail") String contactEmail,
+                           @RequestParam(name = "contactEmail") String contactEmail,
                            @RequestParam(defaultValue = "0") int page) {
 
         logger.debug("This method addContactToUser(from UserController) starts here !!");
@@ -101,10 +82,9 @@ public class UserController {
 
     @GetMapping("/transfer")
     public String showPageTransfer(Model model,
-                                   @ModelAttribute("userEmail") String userEmail,
-                                   @ModelAttribute("amount") String amount,
-                                   @ModelAttribute("description") String description,
-                                   @ModelAttribute("buddyEmail") String buddyEmail,
+                                   String amount,
+                                   String description,
+                                   String buddyEmail,
                                    @RequestParam(name = "page", defaultValue = "0", required = false) int page,
                                    @RequestParam(name = "size", defaultValue = "3", required = false) int size
                                    ) {
@@ -112,14 +92,15 @@ public class UserController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String appUserEmail = authentication.getName();
-        //TODO: securityService loadUserByUserName(userEmail)
+
         AppUser appUserPay = securityService.loadAppUserByUserEmail(appUserEmail);
+        List<Transaction> transactions = appUserPay.getTransactionsSources();
+
         String name = appUserPay.getFirstName() + " " + " " + appUserPay.getLastName();
 
         Set<AppUser> appUserBuddyList = appUserPay.getContacts();
 
-        Page<Transaction> listTransaction = transactionRepository.findAll(PageRequest.of(page, size));
-
+        Page<Transaction> listTransaction = transactionRepository.findAllBySource(PageRequest.of(page, size), appUserPay);
 
         model.addAttribute("totalPage", listTransaction.getTotalPages());
         model.addAttribute("transactions", listTransaction.getContent());
@@ -130,7 +111,7 @@ public class UserController {
         model.addAttribute("userEmail", appUserEmail);
         model.addAttribute("amount", amount);
         model.addAttribute("description", description);
-        model.addAttribute("buddyEmail",buddyEmail);
+        model.addAttribute("buddyEmail", buddyEmail);
 
         return "transfer";
     }

@@ -16,7 +16,7 @@
             <div class="container px-0">
                 <ul class="nav navbar-nav left py-0">
                     <li>
-                        <div class="card-header text-white p-1" style="background-image: linear-gradient(45deg, #0ba29d, #c3ec52)">Pay My Buddy
+                        <div class="text-white p-1" style="background-image: linear-gradient(45deg, #0ba29d, #c3ec52)">Pay My Buddy
                         </div>
                     </li>
                 </ul>
@@ -32,6 +32,9 @@
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <a class="nav-link" th:href="@{/logout}">Logout</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                        <a class="nav-link" th:href="@{/admin/addRoleToUser}">Add Role</a>
                     </li>
                 </ul>
             </div>
@@ -72,7 +75,7 @@
                 <input type="hidden" name="userEmail" th:value="${userEmail}"/>
             </div>
             <div class="col mx-5 mt-5">
-                <input class="form-control" type="text" placeholder="description" name="description" th:value="description" th:text="${description}"/>
+                <input class="form-control" type="text" placeholder="description" name="description"th:name="description"/>
             </div>
             <div class="col mt-5 mb-5 mx-5">
                 <select class="form-select" aria-label="Default select example" th:name="buddyEmail">

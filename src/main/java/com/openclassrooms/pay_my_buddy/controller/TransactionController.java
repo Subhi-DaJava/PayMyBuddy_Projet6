@@ -28,11 +28,10 @@ public class TransactionController {
     private TransactionRepository transactionRepository;
 
     @PostMapping("/user/send-money")
-    public String sendMoneyToBuddy(Model model,
-                                   @ModelAttribute("userEmail") String userEmail,
-                                   @ModelAttribute("buddyEmail") String buddyEmail,
-                                   @ModelAttribute("amount") double amount,
-                                   @ModelAttribute("description") String description,
+    public String sendMoneyToBuddy(@ModelAttribute("userEmail") String userEmail,
+                                   @RequestParam(name = "buddyEmail") String buddyEmail,
+                                   @RequestParam(name = "amount") double amount,
+                                   @RequestParam(name = "description") String description,
                                    @RequestParam(defaultValue = "0") int page) {
         logger.debug("This send-money in TransactionController starts here");
 
@@ -46,7 +45,6 @@ public class TransactionController {
                     " and userBuddy should be in DB", userEmail, buddyEmail);
             return "error/Bad_Operation";
         }
-        model.addAttribute("buddyEmail", buddyEmail);
 
         transactionService.sendMoneyToBuddy(userEmail, buddyEmail, amount, description);
 

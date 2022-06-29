@@ -51,11 +51,15 @@ public class SecurityServiceImpl implements SecurityService {
         }
         appUserCheck = new AppUser();
 
+        //Add role=USER by default to a new AppUser
+        Role addRoleUSER = loadRoleByRoleName("USER");
+
         appUserCheck.setFirstName(appUser.getFirstName());
         appUserCheck.setLastName(appUser.getLastName());
         appUserCheck.setEmail(appUser.getEmail());
         appUserCheck.setPassword(passwordEncoder().encode(appUser.getPassword()));
         appUserCheck.setBalance(0.0);
+        appUserCheck.getRoles().add(addRoleUSER);
 
         AppUser appUserSaved = userRepository.save(appUserCheck);
         logger.info("This user " + appUser + " is successfully saved in the DB !!(from UserServiceImpl)");
@@ -102,8 +106,21 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void addRoleToUse(String userEmail, String roleName) {
+    public void addRoleToUser(String userEmail, String roleName) {
+        logger.debug("This addRoleToUser(from SecurityServiceImpl) starts here");
+        AppUser appUser = loadAppUserByUserEmail(userEmail);
+        if(appUser == null){
+            logger.debug("No this user with the email" + userEmail + " in the DB !");
+            throw new UserNotExistingException("This user with email= " + userEmail + " doesn't exist in DB");
+        }
+        Role role = loadRoleByRoleName(roleName);
+        if(role == null){
+            logger.debug("No this role: " + roleName + " in the DB! (from addRoleToUser method)");
+            throw new RoleExistingException("This role: " + roleName + " not found in DB");
+        }
 
+        appUser.getRoles().add(role);
+        logger.info("This role= " + roleName + " is added to this appUser which email={}", userEmail);
     }
 
     @Override
@@ -114,6 +131,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         if(role == null){
             logger.debug("This role={} doesn't exist in DB", roleName);
+            throw new RoleExistingException("This role: " + roleName + " not found !");
         }
 
         return role;
