@@ -30,7 +30,9 @@ public class AdminController {
     }
 
     @GetMapping("/admin/addRoleToUser")
-    String addRoleToUser(Model model, String userEmail, String roleName){
+    String addRoleToUser(Model model,
+                         String userEmail,
+                         String roleName){
 
         model.addAttribute("userEmail", userEmail);
         model.addAttribute("roleName", roleName);

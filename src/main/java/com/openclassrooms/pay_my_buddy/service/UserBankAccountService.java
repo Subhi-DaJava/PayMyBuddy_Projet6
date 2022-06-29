@@ -1,5 +1,6 @@
 package com.openclassrooms.pay_my_buddy.service;
 
+import com.openclassrooms.pay_my_buddy.constant.OperationType;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 
@@ -12,4 +13,10 @@ public interface UserBankAccountService {
     AppUser findUserByUserBankAccountId(int id);
 
     UserBankAccount addUserToUserBankAccount(int userId, int bankAccountId);
+
+    void sendMoneyToAppUser(String codeIBAN,
+                            String userEmail,
+                            double amount,
+                            String description,
+                            OperationType operationType);
 }

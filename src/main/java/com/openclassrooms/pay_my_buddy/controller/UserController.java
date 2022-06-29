@@ -35,12 +35,6 @@ public class UserController {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    @GetMapping("/admin/saveUser")
-    public String saveUser(Model model){
-        model.addAttribute("newUser", new AppUser());
-        return "save-user-form";
-    }
-
     @PostMapping("/addBuddy")
     public String addBuddy(Model model,
                            @ModelAttribute("userEmail") String userEmail,
@@ -58,19 +52,20 @@ public class UserController {
 
 
        securityService.addAppUserToContact(userEmail, contactEmail);
+
         logger.info("UserEmail={} successfully added the userBuddy={}", userEmail, contactEmail);
 
         return "redirect:/transfer?page=" + page;
     }
 
     @GetMapping("/addConnection")
-    public String addConnection(Model model,
-                                @ModelAttribute("contactEmail") String contactEmail) {
+    public String addConnection(Model model, String contactEmail) {
         logger.debug("This GetMapping methode addConnection starts here");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String appUserEmail = authentication.getName();
         AppUser appUser = securityService.loadAppUserByUserEmail(appUserEmail);
+
         String userName = appUser.getFirstName() + " " + " " +appUser.getLastName();
 
         model.addAttribute("userEmail", appUserEmail);
@@ -86,8 +81,7 @@ public class UserController {
                                    String description,
                                    String buddyEmail,
                                    @RequestParam(name = "page", defaultValue = "0", required = false) int page,
-                                   @RequestParam(name = "size", defaultValue = "3", required = false) int size
-                                   ) {
+                                   @RequestParam(name = "size", defaultValue = "3", required = false) int size) {
         logger.debug("This showPageTransfer starts here");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -126,9 +120,13 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
 
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+        String user_name = appUser.getFirstName() + " " + appUser.getLastName();
+
         ProfileDTO profile = securityService.findProfile(userEmail);
 
         model.addAttribute("profile", profile);
+        model.addAttribute("user_name", user_name);
 
         return "profile";
     }
