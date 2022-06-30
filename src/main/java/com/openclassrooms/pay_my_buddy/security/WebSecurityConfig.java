@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/oauth2/**").permitAll()
-                .antMatchers("/user/**", "/myProfile","/transfer", "/bank-transfer/**").hasAuthority("USER")
+                .antMatchers("/user/**", "/myProfile","/transfer", "/bank-transfer/**", "/addBankAccount").hasAuthority("USER")
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/home", "/", "/signup").permitAll()
                 .and()

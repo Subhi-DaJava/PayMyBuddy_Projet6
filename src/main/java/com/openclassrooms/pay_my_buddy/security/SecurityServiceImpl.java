@@ -91,10 +91,6 @@ public class SecurityServiceImpl implements SecurityService {
 
         AppUser appUser = userRepository.findByEmail(userEmail);
 
-        if(appUser == null){
-            logger.debug("This appUser with userEmail={} doesn't exist in DB(From SecurityServiceImpl)", userEmail);
-            //throw new UserNotExistingException("This appUser with email=" + userEmail + " not found in DB(From SecurityServiceImpl)");
-        }
         logger.info("This appUser which email={} is successfully loaded", userEmail);
         return appUser;
     }

@@ -6,7 +6,11 @@ import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 
 public interface UserBankAccountService {
 
-    UserBankAccount saveUserBankAccount(UserBankAccount userBankAccount);
+    void addBankAccountToPayMyBuddy(AppUser appUser,
+                                    String bankName,
+                                    String bankLocation,
+                                    String codeIBAN,
+                                    String codeBIC);
 
     UserBankAccount findUserBankAccountById(int id);
 
@@ -19,4 +23,7 @@ public interface UserBankAccountService {
                             double amount,
                             String description,
                             OperationType operationType);
+
+    UserBankAccount findUserBankAccountByCodeIBAN(String codeIBAN);
+
 }

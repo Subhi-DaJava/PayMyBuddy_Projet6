@@ -99,7 +99,7 @@ public class TransferServiceImpl implements TransferService {
         appUser.setBalance(appUser.getBalance() - amount);
         userRepository.save(appUser);
 
-        userBankAccount.setBalance(userBankAccount.getBalance() + amount);
+        /*userBankAccount.setBalance(userBankAccount.getBalance() + amount);*/
         userBankAccountRepository.save(userBankAccount);
 
         Transfer transfer = new Transfer();

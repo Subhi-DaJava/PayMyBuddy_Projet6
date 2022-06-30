@@ -111,7 +111,7 @@
             <tr th:each="transaction:${transactions}">
                 <td th:text="${transaction.getTarget().getFirstName() + ' ' +  transaction.getTarget().getLastName()}" ></td>
                 <td th:text="${transaction.description}"></td>
-                <td th:text="${transaction.amount + '€'}"></td>
+                <td th:text="${#numbers.formatCurrency(transaction.amount)}"></td>
             </tr>
 
             </tbody>

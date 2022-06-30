@@ -11,11 +11,11 @@ VALUES
     (3,2),
     (2,1);
 
-INSERT INTO user_bank_account(bank_name, bank_location, code_iban, code_bic, balance, app_user_id)
+INSERT INTO user_bank_account(bank_name, bank_location, code_iban, code_bic,app_user_id)
 VALUES
-    ('LCL','Paris 75015','FR76','FR75',20000,1),
-    ('CIC','Lyon', 'FR50','FR70',35000,2),
-    ('CréditAgricole','Paris 75018','FR18','FR20',15600,3);
+    ('LCL','Paris 75015','FR76','FR75',1),
+    ('CIC','Lyon', 'FR50','FR70',2),
+    ('CréditAgricole','Paris 75018','FR18','FR20',3);
 
 INSERT INTO roles (role_name)
 VALUES ('USER'),

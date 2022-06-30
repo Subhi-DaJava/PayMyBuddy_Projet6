@@ -89,6 +89,8 @@ public class UserController {
 
         AppUser appUserPay = securityService.loadAppUserByUserEmail(appUserEmail);
 
+        int appUserPayId = appUserPay.getAppUserid();
+
         String name = appUserPay.getFirstName() + " " + " " + appUserPay.getLastName();
 
         Set<AppUser> appUserBuddyList = appUserPay.getContacts();
@@ -107,11 +109,6 @@ public class UserController {
         model.addAttribute("buddyEmail", buddyEmail);
 
         return "transfer";
-    }
-
-    @GetMapping("/home")
-    public String homePage(){
-        return "home";
     }
 
     @GetMapping("/myProfile")

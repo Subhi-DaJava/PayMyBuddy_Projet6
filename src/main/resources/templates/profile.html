@@ -70,7 +70,7 @@
                 <td th:text="${profile.email}" ></td>
                 <td th:text="${profile.contacts}" ></td>
                 <td th:text="${profile.roles}" ></td>
-                <td th:text="${profile.balance}" ></td>
+                <td th:text="${#numbers.formatCurrency(profile.balance)}" ></td>
                 </tbody>
             </table>
         </div>

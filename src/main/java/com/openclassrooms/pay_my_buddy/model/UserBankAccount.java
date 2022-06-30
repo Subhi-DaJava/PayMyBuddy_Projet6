@@ -30,8 +30,6 @@ public class UserBankAccount {
     @Column(name = "code_bic", unique = true, length = 100)
     private String codeBIC;
 
-    private double balance;
-
     @OneToOne
     private AppUser appUser;
 
@@ -41,15 +39,30 @@ public class UserBankAccount {
     public UserBankAccount() {
     }
 
-    public UserBankAccount(int bankAccountId, String bankName, String bankLocation, String codeIBAN, String codeBIC, double balance, AppUser appUser, List<Transfer> transfers) {
+    public UserBankAccount(int bankAccountId,
+                           String bankName,
+                           String bankLocation,
+                           String codeIBAN,
+                           String codeBIC, AppUser appUser, List<Transfer> transfers) {
         this.bankAccountId = bankAccountId;
         this.bankName = bankName;
         this.bankLocation = bankLocation;
         this.codeIBAN = codeIBAN;
         this.codeBIC = codeBIC;
-        this.balance = balance;
         this.appUser = appUser;
         this.transfers = transfers;
+    }
+
+    public UserBankAccount(String bankName,
+                           String bankLocation,
+                           String codeIBAN,
+                           String codeBIC,
+                           AppUser appUser) {
+        this.bankName = bankName;
+        this.bankLocation = bankLocation;
+        this.codeIBAN = codeIBAN;
+        this.codeBIC = codeBIC;
+        this.appUser = appUser;
     }
 
     public int getBankAccountId() {
@@ -90,14 +103,6 @@ public class UserBankAccount {
 
     public void setCodeBIC(String codeBIC) {
         this.codeBIC = codeBIC;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
     }
 
     public AppUser getAppUser() {

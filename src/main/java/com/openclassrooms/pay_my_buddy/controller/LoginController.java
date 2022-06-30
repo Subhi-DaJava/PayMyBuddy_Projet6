@@ -2,6 +2,7 @@ package com.openclassrooms.pay_my_buddy.controller;
 
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
+import com.openclassrooms.pay_my_buddy.service.UserBankAccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -19,9 +20,11 @@ public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     private SecurityService securityService;
+    private UserBankAccountService userBankAccountService;
 
-    public LoginController(SecurityService securityService) {
+    public LoginController(SecurityService securityService, UserBankAccountService userBankAccountService) {
         this.securityService = securityService;
+        this.userBankAccountService = userBankAccountService;
     }
 
     @GetMapping("/login")
@@ -30,17 +33,16 @@ public class LoginController {
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
             return "login";
         }
-        if (authentication.getName().equals("admin@gmail.com")){
-            return "redirect:/home";
-        }
-        return "redirect:/transfer";
-
+        return "redirect:/home";
     }
 
     @GetMapping("/")
-    public String homePage(){
-
+    public String index(){
         return "redirect:/home";
+    }
+    @GetMapping("/home")
+    public String homePage(){
+        return "home";
     }
 
     @GetMapping("/signup")
@@ -51,6 +53,7 @@ public class LoginController {
 
         model.addAttribute("appUser", appUser);
         model.addAttribute("rePassword", rePassword);
+
         return "signup";
     }
     @PostMapping("/signup")
@@ -59,12 +62,11 @@ public class LoginController {
 
         if(appUser.getPassword().equals(rePassword)){
             securityService.saveUser(appUser);
-            return "redirect:/login";
+            return "addBankAccount";
         }
         else {
             return "signup";
         }
-
-
     }
+
 }

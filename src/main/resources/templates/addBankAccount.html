@@ -29,39 +29,34 @@
     <div class="card mx-auto mt-3">
         <div class="card-header">
             <div class="mt-3">
-                <h3>Welcome to Send Money To Pay-MY-Buddy User's Account</h3>
+                <h3>Welcome to Pay-MY-Buddy, please add your Bank Account</h3>
             </div>
         </div>
         <div class="card-body">
-            <form method="post" th:action="@{/bank-transfer/to-pay-my-buddy}">
+            <form method="post" th:action="@{/addBankAccount}">
                 <div class="col-4">
-                 <!--   <label class="mb-1" for="userEmail" th:value="${userEmail}"></label>
-                    <input id="userEmail" class="form-control" type="hidden" name="userEmail" th:value="${userEmail}" th:name="userEmail"/>-->
 
-                    <label class="mb-1" for="codeIBAN">CODE IBAN</label>
-                    <input id="codeIBAN" class="form-control" type="text" name="codeIBAN" placeholder="CODE-IBAN" th:name="codeIBAN"/>
+                    <label class="mb-1" for="bankName">Bank Name</label>
+                    <input id="bankName" class="form-control" type="text" name="bankName" placeholder="please enter the your bank name" required th:name="bankName"/>
 
-                <label class="mb-1" for="amount">Amount</label>
-                    <input id="amount" class="form-control" type="number" name="amount" placeholder="0" required th:name="amount"/>
+                    <label class="mb-1" for="bankLocation">Bank Location</label>
+                    <input id="bankLocation" class="form-control" type="text" name="bankLocation" placeholder="please enter the bank location" th:name="bankLocation"/>
 
-                    <label class="mb-1" for="description">Description</label>
-                    <input id="description" class="form-control" type="text" name="description" placeholder="Description" th:name="description"/>
+                    <label class="mb-1" for="codeIBAN">CODE-IBAN</label>
+                    <input id="codeIBAN" class="form-control" type="text" name="codeIBAN" placeholder="please enter the CODE-IBAN" required th:name="codeIBAN"/>
 
-                    <label class="mb-1" for="operationType">Operation Type</label>
-                    <input id="operationType" class="form-control" type="text" name="operationType" placeholder="Operation Type" required th:name="operationType"/>
+                    <label class="mb-1" for="codeBIC">CODE-BIC</label>
+                    <input id="codeBIC" class="form-control" type="text" name="codeBIC" placeholder="please enter the CODE-BIC" required th:name="codeBIC"/>
                 </div>
-                <!-- submit execute the sentMoneyToPayMyBuddy User -->
+                <!-- submit execute addBankAccount -->
                 <div class="mt-3">
-                    <button type="submit" class="btn btn-success col-lg-3">Transfer Money To Your PayMyBuddy App</button>
+                    <button type="submit" class="btn btn-success col-lg-3">Please Confirme</button>
                 </div>
             </form>
             <div class="mt-3 text-center">
                 <a th:href="@{/login}"><button class="btn btn-primary col-2">Back To Login</button></a>
             </div>
         </div>
-
-
-
     </div>
 
 </div>

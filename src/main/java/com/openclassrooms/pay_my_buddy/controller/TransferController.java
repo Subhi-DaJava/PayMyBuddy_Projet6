@@ -57,13 +57,13 @@ public class TransferController {
     @PostMapping("/bank-transfer/to-pay-my-buddy")
     public String transferMoneyToPayMyBuddyUser(
             @RequestParam(name = "codeIBAN") String codeIBAN,
-            @ModelAttribute("userEmail") String userEmail,
             @RequestParam(name = "amount") double amount,
             @RequestParam(name = "description") String description,
             @RequestParam(name = "operationType") OperationType operationType,
             @RequestParam(defaultValue = "0") int page) {
         logger.debug("This transferMoneyToPayMyBuddyUser methode starts here.(TransferController)");
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
 
         if (userEmail == null || codeIBAN == null || amount <= 0) {
             logger.debug("UserEmail={}, codeIBAN={}, and amount={} should not null or empty", userEmail, codeIBAN, amount);
@@ -93,26 +93,6 @@ public class TransferController {
         model.addAttribute("operationType", operationType);
 
         return "send-money-to-PayMyBuddy";
-    }
-
-
-
-    @PostMapping("transfers/money-transfer-to-bankAccount")
-    public ResponseEntity<Transfer> transferMoneyToUserBankAccount(
-            @RequestParam Integer userId, @RequestParam Integer bankAccountId, @RequestParam double amount, @RequestParam String description) {
-        if (bankAccountId <= 0 || userId <= 0 || amount <= 0) {
-            return ResponseEntity.notFound().build();
-        }
-        Transfer transfer = transferService.transferMoneyToUserBankAccount(userId, bankAccountId, amount, description);
-        if (transfer != null) {
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/transferId")
-                    .buildAndExpand(transfer.getTransferId())
-                    .toUri();
-            return ResponseEntity.created(location).body(transfer);
-        }
-        return ResponseEntity.notFound().build();
     }
 
 }

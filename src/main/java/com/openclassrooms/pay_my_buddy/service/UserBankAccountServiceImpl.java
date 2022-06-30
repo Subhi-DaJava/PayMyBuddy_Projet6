@@ -14,8 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
 import java.time.LocalDate;
 
 @Service
@@ -34,18 +35,27 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
     private TransferService transferService;
 
     @Override
-    public UserBankAccount saveUserBankAccount(UserBankAccount userBankAccount) {
-        if (userBankAccount == null) {
-            return null; // à améliorer
-        }
-        UserBankAccount newUserBankAccount = new UserBankAccount();
-        newUserBankAccount.setBankName(userBankAccount.getBankName());
-        newUserBankAccount.setBankLocation(userBankAccount.getBankLocation());
-        newUserBankAccount.setCodeBIC(userBankAccount.getCodeBIC());
-        newUserBankAccount.setCodeIBAN(userBankAccount.getCodeIBAN());
-        newUserBankAccount.setBalance(userBankAccount.getBalance());
+    public void addBankAccountToPayMyBuddy(AppUser appUser,
+                                           String bankName,
+                                           String bankLocation,
+                                           String codeIBAN,
+                                           String codeBIC) {
+        logger.debug("This addBankAccountToPayMyBuddy method (from UserBankAccountServiceImpl) starts here");
+        UserBankAccount checkWithCodeIBANUserBankAccount = userBankAccountRepository.findByCodeIBAN(codeIBAN);
 
-        return userBankAccountRepository.save(userBankAccount);
+
+        if (checkWithCodeIBANUserBankAccount != null){
+            logger.debug("This bankAccount with the codeIBAN={} already exists in DB", codeIBAN);
+        }
+
+        UserBankAccount userBankAccount = new UserBankAccount();
+        userBankAccount.setAppUser(appUser);
+        userBankAccount.setBankLocation(bankLocation);
+        userBankAccount.setBankName(bankName);
+        userBankAccount.setCodeBIC(codeBIC);
+        userBankAccount.setCodeIBAN(codeIBAN);
+
+        userBankAccountRepository.save(userBankAccount);
     }
 
     @Override
@@ -81,7 +91,7 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
         } else if (userBankAccount.getAppUser() == null && appUser.getUserBankAccount() == null) {
             logger.info("This user which UserId [" + userId + "] successfully added to this userBankAccount which id [" + bankAccountId + "]");
             userBankAccount.setAppUser(appUser);
-            saveUserBankAccount(userBankAccount);
+           /* addBankAccountToPayMyBuddy(userBankAccount);*/
             appUser.setUserBankAccount(userBankAccount);
             return userBankAccount;
         }
@@ -96,33 +106,35 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
                                    OperationType operationType) {
         logger.debug("This sendMoneyToAppUser method(from UserBankAccountServiceImpl) starts here.");
         Transfer transfer = new Transfer();
-
+        //TODO: Chercher userBankAccount par userID pas par IBAN
         UserBankAccount userBankAccount = userBankAccountRepository.findByCodeIBAN(codeIBAN);
         AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
 
         if(userBankAccount == null){
-            logger.debug("This userBankAccount not found!!(from sendMoneyToAppUser)");
-            throw new RuntimeException("This UserBankAccount with the codeIBAN=" + codeIBAN + " doesn't exist yet in DB!"); //TODO: UserBankAccountNotFoundException
+            //Crée un userBankAccount, rajouter une ligne
+          /*  userBankAccount = new UserBankAccount(codeIBAN,
+                    appUser);*/
+
         }
         if(appUser == null){
             logger.debug("This appUser not found!!(from sendMoneyToAppUser)");
             throw new UserNotExistingException("This appUser with the userEmail=" + userEmail + " doesn't exist yet in DB!");
         }
 
-        double bankBalance = userBankAccount.getBalance();
+       /* double bankBalance = userBankAccount.getBalance();*/
         double userBalance = appUser.getBalance();
 
-        if(bankBalance <= amount){
+       /* if(bankBalance <= amount){
             logger.debug("UserBankAccount's balance should greater than amont !(from sendMoneyToAppUser)");
             throw new RuntimeException("No enough money in the user bank account! (from sendMoneyToAppUser)");
-        }
+        }*/
 
         userBalance = userBalance + amount;
         appUser.setBalance(userBalance);
         securityService.saveUser(appUser);
 
-        bankBalance = bankBalance - amount;
-        userBankAccount.setBalance(bankBalance);
+       /* bankBalance = bankBalance - amount;
+        userBankAccount.setBalance(bankBalance);*/
         userBankAccountRepository.save(userBankAccount);
 
         transfer.setAmount(amount);
@@ -133,5 +145,10 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
 
         transferService.saveTransfer(transfer);
 
+    }
+
+    @Override
+    public UserBankAccount findUserBankAccountByCodeIBAN(String codeIBAN) {
+        return userBankAccountRepository.findByCodeIBAN(codeIBAN);
     }
 }
