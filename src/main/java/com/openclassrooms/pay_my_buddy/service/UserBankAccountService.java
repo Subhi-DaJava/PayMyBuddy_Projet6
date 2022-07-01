@@ -1,6 +1,7 @@
 package com.openclassrooms.pay_my_buddy.service;
 
 import com.openclassrooms.pay_my_buddy.constant.OperationType;
+import com.openclassrooms.pay_my_buddy.dto.BankAccountDTO;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 
@@ -14,8 +15,6 @@ public interface UserBankAccountService {
 
     UserBankAccount findUserBankAccountById(int id);
 
-    AppUser findUserByUserBankAccountId(int id);
-
     UserBankAccount addUserToUserBankAccount(int userId, int bankAccountId);
 
     void transferBetweenBankAnaPMB(String userEmail,
@@ -23,6 +22,5 @@ public interface UserBankAccountService {
                                    String description,
                                    OperationType operationType);
 
-    UserBankAccount findUserBankAccountByCodeIBAN(String codeIBAN);
-
+    BankAccountDTO bankAccountInfo(AppUser appUser);
 }

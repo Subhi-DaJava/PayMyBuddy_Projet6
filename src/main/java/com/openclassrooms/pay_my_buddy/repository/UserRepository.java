@@ -4,6 +4,8 @@ import com.openclassrooms.pay_my_buddy.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Set;
+
 @Repository
 public interface UserRepository extends JpaRepository<AppUser, Integer> {
 

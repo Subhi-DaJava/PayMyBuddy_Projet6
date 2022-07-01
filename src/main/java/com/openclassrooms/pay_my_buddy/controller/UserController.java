@@ -1,5 +1,6 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
+import com.openclassrooms.pay_my_buddy.dto.ContactDTO;
 import com.openclassrooms.pay_my_buddy.dto.ProfileDTO;
 import com.openclassrooms.pay_my_buddy.exception.EmailNotNullException;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
@@ -126,4 +127,19 @@ public class UserController {
 
         return "profile";
     }
+
+    @GetMapping("/myConnections")
+    public String connections(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+
+        List<ContactDTO> connections = securityService.contacts(appUser);
+
+        model.addAttribute("connections", connections);
+
+        return "myConnections";
+    }
+
+
 }

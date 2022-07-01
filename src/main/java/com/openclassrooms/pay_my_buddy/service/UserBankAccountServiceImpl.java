@@ -1,6 +1,7 @@
 package com.openclassrooms.pay_my_buddy.service;
 
 import com.openclassrooms.pay_my_buddy.constant.OperationType;
+import com.openclassrooms.pay_my_buddy.dto.BankAccountDTO;
 import com.openclassrooms.pay_my_buddy.exception.UserExistingException;
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
@@ -68,13 +69,6 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
         return userBankAccount;
     }
 
-    @Override
-    public AppUser findUserByUserBankAccountId(int id) {
-        UserBankAccount userBankAccount = findUserBankAccountById(id);
-        AppUser appUser = userBankAccount.getAppUser();
-        return appUser;
-    }
-
     //TODO: remplacer userId par userEmail, bankAccountId par codeIBAN
     @Override
     public UserBankAccount addUserToUserBankAccount(int userId, int bankAccountId) {
@@ -132,7 +126,17 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
     }
 
     @Override
-    public UserBankAccount findUserBankAccountByCodeIBAN(String codeIBAN) {
-        return userBankAccountRepository.findByCodeIBAN(codeIBAN);
+    public BankAccountDTO bankAccountInfo(AppUser appUser) {
+        BankAccountDTO bankAccountDTO = new BankAccountDTO();
+
+        UserBankAccount userBankAccount = userBankAccountRepository.findByAppUser(appUser);
+
+        bankAccountDTO.setBankName(userBankAccount.getBankName());
+        bankAccountDTO.setBankLocation(userBankAccount.getBankLocation());
+        bankAccountDTO.setCodeBIC(userBankAccount.getCodeBIC());
+        bankAccountDTO.setCodeIBAN(userBankAccount.getCodeIBAN());
+
+        return bankAccountDTO;
     }
+
 }

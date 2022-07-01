@@ -1,6 +1,8 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
+import com.openclassrooms.pay_my_buddy.dto.BankAccountDTO;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
+import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import com.openclassrooms.pay_my_buddy.service.UserBankAccountService;
 import org.slf4j.Logger;
@@ -24,6 +26,24 @@ public class UserBankAccountController {
         this.securityService = securityService;
         this.userBankAccountService = userBankAccountService;
     }
+
+    @GetMapping("/myBankAccount")
+    public String myBankInfo(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String appUserEmail = authentication.getName();
+        AppUser appUser = securityService.loadAppUserByUserEmail(appUserEmail);
+
+        String user_name = appUser.getFirstName() + " " + appUser.getLastName();
+
+
+        BankAccountDTO bankAccountInfo = userBankAccountService.bankAccountInfo(appUser);
+
+        model.addAttribute("bankAccountInfo", bankAccountInfo);
+        model.addAttribute("user_name",user_name);
+
+        return "my-bank-info";
+    }
+
 
     @GetMapping("/addBankAccount")
     public String addBankAccount(Model model,

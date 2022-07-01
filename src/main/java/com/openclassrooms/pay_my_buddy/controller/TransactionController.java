@@ -1,6 +1,7 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
 
+import com.openclassrooms.pay_my_buddy.dto.Payment;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
@@ -9,9 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 @Controller
@@ -48,6 +53,20 @@ public class TransactionController {
         transactionService.sendMoneyToBuddy(userEmail, buddyEmail, amount, description);
 
         return "redirect:/transfer?page="+page;
+    }
+
+    @GetMapping("/myPayments")
+    public String myTransactions(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+
+        List<Payment> paymentsByUser = transactionService.findTransactionsBySource(appUser);
+
+        model.addAttribute("paymentsByUser", paymentsByUser);
+
+        return "myPayments";
     }
 
 }

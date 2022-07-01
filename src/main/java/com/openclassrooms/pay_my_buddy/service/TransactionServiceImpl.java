@@ -1,6 +1,7 @@
 package com.openclassrooms.pay_my_buddy.service;
 
 import com.openclassrooms.pay_my_buddy.constant.FeeApplication;
+import com.openclassrooms.pay_my_buddy.dto.Payment;
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Transaction;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -74,5 +76,28 @@ public class TransactionServiceImpl implements TransactionService {
 
         }
 
+    }
+
+    @Override
+    public List<Payment> findTransactionsBySource(AppUser appUser) {
+        List<Transaction> transactions = transactionRepository.findBySource(appUser);
+        List<Payment> payments = new ArrayList<>();
+
+        Payment payment;
+
+        for(Transaction transaction : transactions){
+            payment = new Payment();
+
+            payment.setGetPayedName(transaction.getTarget().getFirstName() + " " + transaction.getTarget().getLastName());
+            payment.setEmail(transaction.getTarget().getEmail());
+            payment.setAmont(transaction.getAmount());
+            payment.setLocalDate(transaction.getDateTransaction());
+            payment.setDescription(transaction.getDescription());
+
+            payments.add(payment);
+        }
+
+
+        return payments;
     }
 }

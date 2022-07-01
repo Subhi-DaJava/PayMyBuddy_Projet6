@@ -1,7 +1,10 @@
 package com.openclassrooms.pay_my_buddy.repository;
 
 
+import com.openclassrooms.pay_my_buddy.dto.BankAccountDTO;
+import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface UserBankAccountRepository extends JpaRepository<UserBankAccount, Integer> {
 
     UserBankAccount findByCodeIBAN(String codeIBAN);
+
+    UserBankAccount findByAppUser(AppUser appUser);
 }

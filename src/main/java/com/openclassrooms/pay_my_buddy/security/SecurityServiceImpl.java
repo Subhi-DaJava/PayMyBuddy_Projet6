@@ -1,6 +1,7 @@
 package com.openclassrooms.pay_my_buddy.security;
 
 import com.openclassrooms.pay_my_buddy.constant.AuthenticationProvider;
+import com.openclassrooms.pay_my_buddy.dto.ContactDTO;
 import com.openclassrooms.pay_my_buddy.dto.ProfileDTO;
 import com.openclassrooms.pay_my_buddy.exception.*;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -210,6 +212,27 @@ public class SecurityServiceImpl implements SecurityService {
         appUser.setAuthProvider(provider);
 
         userRepository.save(appUser);
+    }
+
+    @Override
+    public List<ContactDTO> contacts(AppUser appUser) {
+        List<ContactDTO> contacts = new ArrayList<>();
+        ContactDTO contact;
+
+        Set<AppUser> connections = appUser.getContacts();
+
+        for (AppUser connection : connections){
+            contact = new ContactDTO();
+
+            contact.setFirstName(connection.getFirstName());
+            contact.setLastName(connection.getLastName());
+            contact.setEmail(connection.getEmail());
+
+            contacts.add(contact);
+        }
+
+
+        return contacts;
     }
 
     public BCryptPasswordEncoder passwordEncoder(){

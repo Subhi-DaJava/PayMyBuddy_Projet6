@@ -1,9 +1,12 @@
 package com.openclassrooms.pay_my_buddy.security;
 
 import com.openclassrooms.pay_my_buddy.constant.AuthenticationProvider;
+import com.openclassrooms.pay_my_buddy.dto.ContactDTO;
 import com.openclassrooms.pay_my_buddy.dto.ProfileDTO;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Role;
+
+import java.util.List;
 
 public interface SecurityService {
 
@@ -28,4 +31,7 @@ public interface SecurityService {
                                                 AuthenticationProvider provider);
 
     void updateAppUserAfterOAuthLoginSuccess(AppUser appUser, String name, AuthenticationProvider google);
+
+    List<ContactDTO> contacts(AppUser appUser);
+
 }
