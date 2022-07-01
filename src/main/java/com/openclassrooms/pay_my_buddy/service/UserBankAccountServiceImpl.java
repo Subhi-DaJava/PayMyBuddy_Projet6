@@ -99,52 +99,36 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
     }
 
     @Override
-    public void sendMoneyToAppUser(String codeIBAN,
-                                   String userEmail,
-                                   double amount,
-                                   String description,
-                                   OperationType operationType) {
+    public void transferBetweenBankAnaPMB(String userEmail,
+                                          double amount,
+                                          String description,
+                                          OperationType operationType) {
         logger.debug("This sendMoneyToAppUser method(from UserBankAccountServiceImpl) starts here.");
+
         Transfer transfer = new Transfer();
-        //TODO: Chercher userBankAccount par userID pas par IBAN
-        UserBankAccount userBankAccount = userBankAccountRepository.findByCodeIBAN(codeIBAN);
+
         AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+        UserBankAccount userBankAccount = appUser.getUserBankAccount();
 
-        if(userBankAccount == null){
-            //Crée un userBankAccount, rajouter une ligne
-          /*  userBankAccount = new UserBankAccount(codeIBAN,
-                    appUser);*/
-
-        }
-        if(appUser == null){
-            logger.debug("This appUser not found!!(from sendMoneyToAppUser)");
-            throw new UserNotExistingException("This appUser with the userEmail=" + userEmail + " doesn't exist yet in DB!");
-        }
-
-       /* double bankBalance = userBankAccount.getBalance();*/
         double userBalance = appUser.getBalance();
 
-       /* if(bankBalance <= amount){
-            logger.debug("UserBankAccount's balance should greater than amont !(from sendMoneyToAppUser)");
-            throw new RuntimeException("No enough money in the user bank account! (from sendMoneyToAppUser)");
-        }*/
+        String BANKtoPMB = String.valueOf(OperationType.CREDIT);
+        if(String.valueOf(operationType).equals(BANKtoPMB)){
+            userBalance = userBalance + amount; //TODO: should pay 5% fee
+        } else {
+            userBalance = userBalance - amount; //TODO: should pay 5% fee
+        }
 
-        userBalance = userBalance + amount;
         appUser.setBalance(userBalance);
         securityService.saveUser(appUser);
 
-       /* bankBalance = bankBalance - amount;
-        userBankAccount.setBalance(bankBalance);*/
-        userBankAccountRepository.save(userBankAccount);
 
         transfer.setAmount(amount);
-        transfer.setUserBankAccount(userBankAccount);
         transfer.setDescription(description);
         transfer.setOperationType(operationType);
         transfer.setTransactionDate(LocalDate.now());
-
+        transfer.setUserBankAccount(userBankAccount);
         transferService.saveTransfer(transfer);
-
     }
 
     @Override

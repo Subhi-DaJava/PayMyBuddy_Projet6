@@ -3,7 +3,6 @@ package com.openclassrooms.pay_my_buddy.controller;
 import com.openclassrooms.pay_my_buddy.constant.OperationType;
 import com.openclassrooms.pay_my_buddy.exception.TransferNotExistingException;
 import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
-import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Transfer;
 import com.openclassrooms.pay_my_buddy.service.TransferService;
 import com.openclassrooms.pay_my_buddy.service.UserBankAccountService;
@@ -16,9 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,9 +51,8 @@ public class TransferController {
         }
     }
 
-    @PostMapping("/bank-transfer/to-pay-my-buddy")
+    @PostMapping("/transfer/pmb-bank")
     public String transferMoneyToPayMyBuddyUser(
-            @RequestParam(name = "codeIBAN") String codeIBAN,
             @RequestParam(name = "amount") double amount,
             @RequestParam(name = "description") String description,
             @RequestParam(name = "operationType") OperationType operationType,
@@ -65,34 +61,33 @@ public class TransferController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
 
-        if (userEmail == null || codeIBAN == null || amount <= 0) {
-            logger.debug("UserEmail={}, codeIBAN={}, and amount={} should not null or empty", userEmail, codeIBAN, amount);
 
-            throw new RuntimeException("Ban operation !(from transferMoneyToPayMyBuddy)");
-        }
-        userBankAccountService.sendMoneyToAppUser(codeIBAN, userEmail, amount, description, operationType);
+        userBankAccountService.transferBetweenBankAnaPMB(userEmail, amount, description, operationType);
 
         logger.info("This operation transfer money to PayMyBuddy is successful!(from transferMoneyToPayMyBuddy)");
 
         return "redirect:/transfer?page=" + page;
     }
 
-    @GetMapping("/bank-transfer/to-pay-my-buddy")
-    public String sendMoneyToPayMyBuddyUser(Model model,
-                                            String codeIBAN,
+    @GetMapping("/transfer/pmb-bank")
+    public String transferBetweenBankAndPMB(Model model,
                                             String amount,
                                             String description,
                                             OperationType operationType){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
 
-        model.addAttribute("userEmail", userEmail);
-        model.addAttribute("codeIBAN", codeIBAN);
+        String BANKtoPMB = String.valueOf(OperationType.CREDIT);
+        String PMBtoBANK = String.valueOf(OperationType.DEBIT);
+        List<String> operationTypes = new ArrayList<>();
+        operationTypes.add(BANKtoPMB);
+        operationTypes.add(PMBtoBANK);
+
         model.addAttribute("amount", amount);
         model.addAttribute("description", description);
         model.addAttribute("operationType", operationType);
+        model.addAttribute("operationTypes", operationTypes);
 
-        return "send-money-to-PayMyBuddy";
+
+        return "transfersBetweenBankAndPMB";
     }
 
 }

@@ -4,9 +4,11 @@ import com.openclassrooms.pay_my_buddy.constant.OperationType;
 
 import java.time.LocalDate;
 
-public class TransferPayMyBuddyToBankAccountDTO {
-    private String sourcePayMyBuddyUserName;
-    private String destinationBankAccountUserName;
+public class TransferBetweenBankAndPayMyBuddyDTO {
+
+    private String sourceAccountUserName;
+    private String destinationUserName;
     private OperationType operationType;
     private LocalDate dateTransfer;
+
 }

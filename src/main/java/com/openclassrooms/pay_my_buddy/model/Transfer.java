@@ -41,6 +41,14 @@ public class Transfer {
         this.userBankAccount = userBankAccount;
     }
 
+    public Transfer(OperationType operationType, double amount, String description, LocalDate transactionDate, UserBankAccount userBankAccount) {
+        this.operationType = operationType;
+        this.amount = amount;
+        this.description = description;
+        this.transactionDate = transactionDate;
+        this.userBankAccount = userBankAccount;
+    }
+
     public int getTransferId() {
         return transferId;
     }

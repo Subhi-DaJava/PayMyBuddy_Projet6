@@ -18,11 +18,10 @@ public interface UserBankAccountService {
 
     UserBankAccount addUserToUserBankAccount(int userId, int bankAccountId);
 
-    void sendMoneyToAppUser(String codeIBAN,
-                            String userEmail,
-                            double amount,
-                            String description,
-                            OperationType operationType);
+    void transferBetweenBankAnaPMB(String userEmail,
+                                   double amount,
+                                   String description,
+                                   OperationType operationType);
 
     UserBankAccount findUserBankAccountByCodeIBAN(String codeIBAN);
 
