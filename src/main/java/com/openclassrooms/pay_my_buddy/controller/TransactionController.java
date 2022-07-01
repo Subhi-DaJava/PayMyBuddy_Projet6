@@ -61,10 +61,13 @@ public class TransactionController {
         String userEmail = authentication.getName();
 
         AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+        String user_name = appUser.getFirstName() + " " + appUser.getLastName();
 
         List<Payment> paymentsByUser = transactionService.findTransactionsBySource(appUser);
 
         model.addAttribute("paymentsByUser", paymentsByUser);
+
+        model.addAttribute("user_name", user_name);
 
         return "myPayments";
     }

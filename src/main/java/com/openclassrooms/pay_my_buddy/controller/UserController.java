@@ -37,19 +37,13 @@ public class UserController {
     private TransactionRepository transactionRepository;
 
     @PostMapping("/addBuddy")
-    public String addBuddy(Model model,
-                           @ModelAttribute("userEmail") String userEmail,
-                           @RequestParam(name = "contactEmail") String contactEmail,
+    public String addBuddy(@RequestParam(name = "contactEmail") String contactEmail,
                            @RequestParam(defaultValue = "0") int page) {
 
         logger.debug("This method addContactToUser(from UserController) starts here !!");
 
-        AppUser appUserBuddy =securityService.loadAppUserByUserEmail(contactEmail);
-
-        if(contactEmail == null || appUserBuddy == null){
-            logger.debug("UserBuddyEmail={} should not be null or userBuddy doesn't exist in DB which the email.(from UserController)", contactEmail);
-            return "error/Bad_Operation";
-        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
 
 
        securityService.addAppUserToContact(userEmail, contactEmail);
@@ -69,7 +63,7 @@ public class UserController {
 
         String userName = appUser.getFirstName() + " " + " " +appUser.getLastName();
 
-        model.addAttribute("userEmail", appUserEmail);
+
         model.addAttribute("contactEmail", contactEmail);
         model.addAttribute("userName", userName);
 
@@ -89,8 +83,6 @@ public class UserController {
         String appUserEmail = authentication.getName();
 
         AppUser appUserPay = securityService.loadAppUserByUserEmail(appUserEmail);
-
-        int appUserPayId = appUserPay.getAppUserid();
 
         String name = appUserPay.getFirstName() + " " + " " + appUserPay.getLastName();
 
@@ -134,9 +126,12 @@ public class UserController {
         String userEmail = authentication.getName();
         AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
 
+        String user_name = appUser.getFirstName() + " " + appUser.getLastName();
+
         List<ContactDTO> connections = securityService.contacts(appUser);
 
         model.addAttribute("connections", connections);
+        model.addAttribute("user_name", user_name);
 
         return "myConnections";
     }

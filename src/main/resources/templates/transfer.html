@@ -28,22 +28,25 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Menu</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/myProfile}">My Profile</a></li>
+                            <li><a class="dropdown-item" th:href="@{/transfer/pmb-bank}">Transfer Between PMB & BANK</a></li>
+                            <li><a class="dropdown-item" th:href="@{/transfer}">PMB-Transfer</a></li>
                             <li><a class="dropdown-item" th:href="@{/myPayments}">My Payments</a></li>
+                            <li><a class="dropdown-item" th:href="@{/addConnection}">Add Connection</a></li>
                             <li><a class="dropdown-item" th:href="@{/myTransfers}">My Transfers Between PMB & My Bank</a></li>
-                            <li><a class="dropdown-item" th:href="@{/myBankAccount}">My Bank</a></li>
+                            <li><a class="dropdown-item" th:href="@{/myBankAccount}">My Bank's info</a></li>
+                            <li><a class="dropdown-item" th:href="@{/myConnections}">My Connections</a></li>
                             <li><a class="dropdown-item" th:href="@{/addBankAccount}">Add A Bank Account</a></li>
-                            <li><a class="dropdown-item" th:href="@{/myConnections}">My connections</a></li>
-
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="myContacts">Contact</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" th:href="@{/logout}">Logout</a>
-                    </li>
+
                     <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
                         <a class="nav-link" th:href="@{/admin/addRoleToUser}">Add Role</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/contact}">Contact</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" th:href="@{/logout}">Log off</a>
                     </li>
                 </ul>
             </div>
@@ -56,7 +59,7 @@
                     </li>
                     <p class="nav-link py-0"> / </p>
                     <li class="nav-item py-0">
-                        <a class="nav-link py-0" th:href="@{/transfer/pmb-bank}">Transfer-Between-PMB-and-BANK</a>
+                        <a class="nav-link py-0" th:href="@{/transfer}">Transfer</a>
                     </li>
                 </ul>
             </div>

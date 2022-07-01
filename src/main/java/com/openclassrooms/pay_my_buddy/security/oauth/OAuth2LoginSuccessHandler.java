@@ -26,13 +26,15 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
+        logger.debug("This onAuthenticationSuccess method(from OAuth2LoginSuccessHandler) starts here.");
 
         AppUserOAuth2User oAuth2User = (AppUserOAuth2User) authentication.getPrincipal();
-        String email = oAuth2User.getEmail();
-        String name = oAuth2User.getName();
-        //Check appUser's with this email exists or not
+        String email = oAuth2User.getName();
+        String name = oAuth2User.getEmail();
 
+        //Check appUser's with this email exists or not
         AppUser appUser = securityService.loadAppUserByUserEmail(email);
+
         if( appUser == null ){
             // register as a new AppUser
             securityService.createNewAppUserAfterOAuthLoginSuccess(email, name, AuthenticationProvider.GOOGLE);
@@ -42,7 +44,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         }
 
-        logger.info("Customer's email={}", email);
+        logger.info("Google account email={}", email);
+        logger.info("Google account name={}", name);
 
         super.onAuthenticationSuccess(request, response, authentication);
     }

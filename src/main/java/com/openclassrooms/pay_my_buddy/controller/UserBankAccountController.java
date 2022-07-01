@@ -52,10 +52,18 @@ public class UserBankAccountController {
                                  String codeIBAN,
                                  String codeBIC){
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String appUserEmail = authentication.getName();
+        AppUser appUser = securityService.loadAppUserByUserEmail(appUserEmail);
+
+        String user_name = appUser.getFirstName() + " " + appUser.getLastName();
+
         model.addAttribute("bankName", bankName);
         model.addAttribute("bankLocation", bankLocation);
         model.addAttribute("codeIBAN", codeIBAN);
         model.addAttribute("codeBIC", codeBIC);
+
+        model.addAttribute("user_name",user_name);
 
         return "addBankAccount";
     }
@@ -64,6 +72,7 @@ public class UserBankAccountController {
                                        @RequestParam(name = "bankLocation") String bankLocation,
                                        @RequestParam(name = "codeIBAN") String codeIBAN,
                                        @RequestParam(name = "codeBIC") String codeBIC){
+        logger.debug("This addBankAccount method(from UserBankAccountController) starts here.");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String appUserEmail = authentication.getName();

@@ -199,8 +199,13 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public void createNewAppUserAfterOAuthLoginSuccess(String email, String name, AuthenticationProvider provider) {
+        logger.info("This createNewAppUserAfterOAuthLoginSuccess(from AppUserOAuth2UserService) method" +
+                "is creating the new AppUser after the first authentication with Google account.");
+
         AppUser appUser = new AppUser();
+
         appUser.setFirstName(name);
+        appUser.setLastName("EMPTY_LastName");
         appUser.setEmail(email);
         appUser.setAuthProvider(provider);
        userRepository.save(appUser);
@@ -208,7 +213,11 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public void updateAppUserAfterOAuthLoginSuccess(AppUser appUser, String name, AuthenticationProvider provider) {
+        logger.info("This updateAppUserAfterOAuthLoginSuccess(from AppUserOAuth2UserService) method"
+        + " is working for updating the AppUser with Google account authentication.");
+
         appUser.setFirstName(name);
+        appUser.setLastName("EMPTY_LastName");
         appUser.setAuthProvider(provider);
 
         userRepository.save(appUser);
@@ -239,6 +248,4 @@ public class SecurityServiceImpl implements SecurityService {
         return new BCryptPasswordEncoder();
     }
 
-
-    //TODO: une functionality pour afficher tous les emails( nom et prénom peut être) des contact d'une AppUser
 }

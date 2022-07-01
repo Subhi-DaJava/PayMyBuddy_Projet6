@@ -30,16 +30,16 @@ public class AppUserOAuth2User implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        logger.info("CustomOAth2User is working for getAuthorities method");
+
         //TODO: If an Admin sign in?
         Collection<GrantedAuthority> authorities = new ArrayList<>(Collections.singleton(new SimpleGrantedAuthority("USER")));
-
+        logger.info("CustomOAth2User is working for getAuthorities method and authorities: " + authorities);
         return authorities;
     }
 
     @Override
     public String getName() {
-        logger.info("CustomOAth2User is working for getName method");
+        logger.info("CustomOAth2User is working for getName method and email=" + oAuth2User.getAttribute("email"));
         return oAuth2User.getAttribute("email"); // the email of Google account
     }
 

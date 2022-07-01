@@ -11,7 +11,7 @@
         <div class="card-header">
             <h2>Welcome to admin dashboard</h2>
         </div>
-        <div class="card-body">
+        <div class="card-body" sec:authorize="hasAuthority('ADMIN')">
             <a th:href="@{/admin/addRoleToUser}">Add A Role To User</a>
             <br>
             <a th:href="@{/home}" class="text-primary">Back To Home Page</a>
