@@ -5,7 +5,7 @@ VALUES
     ('Agathe','FEELING','agathefeeling@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.',5000),
     ('Admin','ADAM','admin@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.',0.0);
 
-INSERT INTO contact (user_id, target_id)
+INSERT INTO connections (user_id, target_id)
 VALUES
     (1,2),
     (3,2),

@@ -1,7 +1,7 @@
 package com.openclassrooms.pay_my_buddy.security;
 
 import com.openclassrooms.pay_my_buddy.constant.AuthenticationProvider;
-import com.openclassrooms.pay_my_buddy.dto.ContactDTO;
+import com.openclassrooms.pay_my_buddy.dto.ConnectionDTO;
 import com.openclassrooms.pay_my_buddy.dto.ProfileDTO;
 import com.openclassrooms.pay_my_buddy.exception.*;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
@@ -156,7 +156,7 @@ public class SecurityServiceImpl implements SecurityService {
             userRoles.add(role.getRoleName());
         }
 
-        Set<AppUser> contacts = appUser.getContacts();
+        Set<AppUser> contacts = appUser.getConnections();
         Set<String> contactEmails = new HashSet<>();
         for (AppUser buddy : contacts) {
             contactEmails.add(buddy.getFirstName() + " " + buddy.getLastName());
@@ -165,7 +165,7 @@ public class SecurityServiceImpl implements SecurityService {
         profileDTO.setLastName(userLastName);
         profileDTO.setEmail(userEmail);
         profileDTO.setRoles(userRoles);
-        profileDTO.setContacts(contactEmails);
+        profileDTO.setConnections(contactEmails);
         profileDTO.setBalance(balance);
 
         return profileDTO;
@@ -178,12 +178,12 @@ public class SecurityServiceImpl implements SecurityService {
         AppUser appUser = userRepository.findByEmail(userEmail);
 
         if (appUserContact != null && appUser != null) {
-            if (appUser.getContacts().contains(appUserContact)) {
+            if (appUser.getConnections().contains(appUserContact)) {
                 logger.debug("UserContact is already added !!");
                 /*  throw new UserExistingException("This contact is added !!");*/
             }
             logger.info("This userContact which email [" + buddyEmail + "] is successfully added to this user which email [" + userEmail + "]");
-            appUser.getContacts().add(appUserContact);
+            appUser.getConnections().add(appUserContact);
             return;
 
         }
@@ -224,24 +224,60 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public List<ContactDTO> contacts(AppUser appUser) {
-        List<ContactDTO> contacts = new ArrayList<>();
-        ContactDTO contact;
+    public List<ConnectionDTO> getConnections(AppUser appUser) {
+        logger.debug("This getConnections method(from SecurityServiceImpl) starts here.");
 
-        Set<AppUser> connections = appUser.getContacts();
+        List<ConnectionDTO> connectionsDTO = new ArrayList<>();
+        ConnectionDTO connectionDTO;
+
+        Set<AppUser> connections = appUser.getConnections();
 
         for (AppUser connection : connections){
-            contact = new ContactDTO();
+            connectionDTO = new ConnectionDTO();
 
-            contact.setFirstName(connection.getFirstName());
-            contact.setLastName(connection.getLastName());
-            contact.setEmail(connection.getEmail());
+            connectionDTO.setFirstName(connection.getFirstName());
+            connectionDTO.setLastName(connection.getLastName());
+            connectionDTO.setEmail(connection.getEmail());
 
-            contacts.add(contact);
+            connectionsDTO.add(connectionDTO);
         }
 
+        return connectionsDTO;
+    }
 
-        return contacts;
+    @Override
+    public void editAppUserInfo(int userId,
+                                String firstName,
+                                String lastName,
+                                String email) {
+        logger.debug("This editAppUserInfo methode (from SecurityServiceImpl) starts here.");
+        AppUser appUser = userRepository.findById(userId).orElse(null);
+
+        if(email == null || loadAppUserByUserEmail(email) != null){
+            logger.debug("Email should not be null or this Email = " + email + " already exits in DB!");
+            throw new RuntimeException("Email should not be null or this Email = " + email + " already exits in DB!");
+        }
+        appUser.setFirstName(firstName);
+        appUser.setLastName(lastName);
+        appUser.setEmail(email);
+
+        userRepository.save(appUser);
+        logger.info("User's profile successfully edited!");
+    }
+
+    @Override
+    public void changePassword(int userId, String password, String rePassword) {
+        logger.debug("This changePassword methode(from SecurityServiceImpl) starts here.");
+        AppUser appUser = userRepository.findById(userId).orElse(null);
+
+        if(password.equals(rePassword)){
+            appUser.setPassword(passwordEncoder().encode(password));
+            userRepository.save(appUser);
+        }else {
+            logger.debug("Two passwords entered dont match each other !");
+            throw new PasswordNotMatchException("Password doesn't match!");
+        }
+        logger.info("Password successfully changed!");
     }
 
     public BCryptPasswordEncoder passwordEncoder(){

@@ -7,7 +7,7 @@ import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 
 public interface UserBankAccountService {
 
-    void addBankAccountToPayMyBuddy(AppUser appUser,
+    void addBankAccountToPayMyBuddy(String userEmail,
                                     String bankName,
                                     String bankLocation,
                                     String codeIBAN,

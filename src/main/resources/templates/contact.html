@@ -20,7 +20,7 @@
                 </li>
             </ul>
             <ul class="navbar-nav">
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="!authenticated">
                     <a class="nav-link"><span th:text="welcome"></span></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
@@ -80,8 +80,39 @@
         <div class="card-header py-5">
             <h2 class="text-success">Welcome to Pay My Buddy and How Can we Help You</h2>
         </div>
-        <div class="card-body">
-
+        <div class="card-body row">
+            <div class="col">
+                <div>
+                    <h4>Contacts</h4>
+                </div>
+                <div>
+                    <a href="#">Send Message</a>
+                </div>
+                <div>
+                    <a href="#">Call : 0033153336677</a>
+                </div>
+                <div>
+                    <a href="#">Address</a>
+                </div>
+            </div>
+            <div class="col">
+                <div><h3>Social Networks</h3></div>
+                <div>
+                    <a href="#">Facebook</a>
+                    <br>
+                    <a href="#">Instagram</a>
+                    <br>
+                    <a href="#">Twitter</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row mb-2">
+                <div class="col"><a  href="#">Home Page</a></div>
+                <div class="col"><a href="#">Signup</a></div>
+                <div class="col"><a href="#">Address Google Map</a></div>
+            </div>
+            <div>Copyright&#9400;2022PayMyBuddy.All Rights Reserved</div>
         </div>
 
     </div>

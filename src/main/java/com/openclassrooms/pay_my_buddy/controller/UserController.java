@@ -1,8 +1,8 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
-import com.openclassrooms.pay_my_buddy.dto.ContactDTO;
+import com.openclassrooms.pay_my_buddy.dto.ConnectionDTO;
 import com.openclassrooms.pay_my_buddy.dto.ProfileDTO;
-import com.openclassrooms.pay_my_buddy.exception.EmailNotNullException;
+import com.openclassrooms.pay_my_buddy.exception.PasswordNotMatchException;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Transaction;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
@@ -86,7 +86,7 @@ public class UserController {
 
         String name = appUserPay.getFirstName() + " " + " " + appUserPay.getLastName();
 
-        Set<AppUser> appUserBuddyList = appUserPay.getContacts();
+        Set<AppUser> appUserBuddyList = appUserPay.getConnections();
 
         Page<Transaction> listTransaction = transactionRepository.findAllBySource(PageRequest.of(page, size), appUserPay);
 
@@ -128,12 +128,73 @@ public class UserController {
 
         String user_name = appUser.getFirstName() + " " + appUser.getLastName();
 
-        List<ContactDTO> connections = securityService.contacts(appUser);
+        List<ConnectionDTO> connections = securityService.getConnections(appUser);
 
         model.addAttribute("connections", connections);
         model.addAttribute("user_name", user_name);
 
         return "myConnections";
+    }
+
+    @GetMapping("/editUser")
+    public String editUser(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+
+        model.addAttribute("appUser", appUser);
+
+        return "editUser";
+    }
+    @PostMapping("/editUser")
+    public String editProfile(String firstName, String lastName, String email){
+        logger.debug("This editProfile method(from UserController) starts here.");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+        int userId = appUser.getAppUserid();
+
+        if(email == null || securityService.loadAppUserByUserEmail(email) != null){
+            logger.debug("UserEmail should not be null or user already exits with this email = " + email);
+            throw new RuntimeException("UserEmail should not be null or user already exits with this email = " + email);
+        }
+        securityService.editAppUserInfo(userId, firstName, lastName, email);
+
+        return "login";
+    }
+
+    @GetMapping("/changePassword")
+    public String changePassword(Model model, String password, String rePassword){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+
+        model.addAttribute("appUser", appUser);
+        model.addAttribute("rePassword", rePassword);
+        model.addAttribute("password", password);
+
+        return "updatePassword";
+    }
+
+    @PostMapping("/changePassword")
+    public String updatePassword(@RequestParam(name = "password") String password,
+                                 @RequestParam(name = "rePassword") String rePassword){
+
+        logger.debug("This updatePassword method(from UserController) starts here.");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+        int userId = appUser.getAppUserid();
+
+        if(!password.equals(rePassword)){
+            logger.debug("Password and rePassword should match each other(from UserController)!!");
+            throw new PasswordNotMatchException("Two passwords don't match each ocher!!(from UserController)");
+        }
+        securityService.changePassword(userId, password, rePassword);
+
+        logger.info("Your password is successfully changed! (from UserController)");
+        return "login";
     }
 
 

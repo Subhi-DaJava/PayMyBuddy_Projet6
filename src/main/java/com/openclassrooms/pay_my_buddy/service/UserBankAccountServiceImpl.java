@@ -36,7 +36,7 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
     private TransferService transferService;
 
     @Override
-    public void addBankAccountToPayMyBuddy(AppUser appUser,
+    public void addBankAccountToPayMyBuddy(String userEmail,
                                            String bankName,
                                            String bankLocation,
                                            String codeIBAN,
@@ -50,6 +50,8 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
         }
 
         UserBankAccount userBankAccount = new UserBankAccount();
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+
         userBankAccount.setAppUser(appUser);
         userBankAccount.setBankLocation(bankLocation);
         userBankAccount.setBankName(bankName);
@@ -69,7 +71,6 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
         return userBankAccount;
     }
 
-    //TODO: remplacer userId par userEmail, bankAccountId par codeIBAN
     @Override
     public UserBankAccount addUserToUserBankAccount(int userId, int bankAccountId) {
         logger.debug("This methode starts here");
@@ -110,7 +111,10 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
         if(String.valueOf(operationType).equals(BANKtoPMB)){
             userBalance = userBalance + amount; //TODO: should pay 5% fee
         } else {
-            userBalance = userBalance - amount; //TODO: should pay 5% fee
+            if(userBalance > amount)
+                userBalance = userBalance - amount; //TODO: should pay 5% fee
+            else
+                throw new RuntimeException("Balance not enough !!(from UserBankAccountServiceImpl)");
         }
 
         appUser.setBalance(userBalance);

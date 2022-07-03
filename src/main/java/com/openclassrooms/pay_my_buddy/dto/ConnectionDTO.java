@@ -1,17 +1,17 @@
 package com.openclassrooms.pay_my_buddy.dto;
 
-public class ContactDTO {
+public class ConnectionDTO {
     private String firstName;
     private String lastName;
     private String email;
 
-    public ContactDTO(String firstName, String lastName, String email) {
+    public ConnectionDTO(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
-    public ContactDTO() {
+    public ConnectionDTO() {
     }
 
     public String getFirstName() {

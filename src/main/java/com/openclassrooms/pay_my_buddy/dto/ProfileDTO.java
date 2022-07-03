@@ -6,7 +6,7 @@ public class ProfileDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private Set<String> contacts;
+    private Set<String> connections;
     private double balance;
     private Set<String> roles;
 
@@ -22,12 +22,12 @@ public class ProfileDTO {
     }
 
     public ProfileDTO(String firstName,
-                      String lastName, String email, Set<String> contacts,
+                      String lastName, String email, Set<String> connections,
                       double balance, Set<String> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.contacts = contacts;
+        this.connections = connections;
         this.balance = balance;
         this.roles = roles;
     }
@@ -56,12 +56,12 @@ public class ProfileDTO {
         this.email = email;
     }
 
-    public Set<String> getContacts() {
-        return contacts;
+    public Set<String> getConnections() {
+        return connections;
     }
 
-    public void setContacts(Set<String> contacts) {
-        this.contacts = contacts;
+    public void setConnections(Set<String> connections) {
+        this.connections = connections;
     }
 
     public double getBalance() {

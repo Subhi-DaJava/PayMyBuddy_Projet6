@@ -43,7 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/oauth2/**").permitAll()
                 .antMatchers("/contact").permitAll()
-                .antMatchers("/user/**", "/myProfile","/transfer", "/transfer/pmb-bank", "/addBankAccount").hasAuthority("USER")
+                .antMatchers("/user/**", "/myProfile","/transfer","/myBankAccount",
+                        "/transfer/pmb-bank","/edit","changePassword", "/myTransfers", "/myConnections","/myPayments", "/addBankAccount").hasAuthority("USER")
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/home", "/", "/signup").permitAll()
                 .and()

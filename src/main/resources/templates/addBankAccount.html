@@ -20,8 +20,11 @@
                 </li>
             </ul>
             <ul class="navbar-nav">
+                <li class="nav-item" sec:authorize="!authenticated">
+                    <a class="nav-link"><span th:text="welcome"></span></a>
+                </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link"><span  th:text="${'[Welcome   ' + user_name + ']'}"></span></a>
+                    <a class="nav-link"><span  sec:authentication="name"></span></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Menu</a>
@@ -65,9 +68,11 @@
                 <h3>Welcome to Pay-MY-Buddy, please add your Bank Account</h3>
             </div>
         </div>
-        <div class="card-body" sec:authorize="hasAuthority('USER')">
+        <div class="card-body">
             <form method="post" th:action="@{/addBankAccount}">
                 <div class="col-4">
+                    <label class="mb-1" for="userEmail">User Email</label>
+                    <input id="userEmail" class="form-control" type="email" name="userEmail" placeholder="please enter your email with singing up" required th:name="userEmail"/>
 
                     <label class="mb-1" for="bankName">Bank Name</label>
                     <input id="bankName" class="form-control" type="text" name="bankName" placeholder="please enter the your bank name" required th:name="bankName"/>

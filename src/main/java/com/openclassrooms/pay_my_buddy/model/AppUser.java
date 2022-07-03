@@ -36,11 +36,11 @@ public class AppUser {
     private double balance;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "contact",
+    @JoinTable(name = "connections",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "target_id")
     )
-    private Set<AppUser> contacts = new HashSet<>();
+    private Set<AppUser> connections = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "source")
@@ -75,27 +75,29 @@ public class AppUser {
 
     }
 
-    public AppUser(int appUserid, String firstName, String lastName, String email, String password, double balance, Set<AppUser> contacts, List<Transaction> transactionsSources, List<Transaction> transactionsTarget, UserBankAccount userBankAccount, List<Role> roles) {
+    public AppUser(int appUserid, String firstName, String lastName, String email,
+                   String password, double balance, Set<AppUser> connections, List<Transaction> transactionsSources, List<Transaction> transactionsTarget,
+                   UserBankAccount userBankAccount, List<Role> roles) {
         this.appUserid = appUserid;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.balance = balance;
-        this.contacts = contacts;
+        this.connections = connections;
         this.transactionsSources = transactionsSources;
         this.transactionsTarget = transactionsTarget;
         this.userBankAccount = userBankAccount;
         this.roles = roles;
     }
 
-    public AppUser(String firstName, String lastName, String email, String password, double balance, Set<AppUser> contacts, List<Transaction> transactionsSources, List<Transaction> transactionsTarget, UserBankAccount userBankAccount, List<Role> roles) {
+    public AppUser(String firstName, String lastName, String email, String password, double balance, Set<AppUser> connections, List<Transaction> transactionsSources, List<Transaction> transactionsTarget, UserBankAccount userBankAccount, List<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.balance = balance;
-        this.contacts = contacts;
+        this.connections = connections;
         this.transactionsSources = transactionsSources;
         this.transactionsTarget = transactionsTarget;
         this.userBankAccount = userBankAccount;
@@ -158,12 +160,12 @@ public class AppUser {
         this.balance = balance;
     }
 
-    public Set<AppUser> getContacts() {
-        return contacts;
+    public Set<AppUser> getConnections() {
+        return connections;
     }
 
-    public void setContacts(Set<AppUser> contacts) {
-        this.contacts = contacts;
+    public void setConnections(Set<AppUser> connections) {
+        this.connections = connections;
     }
 
     public List<Transaction> getTransactionsSources() {
@@ -207,7 +209,7 @@ public class AppUser {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", balance=" + balance +
-                ", contacts=" + contacts +
+                ", contacts=" + connections +
                 ", transactionsSources=" + transactionsSources +
                 ", transactionsTarget=" + transactionsTarget +
                 ", userBankAccount=" + userBankAccount +

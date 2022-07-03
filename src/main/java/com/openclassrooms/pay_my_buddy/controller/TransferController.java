@@ -1,7 +1,9 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
 import com.openclassrooms.pay_my_buddy.constant.OperationType;
+import com.openclassrooms.pay_my_buddy.dto.TransferBetweenBankAndPayMyBuddyDTO;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
+
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import com.openclassrooms.pay_my_buddy.service.TransferService;
 import com.openclassrooms.pay_my_buddy.service.UserBankAccountService;
@@ -73,5 +75,24 @@ public class TransferController {
 
         return "transfersBetweenBankAndPMB";
     }
+
+    @GetMapping("/myTransfers")
+    public String showMyTransfers(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+        String user_name = appUser.getFirstName() + " " + appUser.getLastName();
+
+        List<TransferBetweenBankAndPayMyBuddyDTO> allMyTransfers = transferService.findAllTransfersByUser(appUser);
+
+
+        model.addAttribute("allTransfers", allMyTransfers);
+        model.addAttribute("name_user", user_name);
+
+        return "myTransfers";
+    }
+
+
 
 }

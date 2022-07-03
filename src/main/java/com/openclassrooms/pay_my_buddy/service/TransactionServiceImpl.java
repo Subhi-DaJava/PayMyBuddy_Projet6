@@ -41,7 +41,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         AppUser appUserPayed = userRepository.findByEmail(userEmail);
 
-        Set<AppUser> contacts = appUserPayed.getContacts();
+        Set<AppUser> contacts = appUserPayed.getConnections();
 
         if (contact == null) {
             logger.debug("Connection email={} doesn't exist in the DB" + userContactEmail);

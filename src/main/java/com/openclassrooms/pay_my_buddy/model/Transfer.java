@@ -26,7 +26,7 @@ public class Transfer {
     private LocalDate transactionDate;
 
     @ManyToOne
-    @JoinColumn(name = "bankAccountId", nullable = false)
+    @JoinColumn(name = "bankAccountId")
     private UserBankAccount userBankAccount;
 
     public Transfer() {
