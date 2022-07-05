@@ -6,6 +6,7 @@ import com.openclassrooms.pay_my_buddy.exception.PasswordNotMatchException;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Transaction;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
+import com.openclassrooms.pay_my_buddy.repository.UserRepository;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import com.openclassrooms.pay_my_buddy.service.TransactionService;
 import org.slf4j.Logger;
@@ -36,6 +37,9 @@ public class UserController {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping("/addBuddy")
     public String addBuddy(@RequestParam(name = "contactEmail") String contactEmail,
                            @RequestParam(defaultValue = "0") int page) {
@@ -46,7 +50,7 @@ public class UserController {
         String userEmail = authentication.getName();
 
 
-       securityService.addAppUserToContact(userEmail, contactEmail);
+       securityService.addAppUserToConnection(userEmail, contactEmail);
 
         logger.info("UserEmail={} successfully added the userBuddy={}", userEmail, contactEmail);
 
@@ -152,9 +156,10 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
         AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+
         int userId = appUser.getAppUserid();
 
-        if(email == null || securityService.loadAppUserByUserEmail(email) != null){
+        if(email == null || userRepository.findByEmail(email) != null){
             logger.debug("UserEmail should not be null or user already exits with this email = " + email);
             throw new RuntimeException("UserEmail should not be null or user already exits with this email = " + email);
         }

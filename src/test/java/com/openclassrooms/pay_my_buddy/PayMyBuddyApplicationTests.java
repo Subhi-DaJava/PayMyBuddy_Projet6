@@ -9,5 +9,15 @@ class PayMyBuddyApplicationTests {
     @Test
     void contextLoads() {
     }
+  /*  @Test
+    void passwordEncoderTest() {
+        // Arrange
+        String password = "12345";
 
+        // Action
+
+        // Assert
+        assertThat(new BCryptPasswordEncoder().matches(password, userDetailsService.passwordEncoder().encode(password))).isTrue();
+
+    }*/
 }

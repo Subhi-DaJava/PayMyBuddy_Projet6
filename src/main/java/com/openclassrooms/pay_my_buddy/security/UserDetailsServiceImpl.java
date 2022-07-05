@@ -55,8 +55,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return user;
     }
 
-    @Bean
+/*    @Bean
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
-    }
+    }*/
 }

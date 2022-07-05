@@ -24,7 +24,7 @@ public interface SecurityService {
 
     ProfileDTO findProfile(String email);
 
-    void addAppUserToContact(String userEmail, String buddyEmail);
+    void addAppUserToConnection(String userEmail, String buddyEmail);
 
     void createNewAppUserAfterOAuthLoginSuccess(String email,
                                                 String name,

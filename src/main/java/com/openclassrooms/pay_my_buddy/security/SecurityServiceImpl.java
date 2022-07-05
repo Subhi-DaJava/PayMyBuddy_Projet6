@@ -10,10 +10,12 @@ import com.openclassrooms.pay_my_buddy.repository.RoleRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,19 +26,15 @@ import java.util.Set;
 public class SecurityServiceImpl implements SecurityService {
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private RoleRepository roleRepository;
-
-    public SecurityServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-    }
 
 
     @Override
     public AppUser saveUser(AppUser appUser) {
         logger.debug("SaveUser method starts here !!");
-
         AppUser appUserCheck = userRepository.findByEmail(appUser.getEmail());
 
         if ( appUser.getEmail() == null) {
@@ -54,7 +52,7 @@ public class SecurityServiceImpl implements SecurityService {
         appUserCheck = new AppUser();
 
         //Add role=USER by default to a new AppUser
-        Role addRoleUSER = loadRoleByRoleName("USER");
+        Role addRoleUSER = roleRepository.findByRoleName("USER");
 
         appUserCheck.setFirstName(appUser.getFirstName());
         appUserCheck.setLastName(appUser.getLastName());
@@ -64,7 +62,7 @@ public class SecurityServiceImpl implements SecurityService {
         appUserCheck.getRoles().add(addRoleUSER);
 
         AppUser appUserSaved = userRepository.save(appUserCheck);
-        logger.info("This user " + appUser + " is successfully saved in the DB !!(from UserServiceImpl)");
+        logger.info("This user " + appUser + " is successfully saved in the DB !!(from SecurityServiceImpl)");
 
         return appUserSaved;
     }
@@ -89,11 +87,14 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public AppUser loadAppUserByUserEmail(String userEmail) {
-        logger.debug("This methode loadAppUserByUserEmail(SecurityServiceImpl) starts here");
+        logger.debug("This methode loadAppUserByUserEmail(from SecurityServiceImpl) starts here");
 
         AppUser appUser = userRepository.findByEmail(userEmail);
-
-        logger.info("This appUser which email={} is successfully loaded", userEmail);
+        if(appUser == null){
+            logger.debug("User doesn't exist with this UserEmail={}, please check it(from SecurityServiceImpl)",userEmail);
+            throw new UserNotExistingException("User doesn't not exit yet in DB with this userEmail=" + userEmail);
+        }
+        logger.info("This appUser which email={} is successfully loaded(from SecurityServiceImpl)", userEmail);
         return appUser;
     }
 
@@ -114,7 +115,7 @@ public class SecurityServiceImpl implements SecurityService {
         Role role = loadRoleByRoleName(roleName);
         if(role == null){
             logger.debug("No this role: " + roleName + " in the DB! (from addRoleToUser method)");
-            throw new RoleExistingException("This role: " + roleName + " not found in DB");
+            throw new RoleNotExistingException("This role: " + roleName + " not found in DB");
         }
 
         appUser.getRoles().add(role);
@@ -129,7 +130,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         if(role == null){
             logger.debug("This role={} doesn't exist in DB", roleName);
-            throw new RoleExistingException("This role: " + roleName + " not found !");
+            throw new RoleNotExistingException("This role: " + roleName + " not found !");
         }
 
         return role;
@@ -172,24 +173,24 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void addAppUserToContact(String userEmail, String buddyEmail) {
+    public void addAppUserToConnection(String userEmail, String buddyEmail) {
         logger.debug("This addUserToContacts starts here !!");
-        AppUser appUserContact = userRepository.findByEmail(buddyEmail);
+        AppUser appUserConnection = userRepository.findByEmail(buddyEmail);
         AppUser appUser = userRepository.findByEmail(userEmail);
 
-        if (appUserContact != null && appUser != null) {
-            if (appUser.getConnections().contains(appUserContact)) {
-                logger.debug("UserContact is already added !!");
-                /*  throw new UserExistingException("This contact is added !!");*/
+        if (appUserConnection != null && appUser != null) {
+            if (appUser.getConnections().contains(appUserConnection)) {
+                logger.debug("UserConnection is already added!!");
+                  throw new UserExistingException("This connection is already added!!");
             }
-            logger.info("This userContact which email [" + buddyEmail + "] is successfully added to this user which email [" + userEmail + "]");
-            appUser.getConnections().add(appUserContact);
+            logger.info("This userConnection which email [" + buddyEmail + "] is successfully added to this user which email [" + userEmail + "]");
+            appUser.getConnections().add(appUserConnection);
             return;
 
         }
-        if (appUser != null && appUserContact == null) {
+        if (appUser != null && appUserConnection == null) {
             logger.debug("UserContact doesn't exist in the DB !!");
-            //throw new UserNotExistingException("This userContact which email [" + buddyEmail + "] doesn't exist yet in the DB");
+            throw new UserNotExistingException("This userContact which email [" + buddyEmail + "] doesn't exist yet in the DB");
         }
         if (buddyEmail == null || buddyEmail.isEmpty()) {
             logger.debug("BuddyEmail should not be null or be empty neither !!");
@@ -253,7 +254,7 @@ public class SecurityServiceImpl implements SecurityService {
         logger.debug("This editAppUserInfo methode (from SecurityServiceImpl) starts here.");
         AppUser appUser = userRepository.findById(userId).orElse(null);
 
-        if(email == null || loadAppUserByUserEmail(email) != null){
+        if(email == null || userRepository.findByEmail(email) != null){
             logger.debug("Email should not be null or this Email = " + email + " already exits in DB!");
             throw new RuntimeException("Email should not be null or this Email = " + email + " already exits in DB!");
         }
