@@ -27,7 +27,7 @@ public class UserBankAccount {
     private String codeIBAN;
 
     @NotBlank
-    @Column(name = "code_bic", unique = true, length = 100)
+    @Column(name = "code_bic")
     private String codeBIC;
 
     @OneToOne

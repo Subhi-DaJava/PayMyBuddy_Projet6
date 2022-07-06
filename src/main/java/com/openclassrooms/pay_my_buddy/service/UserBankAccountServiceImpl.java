@@ -42,23 +42,34 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
                                            String codeIBAN,
                                            String codeBIC) {
         logger.debug("This addBankAccountToPayMyBuddy method (from UserBankAccountServiceImpl) starts here");
-        UserBankAccount checkWithCodeIBANUserBankAccount = userBankAccountRepository.findByCodeIBAN(codeIBAN);
-
-
-        if (checkWithCodeIBANUserBankAccount != null){
-            logger.debug("This bankAccount with the codeIBAN={} already exists in DB", codeIBAN);
-        }
-
-        UserBankAccount userBankAccount = new UserBankAccount();
+        UserBankAccount userBankAccount = userBankAccountRepository.findByCodeIBAN(codeIBAN);
         AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
 
-        userBankAccount.setAppUser(appUser);
-        userBankAccount.setBankLocation(bankLocation);
-        userBankAccount.setBankName(bankName);
-        userBankAccount.setCodeBIC(codeBIC);
-        userBankAccount.setCodeIBAN(codeIBAN);
+        if(appUser == null || userEmail == null ){
+            logger.debug("This User with UserEmail doesn't exist in DB or userEmail should not be null!! (from UserBankAccountServiceImpl)");
+            throw new RuntimeException("user with email="+userEmail+"doesn't exit or userEmail should not be null");
+        }
 
-        userBankAccountRepository.save(userBankAccount);
+        if (userBankAccount != null){
+            logger.debug("This bankAccount with the codeIBAN={} already exists in DB !!(from UserBankAccountServiceImpl)", codeIBAN);
+            throw new RuntimeException("This bank account with codeIABN=" + codeIBAN + " already is registered !!(from UserBankAccountServiceImpl)");
+        }
+        if(appUser.getUserBankAccount() == null){
+            userBankAccount = new UserBankAccount();
+            userBankAccount.setAppUser(appUser);
+            userBankAccount.setBankLocation(bankLocation);
+            userBankAccount.setBankName(bankName);
+            userBankAccount.setCodeBIC(codeBIC);
+            userBankAccount.setCodeIBAN(codeIBAN);
+
+            UserBankAccount newUserBankAccountAddUser = userBankAccountRepository.save(userBankAccount);
+            appUser.setUserBankAccount(newUserBankAccountAddUser);
+            userRepository.save(appUser);
+        } else {
+            logger.debug("This user with email={} has already a bank account !!(from UserBankAccountServiceImpl) ", userEmail);
+            throw new RuntimeException("This user with UserEmail=" + userEmail + " already has an userAccount !! (UserBankAccountServiceImpl)");
+        }
+
     }
 
     @Override
@@ -72,29 +83,7 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
     }
 
     @Override
-    public UserBankAccount addUserToUserBankAccount(int userId, int bankAccountId) {
-        logger.debug("This methode starts here");
-        UserBankAccount userBankAccount = findUserBankAccountById(bankAccountId);
-        AppUser appUser = userRepository.findById(userId).orElse(null);
-
-        if (userBankAccount == null || appUser == null) {
-            logger.debug("This userId [" + userId + "], or the bankAccountId [" + bankAccountId + "] doesn't exist yet !!");
-            throw new UserNotExistingException("This userId [" + userId + "], or the bankAccountId [" + bankAccountId + "] doesn't exist yet !!");
-        } else if (userBankAccount.getAppUser() != null && appUser.getUserBankAccount() != null) {
-            logger.debug("Already associated or associated with other userId!");
-            throw new UserExistingException("This userId [" + userId + "] already added to this userBankAccount which bankAccountId [" + bankAccountId + "] !!");
-        } else if (userBankAccount.getAppUser() == null && appUser.getUserBankAccount() == null) {
-            logger.info("This user which UserId [" + userId + "] successfully added to this userBankAccount which id [" + bankAccountId + "]");
-            userBankAccount.setAppUser(appUser);
-           /* addBankAccountToPayMyBuddy(userBankAccount);*/
-            appUser.setUserBankAccount(userBankAccount);
-            return userBankAccount;
-        }
-        return null;
-    }
-
-    @Override
-    public void transferBetweenBankAnaPMB(String userEmail,
+    public void transferBetweenBankAndPMB(String userEmail,
                                           double amount,
                                           String description,
                                           OperationType operationType) {
@@ -141,6 +130,21 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
         bankAccountDTO.setCodeIBAN(userBankAccount.getCodeIBAN());
 
         return bankAccountDTO;
+    }
+
+    @Override
+    public UserBankAccount findByCodeIBAN(String codeIBAN) {
+        logger.debug("This findByCodeIBAN method (from UserBankAccountServiceImpl) starts here.");
+       UserBankAccount findUserBankAccountByCodeIBAN = userBankAccountRepository.findByCodeIBAN(codeIBAN);
+       if(findUserBankAccountByCodeIBAN == null){
+           logger.debug("This bank account not found with this codeIBAN={} not found in DB (UserBankAccountServiceImpl)", codeIBAN);
+           throw new RuntimeException("Any UserBankAccount found with this codeIBAN=" + codeIBAN + " in DB! (from UserBankAccontServiceImpl)");
+       }
+       if(codeIBAN == null || codeIBAN.isEmpty()){
+           logger.debug("CodeIBAN should not be null or empty (form UserBankAccountServiceImpl).");
+           throw new RuntimeException("CodeIABN should not be null any case or empty (from UserBankAccountServiceImpl)");
+       }
+        return findUserBankAccountByCodeIBAN;
     }
 
 }

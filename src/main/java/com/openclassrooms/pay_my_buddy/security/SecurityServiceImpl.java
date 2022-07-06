@@ -47,7 +47,7 @@ public class SecurityServiceImpl implements SecurityService {
             appUserCheck.setLastName(appUser.getLastName());
             appUserCheck.setEmail(appUser.getEmail());
             appUserCheck.setBalance(appUser.getBalance());
-            return appUserCheck;
+            return userRepository.save(appUserCheck);
         }
         appUserCheck = new AppUser();
 

@@ -8,6 +8,7 @@ import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Role;
 import com.openclassrooms.pay_my_buddy.repository.RoleRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,6 @@ class SecurityServiceTest {
     private Role role;
 
 
-
     @BeforeEach
     public void init(){
         role = new Role();
@@ -73,6 +73,14 @@ class SecurityServiceTest {
         connections = new HashSet<>();
     }
 
+    @AfterEach
+    public void teardown(){
+        user1 = null;
+        user2 = null;
+        role = null;
+        connections = new HashSet<>();
+    }
+
     @Test
     public void saveAppUserTest(){
         //Given - Arrange
@@ -85,6 +93,25 @@ class SecurityServiceTest {
         assertThat(userSaved.getPassword()).isEqualTo(user1.getPassword());
         verify(userRepository, times(1)).save(any(AppUser.class));
     }
+    @Test
+    public void saveAppUserUpdateTest(){
+        //Given - Arrange
+        AppUser saveUser = new AppUser();
+        saveUser.setFirstName("changeFN");
+        saveUser.setLastName("changeLN");
+        saveUser.setEmail("changeEmail@gmail.com");
+        saveUser.setBalance(200);
+        //When - Action
+        when(userRepository.save(any(AppUser.class))).thenReturn(user1);
+        when(userRepository.findByEmail(anyString())).thenReturn(user1);
+        when(userRepository.save(saveUser)).thenReturn(user1);
+
+        AppUser userSaved = securityService.saveUser(saveUser);
+        //Then - Assert
+        assertThat(userSaved).isEqualTo(user1);
+        assertThat(userSaved.getFirstName()).isEqualTo("changeFN");
+
+    }
 
     @Test
     public void saveAppUserFailureTest(){
@@ -94,7 +121,35 @@ class SecurityServiceTest {
         AppUser userSaved = securityService.saveUser(user1);
         //Then - Assert
         assertThat(userSaved).isNull();
+    }
 
+    @Test
+    public void saveNewRoleTest(){
+        // Arrange
+        String newRole = "newRole";
+        Role role = new Role();
+        role.setRoleName(newRole);
+        // Action
+        when(roleRepository.findByRoleName(newRole)).thenReturn(null);
+        when(roleRepository.save(any(Role.class))).thenReturn(role);
+
+        Role roleSaved = securityService.saveNewRole(newRole);
+
+        // Assert
+        assertThat(roleSaved.getRoleName()).isEqualTo("newRole");
+    }
+
+    @Test
+    public void saveNewRoleFailureTest(){
+        // Arrange
+        String newRole = "newRole";
+        Role role = new Role();
+        role.setRoleName(newRole);
+        // Action
+        when(roleRepository.findByRoleName(newRole)).thenReturn(role);
+
+        // Assert
+        assertThatThrownBy(() -> securityService.saveNewRole(newRole));
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.openclassrooms.pay_my_buddy.controller;
 
 import com.openclassrooms.pay_my_buddy.dto.BankAccountDTO;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
+import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import com.openclassrooms.pay_my_buddy.service.UserBankAccountService;
 import org.slf4j.Logger;
@@ -32,6 +33,9 @@ public class UserBankAccountController {
         String appUserEmail = authentication.getName();
         AppUser appUser = securityService.loadAppUserByUserEmail(appUserEmail);
 
+        if(appUser.getUserBankAccount() == null){
+            return "no-bank-associated";
+        }
         String user_name = appUser.getFirstName() + " " + appUser.getLastName();
 
 
@@ -50,7 +54,6 @@ public class UserBankAccountController {
                                  String bankLocation,
                                  String codeIBAN,
                                  String codeBIC){
-
         model.addAttribute("userEmail", userEmail);
         model.addAttribute("bankName", bankName);
         model.addAttribute("bankLocation", bankLocation);
@@ -66,19 +69,25 @@ public class UserBankAccountController {
                                       @RequestParam(name = "codeIBAN") String codeIBAN,
                                       @RequestParam(name = "codeBIC") String codeBIC){
         logger.debug("This addBankAccountToPMB method(from UserBankAccountController) starts here.");
-
-        if(userEmail == null){
+        UserBankAccount check = userBankAccountService.findByCodeIBAN(codeIBAN);
+        if (check != null){
+            logger.debug("This bankAccount with the codeIBAN={} already exists in DB !!(from UserBankAccountServiceImpl)", codeIBAN);
+            return "iban-already-associated";
+        }
+        if (userEmail == null){
             logger.debug("This addBankAccountToPMB(form UserBankAccountController), email should not be null.");
             return "addBankAccount";
         }
-        userBankAccountService.addBankAccountToPayMyBuddy(
-                userEmail,
-                bankName,
-                bankLocation,
-                codeIBAN,
-                codeBIC);
-
-        return "redirect:/login";
+        if ( check == null){
+            userBankAccountService.addBankAccountToPayMyBuddy(
+                    userEmail,
+                    bankName,
+                    bankLocation,
+                    codeIBAN,
+                    codeBIC);
+            return "redirect:/login";
+        }
+        return "redirect:/home";
     }
 
 

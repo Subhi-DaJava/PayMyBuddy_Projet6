@@ -31,27 +31,28 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public void sendMoneyToBuddy(String userEmail, String userContactEmail, double amount, String description) {
+    public void sendMoneyToBuddy(String userEmail, String userBuddyEmail, double amount, String description) {
         logger.debug("This methode sendMoneyToBuddy starts here");
 
-        if (userEmail == null || userEmail == null || amount <= 0) {
-            return;
+        if (userEmail == null || userBuddyEmail == null || amount <= 0) {
+            throw new RuntimeException("userEmail," +
+                    " userBuddyEmail should not be null and amount should be greater than 0 !(from TransactionServiceImpl)");
         }
-        AppUser contact = userRepository.findByEmail(userContactEmail);
+        AppUser connection = userRepository.findByEmail(userBuddyEmail);
 
         AppUser appUserPayed = userRepository.findByEmail(userEmail);
 
-        Set<AppUser> contacts = appUserPayed.getConnections();
+        Set<AppUser> connections = appUserPayed.getConnections();
 
-        if (contact == null) {
-            logger.debug("Connection email={} doesn't exist in the DB" + userContactEmail);
-            throw new UserNotExistingException("This user with email={} doesn't exist" + userContactEmail);
+        if (connection == null) {
+            logger.debug("Connection email={} doesn't exist in the DB" + userBuddyEmail);
+            throw new UserNotExistingException("This user with email={} doesn't exist" + userBuddyEmail);
         }
 
-        if (contacts.contains(contact) && appUserPayed.getBalance() > amount) {
+        if (connections.contains(connection) && appUserPayed.getBalance() > amount) {
 
-            contact.setBalance(contact.getBalance() + amount);
-            userRepository.save(contact);
+            connection.setBalance(connection.getBalance() + amount);
+            userRepository.save(connection);
 
             double totalFeePayed = amount * FeeApplication.FEE;
 
@@ -61,7 +62,7 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setDateTransaction(LocalDate.now());
             transaction.setDescription(description);
             transaction.setAmount(amount);
-            transaction.setTarget(contact);
+            transaction.setTarget(connection);
             transaction.setTotalFeePayed(totalFeePayed);
 
             transactionRepository.save(transaction);
@@ -96,7 +97,6 @@ public class TransactionServiceImpl implements TransactionService {
 
             payments.add(payment);
         }
-
 
         return payments;
     }

@@ -41,7 +41,7 @@ public class TransferController {
         String userEmail = authentication.getName();
 
 
-        userBankAccountService.transferBetweenBankAnaPMB(userEmail, amount, description, operationType);
+        userBankAccountService.transferBetweenBankAndPMB(userEmail, amount, description, operationType);
 
         logger.info("This operation transfer money to PayMyBuddy is successful!(from transferMoneyToPayMyBuddy)");
 

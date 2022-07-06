@@ -2,6 +2,7 @@ package com.openclassrooms.pay_my_buddy.security;
 
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Role;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,11 @@ class UserDetailsServiceImplTest {
         appUser.setBalance(0.0);
         appUser.setRoles(roles);
         appUser.setPassword(passwordEncoder.encode("12345"));
+    }
+    @AfterEach
+    public void teardown(){
+        appUser = null;
+        role = null;
     }
 
     @Test
