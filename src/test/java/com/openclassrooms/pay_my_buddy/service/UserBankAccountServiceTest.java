@@ -216,34 +216,5 @@ class UserBankAccountServiceTest {
         // Assert
         assertThat(userBankAccount.getBankName()).isEqualTo("bankName");
     }
-    @Test
-    void findByCodeIBANFailureTest(){
-        // Arrange
-
-        // Action
-        when(userBankAccountRepository.findByCodeIBAN(anyString())).thenReturn(null);
-
-        // Assert
-        assertThatThrownBy(() -> userBankAccountService.findByCodeIBAN(anyString()));
-    }
-    @Test
-    void withCodeIbanNullTest(){
-        // Arrange
-
-        // Action
-
-        // Assert
-        assertThatThrownBy(() -> userBankAccountService.findByCodeIBAN(null));
-    }
-    @Test
-    void withCodeIbanEmptyTest(){
-        // Arrange
-
-        // Action
-
-        // Assert
-        assertThatThrownBy(() -> userBankAccountService.findByCodeIBAN(""));
-    }
-
 
 }

@@ -59,6 +59,9 @@ public class LoginController {
     public String addUser(AppUser appUser,
                           @RequestParam(name = "rePassword") String rePassword){
 
+        if(securityService.loadAppUserByUserEmail(appUser.getEmail()) != null){
+            return "/error/user-already-exist";
+        }
         if(appUser.getPassword().equals(rePassword)){
             securityService.saveUser(appUser);
             return "addBankAccount";

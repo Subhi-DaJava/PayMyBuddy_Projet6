@@ -138,11 +138,11 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
        UserBankAccount findUserBankAccountByCodeIBAN = userBankAccountRepository.findByCodeIBAN(codeIBAN);
        if(findUserBankAccountByCodeIBAN == null){
            logger.debug("This bank account not found with this codeIBAN={} not found in DB (UserBankAccountServiceImpl)", codeIBAN);
-           throw new RuntimeException("Any UserBankAccount found with this codeIBAN=" + codeIBAN + " in DB! (from UserBankAccontServiceImpl)");
+           return null;
        }
        if(codeIBAN == null || codeIBAN.isEmpty()){
            logger.debug("CodeIBAN should not be null or empty (form UserBankAccountServiceImpl).");
-           throw new RuntimeException("CodeIABN should not be null any case or empty (from UserBankAccountServiceImpl)");
+           return null;
        }
         return findUserBankAccountByCodeIBAN;
     }

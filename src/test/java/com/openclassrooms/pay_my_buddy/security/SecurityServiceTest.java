@@ -3,7 +3,6 @@ package com.openclassrooms.pay_my_buddy.security;
 import com.openclassrooms.pay_my_buddy.constant.AuthenticationProvider;
 import com.openclassrooms.pay_my_buddy.dto.ConnectionDTO;
 import com.openclassrooms.pay_my_buddy.dto.ProfileDTO;
-import com.openclassrooms.pay_my_buddy.exception.UserNotExistingException;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Role;
 import com.openclassrooms.pay_my_buddy.repository.RoleRepository;
@@ -15,13 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -46,6 +45,7 @@ class SecurityServiceTest {
 
     @BeforeEach
     public void init(){
+        passwordEncoder = new BCryptPasswordEncoder();
         role = new Role();
         String roleName = "USER";
         role.setRoleName(roleName);
@@ -93,28 +93,47 @@ class SecurityServiceTest {
         assertThat(userSaved.getPassword()).isEqualTo(user1.getPassword());
         verify(userRepository, times(1)).save(any(AppUser.class));
     }
-    @Test
-    public void saveAppUserUpdateTest(){
-        //Given - Arrange
-        AppUser saveUser = new AppUser();
-        saveUser.setFirstName("changeFN");
-        saveUser.setLastName("changeLN");
-        saveUser.setEmail("changeEmail@gmail.com");
-        saveUser.setBalance(200);
-        //When - Action
-        when(userRepository.save(any(AppUser.class))).thenReturn(user1);
-        when(userRepository.findByEmail(anyString())).thenReturn(user1);
-        when(userRepository.save(saveUser)).thenReturn(user1);
-
-        AppUser userSaved = securityService.saveUser(saveUser);
-        //Then - Assert
-        assertThat(userSaved).isEqualTo(user1);
-        assertThat(userSaved.getFirstName()).isEqualTo("changeFN");
-
-    }
 
     @Test
     public void saveAppUserFailureTest(){
+        //Given - Arrange
+        List<Role> appRoles = new ArrayList<>();
+        appRoles.add(role);
+        AppUser saveUser = new AppUser();
+        saveUser.setEmail(null);
+        saveUser.setFirstName("firstName");
+        saveUser.setLastName("lastName");
+        saveUser.setBalance(0.0);
+        saveUser.setRoles(appRoles);
+
+        saveUser.setPassword(passwordEncoder.encode("12345"));
+
+        when(userRepository.save(any(AppUser.class))).thenReturn(null);
+        //When - Action
+
+        //Then - Assert
+        assertThatThrownBy(() -> securityService.saveUser(saveUser));
+    }
+    @Test
+    public void appUserAlreadyExistingTest(){
+        //Given - Arrange
+        List<Role> appRoles = new ArrayList<>();
+        appRoles.add(role);
+        AppUser saveUser = new AppUser();
+        saveUser.setEmail("email@gmail.com");
+        saveUser.setFirstName("firstName");
+        saveUser.setLastName("lastName");
+        saveUser.setBalance(0.0);
+        saveUser.setRoles(appRoles);
+        //When - Action
+        when(userRepository.findByEmail(anyString())).thenReturn(user1);
+
+        //Then - Assert
+        assertThatThrownBy(() -> securityService.saveUser(saveUser));
+    }
+
+    @Test
+    public void saveAppUserWithNullEmailTest(){
         //Given - Arrange
         when(userRepository.save(any(AppUser.class))).thenReturn(null);
         //When - Action
@@ -165,14 +184,12 @@ class SecurityServiceTest {
     }
     @Test
     void loadAppUserByUserEmailFailureTest() {
-        String userEmail = "email@gmail.com";
         // Arrange
         when(userRepository.findByEmail(anyString())).thenReturn(null);
         // Action
-      /*  AppUser findUserByEmail = securityService.loadAppUserByUserEmail(userEmail);*/
-        // Assert
-        assertThrows(UserNotExistingException.class, ()-> securityService.loadAppUserByUserEmail(userEmail));
 
+        // Assert
+        assertThat(securityService.loadAppUserByUserEmail(anyString())).isNull();
     }
 
     @Test
@@ -209,11 +226,12 @@ class SecurityServiceTest {
     void loadRoleByRoleNameFailureTest() {
         // Arrange
         String roleName = "USER";
+
         // Action
-        when(roleRepository.findByRoleName(anyString())).thenReturn(null);
+        when(roleRepository.findByRoleName(roleName)).thenReturn(null);
 
         // Assert
-        assertThatThrownBy(()-> securityService.loadAppUserByUserEmail(roleName));
+        assertThatThrownBy( () -> securityService.loadRoleByRoleName(roleName));
 
     }
 
