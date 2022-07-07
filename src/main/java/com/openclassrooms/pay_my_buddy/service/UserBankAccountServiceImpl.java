@@ -107,8 +107,7 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
         }
 
         appUser.setBalance(userBalance);
-        securityService.saveUser(appUser);
-
+        //securityService.saveUser(appUser);
 
         transfer.setAmount(amount);
         transfer.setDescription(description);

@@ -424,4 +424,28 @@ class SecurityServiceTest {
         assertThat(passwordEncoder.matches(password, user1.getPassword())).isFalse();
         assertThatThrownBy(() -> securityService.changePassword(userId, password, rePassword));
     }
+
+    @Test
+    void deleteAppUserByIdTest() {
+        // Arrange
+            Integer userId = 1;
+        // Action
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user1));
+
+        boolean deleted = securityService.deleteAppUserById(userId);
+        // Assert
+        assertThat(deleted).isTrue();
+    }
+    @Test
+    void deleteAppUserByNonExistingIdTest() {
+        // Arrange
+        Integer userId = 3;
+        // Action
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // Assert
+        assertThatThrownBy(() -> securityService.deleteAppUserById(userId));
+    }
+
+
 }

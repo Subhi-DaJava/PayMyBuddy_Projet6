@@ -42,7 +42,6 @@ public class TransferController {
 
 
         userBankAccountService.transferBetweenBankAndPMB(userEmail, amount, description, operationType);
-
         logger.info("This operation transfer money to PayMyBuddy is successful!(from transferMoneyToPayMyBuddy)");
 
         return "redirect:/transfer?page=" + page;
@@ -85,7 +84,6 @@ public class TransferController {
         String user_name = appUser.getFirstName() + " " + appUser.getLastName();
 
         List<TransferBetweenBankAndPayMyBuddyDTO> allMyTransfers = transferService.findAllTransfersByUser(appUser);
-
 
         model.addAttribute("allTransfers", allMyTransfers);
         model.addAttribute("name_user", user_name);

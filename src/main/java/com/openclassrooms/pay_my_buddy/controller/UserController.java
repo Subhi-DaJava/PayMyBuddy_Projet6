@@ -41,7 +41,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/addBuddy")
-    public String addBuddy(@RequestParam(name = "contactEmail") String contactEmail,
+    public String addBuddy(Model model, @RequestParam(name = "contactEmail") String contactEmail,
                            @RequestParam(defaultValue = "0") int page) {
 
         logger.debug("This method addContactToUser(from UserController) starts here !!");
@@ -49,6 +49,12 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
 
+        if(securityService.loadAppUserByUserEmail(contactEmail) == null){
+            String userNotExist = "This the buddy not found";
+            model.addAttribute("userNotExist", userNotExist);
+
+            return "redirect:/addBuddy";
+        }
 
        securityService.addAppUserToConnection(userEmail, contactEmail);
 

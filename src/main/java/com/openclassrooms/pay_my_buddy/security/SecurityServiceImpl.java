@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.relation.RoleNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +43,14 @@ public class SecurityServiceImpl implements SecurityService {
         if( appUserCheck != null){
            logger.debug("User already exists  with this userEmail={} (from SecurityServiceImpl) in DB!");
            throw new UserExistingException("User existing already in DB !! (from SecurityServiceImpl)");
+        }
+        if( appUserCheck != null){
+            logger.info("This user, email={}, exists already, and update this appUser's information(from UsrServiceImpl)", appUser.getEmail());
+            appUserCheck.setFirstName(appUser.getFirstName());
+            appUserCheck.setLastName(appUser.getLastName());
+            appUserCheck.setEmail(appUser.getEmail());
+            appUserCheck.setBalance(appUser.getBalance());
+            return userRepository.save(appUserCheck);
         }
         appUserCheck = new AppUser();
 
@@ -88,15 +95,23 @@ public class SecurityServiceImpl implements SecurityService {
         AppUser appUser = userRepository.findByEmail(userEmail);
         if(appUser == null){
             logger.info("User doesn't exist with this UserEmail={}, please check it(from SecurityServiceImpl)",userEmail);
+            return null;
         }
         logger.info("This appUser which email={} is successfully loaded(from SecurityServiceImpl)", userEmail);
         return appUser;
     }
 
     @Override
-    public void deleteAppUserById(Integer appUserId) {
+    public boolean deleteAppUserById(Integer appUserId) {
 
-        userRepository.deleteById(appUserId);
+        if(userRepository.findById(appUserId).isPresent()){
+            userRepository.deleteById(appUserId);
+           return true;
+        }
+        else {
+            throw new UserNotExistingException("User with this id not found");
+        }
+
     }
 
     @Override

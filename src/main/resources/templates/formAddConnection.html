@@ -67,6 +67,7 @@
             </div>
         </div>
         <div class="card-body">
+            <div class="text-danger" th:text="${userNotExist}"></div>
             <form method="post" th:action="@{/addBuddy}">
                 <div class="col-4">
                     <label class="mb-1" for="contactEmail">Contact email </label>

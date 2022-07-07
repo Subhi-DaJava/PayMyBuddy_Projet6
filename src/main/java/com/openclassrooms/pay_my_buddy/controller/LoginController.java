@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -56,19 +57,25 @@ public class LoginController {
         return "signup";
     }
     @PostMapping("/signup")
-    public String addUser(AppUser appUser,
+    public String addUser(Model model, AppUser appUser,
                           @RequestParam(name = "rePassword") String rePassword){
+      /*  String emailTaken = "This email has been taken!";
+        model.addAttribute("emailTaken", emailTaken);*/
 
         if(securityService.loadAppUserByUserEmail(appUser.getEmail()) != null){
-            return "/error/user-already-exist";
+            String emailTaken = "This email has been taken!";
+            model.addAttribute("emailTaken", emailTaken);
+            return "signup";
         }
         if(appUser.getPassword().equals(rePassword)){
             securityService.saveUser(appUser);
             return "addBankAccount";
         }
+
         else {
+            String passwordNotMatch = "Two passwords don't match each other!";
+            model.addAttribute("passwordNotMatch", passwordNotMatch);
             return "signup";
         }
     }
-
 }

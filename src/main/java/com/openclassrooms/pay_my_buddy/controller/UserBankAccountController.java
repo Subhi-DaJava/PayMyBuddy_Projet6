@@ -34,7 +34,9 @@ public class UserBankAccountController {
         AppUser appUser = securityService.loadAppUserByUserEmail(appUserEmail);
 
         if(appUser.getUserBankAccount() == null){
-            return "no-bank-associated";
+           String anyBankError = "This User has any bank associated, please add a bank account!";
+           model.addAttribute("anyBankError", anyBankError);
+            return "addBankAccount";
         }
         String user_name = appUser.getFirstName() + " " + appUser.getLastName();
 
@@ -63,31 +65,42 @@ public class UserBankAccountController {
         return "addBankAccount";
     }
     @PostMapping("/addBankAccount")
-    public String addBankAccountToPMB(@RequestParam(name = "userEmail") String  userEmail,
+    public String addBankAccountToPMB(Model model,
+                                      @RequestParam(name = "userEmail") String  userEmail,
                                       @RequestParam(name = "bankName") String bankName,
                                       @RequestParam(name = "bankLocation") String bankLocation,
                                       @RequestParam(name = "codeIBAN") String codeIBAN,
                                       @RequestParam(name = "codeBIC") String codeBIC){
         logger.debug("This addBankAccountToPMB method(from UserBankAccountController) starts here.");
+
         UserBankAccount check = userBankAccountService.findByCodeIBAN(codeIBAN);
+
+        if (securityService.loadAppUserByUserEmail(userEmail) != null){
+            if (securityService.loadAppUserByUserEmail(userEmail).getUserBankAccount() != null){
+                String bankAssociated = "This user has already associated with a bank account";
+                model.addAttribute("bankAssociated", bankAssociated);
+                return "addBankAccount";
+            }
+        }
         if (check != null){
             logger.debug("This bankAccount with the codeIBAN={} already exists in DB !!(from UserBankAccountServiceImpl)", codeIBAN);
-            return "iban-already-associated";
-        }
-        if (userEmail == null){
-            logger.debug("This addBankAccountToPMB(form UserBankAccountController), email should not be null.");
+            String codeIBANExit = "This codeIBAN already associated!";
+            model.addAttribute("codeIBANExit", codeIBANExit);
             return "addBankAccount";
         }
-        if ( check == null){
-            userBankAccountService.addBankAccountToPayMyBuddy(
-                    userEmail,
-                    bankName,
-                    bankLocation,
-                    codeIBAN,
-                    codeBIC);
-            return "redirect:/login";
+        if (securityService.loadAppUserByUserEmail(userEmail) == null){
+            logger.debug("This addBankAccountToPMB(form UserBankAccountController), email should not be null.");
+            String userNotExist = "This user with this email address doesn't exit in DB!";
+            model.addAttribute("userNotExist", userNotExist);
+            return "addBankAccount";
         }
-        return "redirect:/home";
+        userBankAccountService.addBankAccountToPayMyBuddy(
+                userEmail,
+                bankName,
+                bankLocation,
+                codeIBAN,
+                codeBIC);
+        return "redirect:/login";
     }
 
 

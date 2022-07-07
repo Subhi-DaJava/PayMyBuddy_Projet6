@@ -11,4 +11,5 @@ import java.util.List;
 public interface TransferRepository extends JpaRepository<Transfer, Integer> {
 
     List<Transfer> findByUserBankAccountOrderByTransactionDate(UserBankAccount userBankAccount);
+
 }

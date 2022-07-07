@@ -33,6 +33,8 @@
             </div>
         </div>
         <div class="card-body">
+            <div class="text-danger" th:text="${emailTaken}"></div>
+            <div class="text-danger" th:text="${passwordNotMatch}"></div>
             <form method="post" th:action="@{/signup}" th:object="${appUser}">
                 <div class="col-4">
                     <label class="mb-1" for="firstName" th:value="${appUser.firstName}">First Name</label>
