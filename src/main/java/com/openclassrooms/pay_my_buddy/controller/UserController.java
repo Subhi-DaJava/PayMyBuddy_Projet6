@@ -8,7 +8,6 @@ import com.openclassrooms.pay_my_buddy.model.Transaction;
 import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
 import com.openclassrooms.pay_my_buddy.repository.UserRepository;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
-import com.openclassrooms.pay_my_buddy.service.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,9 +29,6 @@ import java.util.Set;
 /*@RequestMapping("/pay-my-buddy")*/
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    @Autowired
-    private TransactionService transactionService;
     @Autowired
     private SecurityService securityService;
     @Autowired
@@ -41,7 +38,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/addBuddy")
-    public String addBuddy(Model model, @RequestParam(name = "contactEmail") String contactEmail,
+    public String addBuddy(Model model, @RequestParam(name = "buddyEmail") String buddyEmail,
                            @RequestParam(defaultValue = "0") int page) {
 
         logger.debug("This method addContactToUser(from UserController) starts here !!");
@@ -49,32 +46,32 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
 
-        if(securityService.loadAppUserByUserEmail(contactEmail) == null){
+        if(securityService.loadAppUserByUserEmail(buddyEmail) == null){
             String userNotExist = "This the buddy not found";
             model.addAttribute("userNotExist", userNotExist);
 
             return "redirect:/addBuddy";
         }
 
-       securityService.addAppUserToConnection(userEmail, contactEmail);
+       securityService.addAppUserToConnection(userEmail, buddyEmail);
 
-        logger.info("UserEmail={} successfully added the userBuddy={}", userEmail, contactEmail);
+        logger.info("UserEmail={} successfully added the userBuddy={}", userEmail, buddyEmail);
 
         return "redirect:/transfer?page=" + page;
     }
 
     @GetMapping("/addConnection")
-    public String addConnection(Model model, String contactEmail) {
+    public String addConnection(Model model, String buddyEmail) {
         logger.debug("This GetMapping methode addConnection starts here");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String appUserEmail = authentication.getName();
         AppUser appUser = securityService.loadAppUserByUserEmail(appUserEmail);
 
-        String userName = appUser.getFirstName() + " " + " " +appUser.getLastName();
+        String userName = appUser.getFirstName() + " " + " " + appUser.getLastName();
 
 
-        model.addAttribute("contactEmail", contactEmail);
+        model.addAttribute("buddyEmail", buddyEmail);
         model.addAttribute("userName", userName);
 
         return "formAddConnection";
@@ -106,7 +103,6 @@ public class UserController {
         model.addAttribute("currentPage", page);
         model.addAttribute("name_user", name);
         model.addAttribute("userBuddyList", appUserBuddyList);
-        model.addAttribute("userEmail", appUserEmail);
         model.addAttribute("amount", amount);
         model.addAttribute("description", description);
         model.addAttribute("buddyEmail", buddyEmail);
@@ -131,7 +127,7 @@ public class UserController {
     }
 
     @GetMapping("/myConnections")
-    public String connections(Model model){
+    public String myConnections(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
         AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
@@ -165,7 +161,7 @@ public class UserController {
 
         int userId = appUser.getAppUserid();
 
-        if(email == null || userRepository.findByEmail(email) != null){
+        if(email == null || (userRepository.findByEmail(email) != null && appUser != userRepository.findByEmail(email))){
             logger.debug("UserEmail should not be null or user already exits with this email = " + email);
             throw new RuntimeException("UserEmail should not be null or user already exits with this email = " + email);
         }

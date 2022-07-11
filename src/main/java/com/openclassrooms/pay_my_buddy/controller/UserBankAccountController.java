@@ -7,6 +7,7 @@ import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import com.openclassrooms.pay_my_buddy.service.UserBankAccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,13 +20,11 @@ import org.springframework.web.bind.annotation.*;
 @Transactional
 public class UserBankAccountController {
     private static final Logger logger = LoggerFactory.getLogger(UserBankAccountController.class);
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private UserBankAccountService userBankAccountService;
 
-    public UserBankAccountController(SecurityService securityService, UserBankAccountService userBankAccountService) {
-        this.securityService = securityService;
-        this.userBankAccountService = userBankAccountService;
-    }
 
     @GetMapping("/myBankAccount")
     public String myBankInfo(Model model){

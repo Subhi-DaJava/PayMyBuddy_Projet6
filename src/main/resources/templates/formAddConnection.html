@@ -70,9 +70,9 @@
             <div class="text-danger" th:text="${userNotExist}"></div>
             <form method="post" th:action="@{/addBuddy}">
                 <div class="col-4">
-                    <label class="mb-1" for="contactEmail">Contact email </label>
-                    <input id="contactEmail" class="form-control" type="email"  name="contactEmail"
-                           placeholder="contactEmail" required th:name="contactEmail">
+                    <label class="mb-1" for="buddyEmail">Buddy email </label>
+                    <input id="buddyEmail" class="form-control" type="email" name="buddyEmail"
+                           placeholder="buddyEmail" required th:name="buddyEmail">
                 </div>
                 <!-- submit appelle addBuddy-->
                 <div class="mt-3">

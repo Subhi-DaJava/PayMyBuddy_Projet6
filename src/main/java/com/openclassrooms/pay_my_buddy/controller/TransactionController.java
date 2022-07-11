@@ -28,16 +28,15 @@ public class TransactionController {
     private SecurityService securityService;
     @Autowired
     private TransactionService transactionService;
-    @Autowired
-    private TransactionRepository transactionRepository;
 
     @PostMapping("/user/send-money")
-    public String sendMoneyToBuddy(@ModelAttribute("userEmail") String userEmail,
-                                   @RequestParam(name = "buddyEmail") String buddyEmail,
+    public String sendMoneyToBuddy(@RequestParam(name = "buddyEmail") String buddyEmail,
                                    @RequestParam(name = "amount") double amount,
                                    @RequestParam(name = "description") String description,
                                    @RequestParam(defaultValue = "0") int page) {
         logger.debug("This send-money in TransactionController starts here");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
 
         AppUser connection = securityService.loadAppUserByUserEmail(buddyEmail);
         AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);

@@ -1,9 +1,12 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
 
+import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +24,12 @@ public class AdminController {
     }
 
     @GetMapping("/admin/dashboard")
-    String adminDashboard(){
+    String adminDashboard(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String adminEmail = authentication.getName();
+        AppUser admin = securityService.loadAppUserByUserEmail(adminEmail);
+
+        model.addAttribute("admin", admin);
 
         return "dashboard";
     }
@@ -30,9 +38,13 @@ public class AdminController {
     String addRoleToUser(Model model,
                          String userEmail,
                          String roleName){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String adminEmail = authentication.getName();
+        AppUser admin = securityService.loadAppUserByUserEmail(adminEmail);
 
-        model.addAttribute("userEmail", userEmail);
+        model.addAttribute("userEmail", userEmail); //TODO: remplace avec userID
         model.addAttribute("roleName", roleName);
+        model.addAttribute("admin", admin);
 
         return "addRoleToUser";
     }

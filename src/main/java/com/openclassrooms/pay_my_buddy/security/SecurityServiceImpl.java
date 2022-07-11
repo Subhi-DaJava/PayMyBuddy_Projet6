@@ -264,16 +264,21 @@ public class SecurityServiceImpl implements SecurityService {
         logger.debug("This editAppUserInfo methode (from SecurityServiceImpl) starts here.");
         AppUser appUser = userRepository.findById(userId).orElse(null);
 
-        if(email == null || userRepository.findByEmail(email) != null){
+        if(email == null || (userRepository.findByEmail(email) != null && appUser != userRepository.findByEmail(email))){
             logger.debug("Email should not be null or this Email = " + email + " already exits in DB!");
             throw new RuntimeException("Email should not be null or this Email = " + email + " already exits in DB!");
+        }
+
+        if( email.equals(appUser.getEmail())){
+            appUser.setFirstName(firstName);
+            appUser.setLastName(lastName);
+            logger.info("User's profile successfully edited with old userEmail!");
+            userRepository.save(appUser);
         }
         appUser.setFirstName(firstName);
         appUser.setLastName(lastName);
         appUser.setEmail(email);
-
-        userRepository.save(appUser);
-        logger.info("User's profile successfully edited!");
+        logger.info("User's profile successfully edited with new userEmail!");
     }
 
     @Override

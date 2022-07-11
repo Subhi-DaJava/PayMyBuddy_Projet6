@@ -40,7 +40,6 @@ public class TransferController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
 
-
         userBankAccountService.transferBetweenBankAndPMB(userEmail, amount, description, operationType);
         logger.info("This operation transfer money to PayMyBuddy is successful!(from transferMoneyToPayMyBuddy)");
 
@@ -73,6 +72,7 @@ public class TransferController {
         model.addAttribute("name_user", userName);
 
         return "transfersBetweenBankAndPMB";
+        //TODO: améliorer GetMapping
     }
 
     @GetMapping("/myTransfers")

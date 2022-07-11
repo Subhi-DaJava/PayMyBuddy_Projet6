@@ -63,6 +63,14 @@ public class AppUser {
     @Column(name = "auth_provider")
     private AuthenticationProvider authProvider;
 
+    public AppUser(String firstName, String lastName, String email, String password, int i) {
+    }
+
+    public AppUser(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public AuthenticationProvider getAuthProvider() {
         return authProvider;
     }
@@ -75,10 +83,8 @@ public class AppUser {
 
     }
 
-    public AppUser(int appUserid, String firstName, String lastName, String email,
-                   String password, double balance, Set<AppUser> connections, List<Transaction> transactionsSources, List<Transaction> transactionsTarget,
-                   UserBankAccount userBankAccount, List<Role> roles) {
-        this.appUserid = appUserid;
+    public AppUser(String firstName,
+                   String lastName, String email, String password, double balance, Set<AppUser> connections, List<Transaction> transactionsSources, List<Transaction> transactionsTarget, UserBankAccount userBankAccount, List<Role> roles, AuthenticationProvider authProvider) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -89,27 +95,7 @@ public class AppUser {
         this.transactionsTarget = transactionsTarget;
         this.userBankAccount = userBankAccount;
         this.roles = roles;
-    }
-
-    public AppUser(String firstName, String lastName, String email, String password, double balance, Set<AppUser> connections, List<Transaction> transactionsSources, List<Transaction> transactionsTarget, UserBankAccount userBankAccount, List<Role> roles) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.balance = balance;
-        this.connections = connections;
-        this.transactionsSources = transactionsSources;
-        this.transactionsTarget = transactionsTarget;
-        this.userBankAccount = userBankAccount;
-        this.roles = roles;
-    }
-
-    public AppUser(String firstName, String lastName, String email, String password, double balance) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.balance = balance;
+        this.authProvider = authProvider;
     }
 
     public int getAppUserid() {
@@ -200,6 +186,25 @@ public class AppUser {
         this.roles = roles;
     }
 
+    public AppUser(String firstName, String lastName, String email, 
+                   String password, double balance, Set<AppUser> connections,
+                   List<Transaction> transactionsSources, List<Transaction> transactionsTarget, 
+                   UserBankAccount userBankAccount,
+                   List<Role> roles) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.balance = balance;
+        this.connections = connections;
+        this.transactionsSources = transactionsSources;
+        this.transactionsTarget = transactionsTarget;
+        this.userBankAccount = userBankAccount;
+        this.roles = roles;
+    }
+    
+    
+
     @Override
     public String toString() {
         return "AppUser{" +
@@ -209,11 +214,12 @@ public class AppUser {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", balance=" + balance +
-                ", contacts=" + connections +
+                ", connections=" + connections +
                 ", transactionsSources=" + transactionsSources +
                 ", transactionsTarget=" + transactionsTarget +
                 ", userBankAccount=" + userBankAccount +
                 ", roles=" + roles +
+                ", authProvider=" + authProvider +
                 '}';
     }
 }

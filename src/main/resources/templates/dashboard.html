@@ -8,8 +8,8 @@
 <body>
 <div class="container">
     <div class="card mx-auto">
-        <div class="card-header">
-            <h2>Welcome to admin dashboard</h2>
+        <div class="card-header" sec:authorize="hasAuthority('ADMIN')">
+            <h2 th:text="${admin.firstName + 'Welcome to admin dashboard'}"></h2>
         </div>
         <div class="card-body" sec:authorize="hasAuthority('ADMIN')">
             <a th:href="@{/admin/addRoleToUser}">Add A Role To User</a>

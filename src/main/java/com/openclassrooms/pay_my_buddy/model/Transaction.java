@@ -55,6 +55,19 @@ public class Transaction {
         this.totalFeePayed = totalFeePayed;
     }
 
+    public Transaction(double amount, String description, double totalFeePayed, AppUser target) {
+        this.amount = amount;
+        this.description = description;
+        this.totalFeePayed = totalFeePayed;
+        this.target = target;
+    }
+
+    public Transaction(double amount, String description, double totalFeePayed) {
+        this.amount = amount;
+        this.description = description;
+        this.totalFeePayed = totalFeePayed;
+    }
+
     public int getId() {
         return id;
     }

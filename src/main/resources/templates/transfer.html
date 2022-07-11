@@ -80,12 +80,7 @@
 
     <!--Select-->
     <form sec:authorize="hasAuthority('USER')" method="post" th:action="@{/user/send-money}">
-
         <div class="row bg-light mx-auto">
-
-            <div>
-                <input type="hidden" name="userEmail" th:value="${userEmail}"/>
-            </div>
             <div class="col mx-5 mt-5">
                 <input class="form-control" type="text" placeholder="description" name="description"th:name="description"/>
             </div>
