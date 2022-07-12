@@ -1,5 +1,7 @@
 package com.openclassrooms.pay_my_buddy.security;
 
+import com.openclassrooms.pay_my_buddy.security.oauth.AppUserOAuth2UserService;
+import com.openclassrooms.pay_my_buddy.security.oauth.OAuth2LoginSuccessHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    private AppUserOAuth2UserService oAuth2UserService;
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider(){
@@ -51,6 +57,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().loginPage("/login").usernameParameter("email").passwordParameter("password")
                 .permitAll()
+                .and()
+                .oauth2Login()
+                .loginPage("/login")
+                .userInfoEndpoint().userService(oAuth2UserService)
+                .and()
+                .successHandler(oAuth2LoginSuccessHandler)
                 .and()
                 .logout().permitAll()
                 .and()
