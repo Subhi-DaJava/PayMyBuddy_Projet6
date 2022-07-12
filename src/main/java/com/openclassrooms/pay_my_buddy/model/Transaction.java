@@ -15,7 +15,6 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
     private int id;
-
     private double amount;
 
     private String description;

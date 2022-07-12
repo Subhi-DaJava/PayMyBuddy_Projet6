@@ -19,10 +19,10 @@ public class AppUser {
     @Column(name = "id")
     private int appUserid;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", length = 45)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name", length = 45)
     private String lastName;
 
     @Column(name = "email", unique = true, length = 100)
@@ -60,7 +60,7 @@ public class AppUser {
     private List<Role> roles = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "auth_provider")
+    @Column(name = "auth_provider", length = 15)
     private AuthenticationProvider authProvider;
 
     public AppUser(String firstName, String lastName, String email, String password, int i) {

@@ -16,10 +16,10 @@ public class UserBankAccount {
     private int bankAccountId;
 
     @NotBlank
-    @Column(name = "bank_name")
+    @Column(name = "bank_name", length = 25)
     private String bankName;
 
-    @Column(name = "bank_location")
+    @Column(name = "bank_location", length = 45)
     private String bankLocation;
 
     @Column(name = "code_iban", unique = true, length = 100)
@@ -27,7 +27,7 @@ public class UserBankAccount {
     private String codeIBAN;
 
     @NotBlank
-    @Column(name = "code_bic")
+    @Column(name = "code_bic", length = 45)
     private String codeBIC;
 
     @OneToOne

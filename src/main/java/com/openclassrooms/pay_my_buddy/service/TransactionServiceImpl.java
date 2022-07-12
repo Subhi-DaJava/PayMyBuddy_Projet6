@@ -31,22 +31,22 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public void sendMoneyToBuddy(String userEmail, String userBuddyEmail, double amount, String description) {
+    public void sendMoneyToBuddy(String userEmail, String buddyEmail, double amount, String description) {
         logger.debug("This methode sendMoneyToBuddy starts here");
 
-        if (userEmail == null || userBuddyEmail == null || amount <= 0) {
+        if (userEmail == null || buddyEmail == null || amount <= 0) {
             throw new RuntimeException("userEmail," +
-                    " userBuddyEmail should not be null and amount should be greater than 0 !(from TransactionServiceImpl)");
+                    " buddyEmail should not be null and amount should be greater than 0 !(from TransactionServiceImpl)");
         }
-        AppUser connection = userRepository.findByEmail(userBuddyEmail);
+        AppUser connection = userRepository.findByEmail(buddyEmail);
 
         AppUser appUserPayed = userRepository.findByEmail(userEmail);
 
         Set<AppUser> connections = appUserPayed.getConnections();
 
         if (connection == null) {
-            logger.debug("Connection email={} doesn't exist in the DB" + userBuddyEmail);
-            throw new UserNotExistingException("This user with email={} doesn't exist" + userBuddyEmail);
+            logger.debug("Connection email={} doesn't exist in the DB" + buddyEmail);
+            throw new UserNotExistingException("This user with email={} doesn't exist" + buddyEmail);
         }
 
         if (connections.contains(connection) && appUserPayed.getBalance() > amount) {

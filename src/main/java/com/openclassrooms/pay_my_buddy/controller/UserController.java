@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -195,6 +194,7 @@ public class UserController {
         int userId = appUser.getAppUserid();
 
         if(!password.equals(rePassword)){
+            //TODO: message error
             logger.debug("Password and rePassword should match each other(from UserController)!!");
             throw new PasswordNotMatchException("Two passwords don't match each ocher!!(from UserController)");
         }

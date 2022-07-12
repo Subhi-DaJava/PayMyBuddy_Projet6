@@ -3,6 +3,7 @@ VALUES
     ('Laurent','GINA','laurentgina@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.',3000),
     ('Sophie','FONCEK','sophiefoncek@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.',4000),
     ('Agathe','FEELING','agathefeeling@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.',5000),
+    ('firstName','LASTNAME','test@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.', 0.0),
     ('Admin','ADAM','admin@gmail.com','$2a$12$vpAdeeCL0BDROgmnqjrGdeCQcbQxu5HPjy4w7LNzHz5yZNRgWj3p.',0.0);
 
 INSERT INTO connections (user_id, target_id)
@@ -25,6 +26,7 @@ INSERT INTO user_roles (user_id, role_id)
 VALUES (1, 1),
        (2, 1),
        (3, 1),
-       (4, 2);
+       (4, 1),
+       (5, 2);
 
 

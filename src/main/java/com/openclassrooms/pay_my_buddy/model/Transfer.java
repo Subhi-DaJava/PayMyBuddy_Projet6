@@ -15,7 +15,7 @@ public class Transfer {
     @Column(name = "transfer_id")
     private int transferId;
 
-    @Column(name = "operation_type")
+    @Column(name = "operation_type", length = 15)
     @Enumerated(EnumType.STRING)
     private OperationType operationType;
 

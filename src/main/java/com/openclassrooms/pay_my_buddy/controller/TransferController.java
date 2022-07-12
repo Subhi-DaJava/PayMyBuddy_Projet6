@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@Transactional
 public class TransferController {
     private static final Logger logger = LoggerFactory.getLogger(TransferController.class);
     @Autowired
@@ -28,7 +30,6 @@ public class TransferController {
     private SecurityService securityService;
     @Autowired
     private UserBankAccountService userBankAccountService;
-
 
     @PostMapping("/transfer/pmb-bank")
     public String transferMoneyToPayMyBuddyUser(

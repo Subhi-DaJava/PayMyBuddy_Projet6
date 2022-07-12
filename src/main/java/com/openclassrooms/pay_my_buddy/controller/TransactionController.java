@@ -1,9 +1,7 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
-
 import com.openclassrooms.pay_my_buddy.dto.Payment;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
-import com.openclassrooms.pay_my_buddy.repository.TransactionRepository;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import com.openclassrooms.pay_my_buddy.service.TransactionService;
 import org.slf4j.Logger;
@@ -13,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +19,7 @@ import java.util.List;
 
 
 @Controller
+@Transactional
 /*@RequestMapping("/pay-my-buddy")*/
 public class TransactionController {
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
