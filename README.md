@@ -16,7 +16,7 @@
 #### Étape 2: Configurer application.properties (url, username et password --> la connexion avec la bdd)
 #### Étape 3: Créé une BDD avec MySQL(ou avec un autre), puis exécuter les requêtes dans schema.sql (sur la bdd de donnée créée à l'étape 3) pour créer les tables
 #### Étape 4: Exécuter les requêtes dasn data.sql pour insérer les données
-#### Étape 5: Démarrer l'app (PayMyBuddyApplication.java), puis se rendre sur le navigateur puis saisir http://localhost:8090/ (par défaut)
+#### Étape 5: Démarrer l'app (PayMyBuddyApplication.java), puis se rendre sur le navigateur puis saisir http://localhost:8089/ (par défaut)
 #### Étape 6: Entrer un utilisateur et son mot de passe (Note*)
 
 # Domaine Model
