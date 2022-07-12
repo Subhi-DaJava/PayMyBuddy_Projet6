@@ -9,6 +9,7 @@ VALUES
 INSERT INTO connections (user_id, target_id)
 VALUES
     (1,2),
+    (1,3),
     (3,2),
     (2,1);
 
@@ -28,5 +29,21 @@ VALUES (1, 1),
        (3, 1),
        (4, 1),
        (5, 2);
+INSERT INTO `transaction` VALUES (1,4,'2022-06-28','descriptionDDD',0.02,1,2),
+                                 (2,4,'2022-06-28','descriptionDDD',0.02,1,3),
+                                 (3,55,'2022-06-28','descriptionDDD',0.275,1,3),
+                                 (4,50,'2022-06-28','descriptionDDD',0.25,1,2),
+                                 (5,8,'2022-06-28','descriptionDDD',0.04,1,2),
+                                 (6,55,'2022-06-28','descriptionDDD',0.275,1,2),
+                                 (7,1,'2022-06-28','descriptionDDD ddfsdfs',0.005,1,2);
+
+INSERT INTO `transfer` VALUES (1,1000,'Premier Virement vers PayMyBuddy','DEBIT','2022-06-29',1),
+                              (2,500,'virement ','DEBIT','2022-06-30',2),
+                              (3,600,'test','DEBIT','2022-06-30',2),
+                              (4,200,'test','DEBIT','2022-06-30',2),
+                              (5,5000,'Premier Virement vers PayMyBuddy','DEBIT','2022-07-01',1),
+                              (6,3000,'Just a test','CREDIT','2022-07-01',3),
+                              (7,2100,'Just a test','CREDIT','2022-07-01',2);
+
 
 
