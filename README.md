@@ -22,9 +22,10 @@
 # Domaine Model
 
 ## UML 
-![UML](https://user-images.githubusercontent.com/90509456/178481078-28fa3d39-c077-4b02-862a-e66cfa8b77da.jpg)
+![SUBI_Yalimaimaiti_1_UML_072022](https://user-images.githubusercontent.com/90509456/178743080-bd6563fb-59cd-4c42-8a03-8ff83c105867.jpg)
+
 ## MPD
-![MPD_Model_physique_de_donnees](https://user-images.githubusercontent.com/90509456/178481127-70c57ef5-7182-457c-8e59-54675a946644.jpg)
+![SUBI_Yalimaimaiti_2_mpd_072022](https://user-images.githubusercontent.com/90509456/178743114-4e4df112-cb8b-431d-a6b4-834ac514bec7.jpg)
 
 
 Note*:
