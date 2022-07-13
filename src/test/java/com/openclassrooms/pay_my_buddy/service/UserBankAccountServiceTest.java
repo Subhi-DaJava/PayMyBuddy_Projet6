@@ -5,7 +5,6 @@ import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Role;
 import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 import com.openclassrooms.pay_my_buddy.repository.UserBankAccountRepository;
-import com.openclassrooms.pay_my_buddy.repository.UserRepository;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +33,6 @@ class UserBankAccountServiceTest {
     private UserBankAccountService userBankAccountService;
     @MockBean
     private UserBankAccountRepository userBankAccountRepository;
-    @MockBean
-    private UserRepository userRepository;
     @MockBean
     private SecurityService securityService;
 
@@ -77,6 +75,7 @@ class UserBankAccountServiceTest {
 
     }
     @Test
+    @Transactional
     void addBankAccountToPayMyBuddyTest() {
         // Arrange
         // Action
@@ -140,12 +139,14 @@ class UserBankAccountServiceTest {
 
 
     @Test
+    @Transactional
     void transferBetweenBankAndPMBTest() {
         // Arrange
+        user1.setUserBankAccount(userBankAccount);
+        userBankAccount.setAppUser(user1);
         // Action
         when(securityService.loadAppUserByUserEmail(anyString())).thenReturn(user1);
-        when(userBankAccountRepository.findByAppUser(any(AppUser.class))).thenReturn(userBankAccount);
-        when(userRepository.save(any(AppUser.class))).thenReturn(user1);
+        when(userBankAccountRepository.findByAppUser(any())).thenReturn(userBankAccount);
 
         userBankAccountService.transferBetweenBankAndPMB(
                 "eamil@gmail.com",
@@ -156,12 +157,14 @@ class UserBankAccountServiceTest {
         assertThat(user1.getBalance()).isEqualTo(550.0);
     }
     @Test
+    @Transactional
     void transferBetweenPMBAndBankTest() {
         // Arrange
+        user1.setUserBankAccount(userBankAccount);
+        userBankAccount.setAppUser(user1);
         // Action
         when(securityService.loadAppUserByUserEmail(anyString())).thenReturn(user1);
         when(userBankAccountRepository.findByAppUser(any(AppUser.class))).thenReturn(userBankAccount);
-        when(userRepository.save(any(AppUser.class))).thenReturn(user1);
 
         userBankAccountService.transferBetweenBankAndPMB(
                 "eamil@gmail.com",
@@ -173,14 +176,26 @@ class UserBankAccountServiceTest {
     }
 
     @Test
+    @Transactional
+    void transferBetweenPMBAndBankUserBankAccountNullTest() {
+        // Arrange
+        // Action
+        when(securityService.loadAppUserByUserEmail(anyString())).thenReturn(user1);
+
+        // Assert
+        assertThatThrownBy(()-> userBankAccountService.transferBetweenBankAndPMB(
+                "eamil@gmail.com",
+                500,
+                "description",
+                OperationType.DEBIT));
+    }
+
+    @Test
     void transferBetweenPMBAndBankFailureTest() {
         // Arrange
         // Action
         when(securityService.loadAppUserByUserEmail(anyString())).thenReturn(user1);
         when(userBankAccountRepository.findByAppUser(any(AppUser.class))).thenReturn(userBankAccount);
-        when(userRepository.save(any(AppUser.class))).thenReturn(user1);
-
-
         // Assert
         assertThatThrownBy(() -> userBankAccountService.transferBetweenBankAndPMB(
                 "eamil@gmail.com",

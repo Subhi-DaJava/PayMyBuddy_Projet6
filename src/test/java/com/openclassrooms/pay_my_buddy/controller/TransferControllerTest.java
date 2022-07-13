@@ -4,6 +4,7 @@ import com.openclassrooms.pay_my_buddy.constant.OperationType;
 import com.openclassrooms.pay_my_buddy.dto.TransferBetweenBankAndPayMyBuddyDTO;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.model.Role;
+import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import com.openclassrooms.pay_my_buddy.security.UserDetailsServiceImpl;
 import com.openclassrooms.pay_my_buddy.service.TransferService;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
@@ -53,6 +55,7 @@ class TransferControllerTest {
     private AppUser user1;
     private Role role;
     private List<Role> roles;
+    private UserBankAccount userBankAccount;
 
     @BeforeEach
     public void init(){
@@ -73,12 +76,19 @@ class TransferControllerTest {
         user1.setRoles(roles);
         user1.setPassword(passwordEncoder.encode("12345"));
 
+        userBankAccount = new UserBankAccount();
+        userBankAccount.setBankName("UserBank_LCL");
+        userBankAccount.setBankLocation("Paris15");
+        userBankAccount.setCodeIBAN("FR75BLCL");
+        userBankAccount.setCodeBIC("CODEBIC");
+
     }
     @Test
     @WithMockUser
     void transferMoneyToPayMyBuddyUserPostMappingTest() throws Exception {
         // Arrange
-
+        user1.setUserBankAccount(userBankAccount);
+        userBankAccount.setAppUser(user1);
         // Action
         when(securityService.loadAppUserByUserEmail(anyString())).thenReturn(user1);
 
@@ -96,6 +106,29 @@ class TransferControllerTest {
                         .with(csrf()))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/transfer?page=0"));
+
+    }
+
+    @Test
+    @WithMockUser
+    void transferMoneyToPayMyBuddyUserPostMappingUserBankAccountNullTest() throws Exception {
+        // Arrange
+        // Action
+        when(securityService.loadAppUserByUserEmail(anyString())).thenReturn(user1);
+
+        doNothing().when(userBankAccountService).transferBetweenBankAndPMB(
+                "email@gmail.com"
+                ,100
+                ,"descriptionTest"
+                ,OperationType.CREDIT);
+
+        mockMvc.perform(post("/transfer/pmb-bank")
+                        .param("amount", String.valueOf(100))
+                        .param("description", "descriptionTest")
+                        .param("operationType", String.valueOf(OperationType.CREDIT))
+                        .param("page", String.valueOf(0)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("addBankAccount"));
 
     }
 

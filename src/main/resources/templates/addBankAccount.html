@@ -71,6 +71,7 @@
         </div>
         <div class="card-body">
             <div class="text-danger" th:text="${codeIBANExit}"></div>
+            <div class="text-danger" th:text="${messageError}"></div>
             <div class="text-danger" th:text="${userNotExist}"></div>
             <div class="text-danger" th:text="${bankAssociated}"></div>
             <form method="post" th:action="@{/addBankAccount}">

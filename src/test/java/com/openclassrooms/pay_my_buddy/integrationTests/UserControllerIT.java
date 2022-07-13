@@ -49,7 +49,7 @@ class UserControllerIT {
     private WebApplicationContext context;
 
     private final static String APP_USER = "laurentgina@gmail.com";
-    private final static String BUDDY_USER = "agathefeeling@gmail.com";
+    private final static String BUDDY_USER = "test@gmail.com";
 
     @BeforeEach
     public void init(){
@@ -69,8 +69,7 @@ class UserControllerIT {
     void addBuddyTest() throws Exception {
         mockMvc.perform(post("/addBuddy")
                         .with(user(APP_USER).password("12345"))
-                        .param("buddyEmail", BUDDY_USER)
-                        .with(csrf()))
+                        .param("buddyEmail", BUDDY_USER))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/transfer?page=0"));
 
