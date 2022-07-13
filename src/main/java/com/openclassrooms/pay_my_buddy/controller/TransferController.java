@@ -4,6 +4,7 @@ import com.openclassrooms.pay_my_buddy.constant.OperationType;
 import com.openclassrooms.pay_my_buddy.dto.TransferBetweenBankAndPayMyBuddyDTO;
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 
+import com.openclassrooms.pay_my_buddy.model.UserBankAccount;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import com.openclassrooms.pay_my_buddy.service.TransferService;
 import com.openclassrooms.pay_my_buddy.service.UserBankAccountService;
@@ -32,7 +33,7 @@ public class TransferController {
     private UserBankAccountService userBankAccountService;
 
     @PostMapping("/transfer/pmb-bank")
-    public String transferMoneyToPayMyBuddyUser(
+    public String transferMoneyToPayMyBuddyUser(Model model,
             @RequestParam(name = "amount") double amount,
             @RequestParam(name = "description") String description,
             @RequestParam(name = "operationType") OperationType operationType,
@@ -40,7 +41,13 @@ public class TransferController {
         logger.debug("This transferMoneyToPayMyBuddyUser methode starts here.(TransferController)");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
+        AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+        UserBankAccount userBankAccount = appUser.getUserBankAccount();
 
+        if (userBankAccount == null){
+            model.addAttribute("messageError", "This User has not yet associated a bank account");
+           return "addBankAccount";
+        }
         userBankAccountService.transferBetweenBankAndPMB(userEmail, amount, description, operationType);
         logger.info("This operation transfer money to PayMyBuddy is successful!(from transferMoneyToPayMyBuddy)");
 

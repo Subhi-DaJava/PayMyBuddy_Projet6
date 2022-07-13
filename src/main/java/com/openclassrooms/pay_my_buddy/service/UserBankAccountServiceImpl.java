@@ -96,6 +96,10 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
 
         double userBalance = appUser.getBalance();
 
+        if (userBankAccount == null){
+            throw new RuntimeException("This user non bank account associated !! please add a bank account!");
+        }
+
         String BANKtoPMB = String.valueOf(OperationType.CREDIT);
         if(String.valueOf(operationType).equals(BANKtoPMB)){
             userBalance = userBalance + amount; //TODO: should pay 5% fee
@@ -105,7 +109,6 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
             else
                 throw new RuntimeException("Balance not enough !!(from UserBankAccountServiceImpl)");
         }
-
         appUser.setBalance(userBalance);
 
         transfer.setAmount(amount);

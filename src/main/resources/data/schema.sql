@@ -15,7 +15,7 @@ CREATE TABLE `users` (
                          `auth_provider` varchar(15) DEFAULT NULL,
                          PRIMARY KEY (`id`),
                          UNIQUE KEY `UK_6dotkott2kjsp8vw4d0m25fb7` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Table structure for table `connections`
 DROP TABLE IF EXISTS `connections`;
@@ -62,7 +62,7 @@ CREATE TABLE `transaction` (
                                KEY `FKgv6l9h6hyqmvweebscyp7hlii` (`target`),
                                CONSTRAINT `FK6m2jg6y4wlyan5wrbkin017sd` FOREIGN KEY (`source`) REFERENCES `users` (`id`),
                                CONSTRAINT `FKgv6l9h6hyqmvweebscyp7hlii` FOREIGN KEY (`target`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Table structure for table `user_bank_account`
 DROP TABLE IF EXISTS `user_bank_account`;
@@ -77,7 +77,7 @@ CREATE TABLE `user_bank_account` (
                                      UNIQUE KEY `UK_1dc66y9h6hq0dpjk1j3clna99` (`code_iban`),
                                      KEY `FKq7act822x0mkd043uvnlc6r5f` (`app_user_id`),
                                      CONSTRAINT `FKq7act822x0mkd043uvnlc6r5f` FOREIGN KEY (`app_user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- Table structure for table `transfer`
@@ -92,7 +92,7 @@ CREATE TABLE `transfer` (
                             PRIMARY KEY (`transfer_id`),
                             KEY `FKfrdtgs1i2v2bx3djfhqk5p244` (`bank_account_id`),
                             CONSTRAINT `FKfrdtgs1i2v2bx3djfhqk5p244` FOREIGN KEY (`bank_account_id`) REFERENCES `user_bank_account` (`bank_account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
