@@ -24,7 +24,8 @@
 ![SUBI_Yalimaimaiti_1_UML_072022](https://user-images.githubusercontent.com/90509456/178743080-bd6563fb-59cd-4c42-8a03-8ff83c105867.jpg)
 
 ## MPD
-![SUBI_Yalimaimaiti_2_mpd_072022](https://user-images.githubusercontent.com/90509456/178743114-4e4df112-cb8b-431d-a6b4-834ac514bec7.jpg)
+![SUBI_Yalimaimaiti_2_mpd_072022](https://user-images.githubusercontent.com/90509456/178831180-ca78fba0-fcb9-43c8-b641-8a45cda5b7eb.jpg)
+
 
 Note* :
 `schema.sql` et `data.sql` se trouvent dans le dossier `resources/data`.
