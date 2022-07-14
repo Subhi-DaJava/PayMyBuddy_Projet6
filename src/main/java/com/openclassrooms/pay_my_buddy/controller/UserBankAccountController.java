@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 /**
  * UserBankAccountController : Afficher l'informations d'une banque associée à un user, add un compte bancaire à un user
  */
@@ -93,7 +95,7 @@ public class UserBankAccountController {
      */
     @PostMapping("/addBankAccount")
     public String addBankAccountToPMB(Model model,
-                                      @RequestParam(name = "userEmail") String  userEmail,
+                                      @Valid @RequestParam(name = "userEmail") String  userEmail,
                                       @RequestParam(name = "bankName") String bankName,
                                       @RequestParam(name = "bankLocation") String bankLocation,
                                       @RequestParam(name = "codeIBAN") String codeIBAN,

@@ -185,13 +185,17 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public void addAppUserToConnection(String userEmail, String buddyEmail) {
         logger.debug("This addUserToContacts starts here !!");
+        if (buddyEmail == null || buddyEmail.isEmpty()) {
+            logger.debug("BuddyEmail should not be null or be empty neither !!");
+            throw new EmailNotNullException("Not null or not empty !!");
+        }
         AppUser appUserConnection = userRepository.findByEmail(buddyEmail);
         AppUser appUser = userRepository.findByEmail(userEmail);
 
         if (appUserConnection != null && appUser != null) {
-            if (appUser.getConnections().contains(appUserConnection)) {
+            if (appUser.getConnections().contains(appUserConnection) || userEmail.equals(buddyEmail)) {
                 logger.debug("UserConnection is already added!!");
-                  throw new UserExistingException("This connection is already added!!");
+                  throw new UserExistingException("This connection is already added!! or We could not add ourself !!");
             }
             logger.info("This userConnection which email [" + buddyEmail + "] is successfully added to this user which email [" + userEmail + "]");
             appUser.getConnections().add(appUserConnection);
@@ -202,10 +206,7 @@ public class SecurityServiceImpl implements SecurityService {
             logger.debug("UserContact doesn't exist in the DB !!");
             throw new UserNotExistingException("This userContact which email [" + buddyEmail + "] doesn't exist yet in the DB");
         }
-        if (buddyEmail == null || buddyEmail.isEmpty()) {
-            logger.debug("BuddyEmail should not be null or be empty neither !!");
-            throw new EmailNotNullException("Not null or not empty !!");
-        }
+
     }
 
     @Override

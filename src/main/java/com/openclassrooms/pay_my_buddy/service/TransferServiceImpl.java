@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -28,32 +28,18 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public List<TransferBetweenBankAndPayMyBuddyDTO> findAllTransfersByUser(AppUser appUser) {
-
         logger.debug("This findAllTransfersByUser(from TransferServiceImpl) method starts here");
-
-        TransferBetweenBankAndPayMyBuddyDTO transferBetweenBankAndPayMyBuddyDTO;
-        List<TransferBetweenBankAndPayMyBuddyDTO> allTransfersList = new ArrayList<>();
-
         UserBankAccount userBankAccount = appUser.getUserBankAccount();
-
         List<Transfer> transfers = transferRepository.findByUserBankAccountOrderByTransactionDate(userBankAccount);
-
-        for(Transfer transfer : transfers){
-
-            transferBetweenBankAndPayMyBuddyDTO = new TransferBetweenBankAndPayMyBuddyDTO();
-
-            transferBetweenBankAndPayMyBuddyDTO.setSourceUserBanAccountName(userBankAccount.getBankName());
-            transferBetweenBankAndPayMyBuddyDTO.setDestinationPMBUserName(appUser.getFirstName()
-                    + " " + appUser.getLastName());
-            transferBetweenBankAndPayMyBuddyDTO.setAmount(transfer.getAmount());
-            transferBetweenBankAndPayMyBuddyDTO.setDescription(transfer.getDescription());
-            transferBetweenBankAndPayMyBuddyDTO.setOperationType(transfer.getOperationType());
-            transferBetweenBankAndPayMyBuddyDTO.setDateTransfer(transfer.getTransactionDate());
-
-            allTransfersList.add(transferBetweenBankAndPayMyBuddyDTO);
-
-        }
-
+        String userName = appUser.getFirstName() + " " + appUser.getLastName();
+        /*
+            stream plus efficace plus rapide et plus propre
+         */
+        List<TransferBetweenBankAndPayMyBuddyDTO> allTransfersList = transfers.stream()
+                .map(transfer -> new TransferBetweenBankAndPayMyBuddyDTO(
+                        transfer.getUserBankAccount().getBankName(), userName, transfer.getAmount(), transfer.getDescription(),
+                        transfer.getOperationType(), transfer.getTransactionDate()))
+                .collect(Collectors.toList());
         return allTransfersList;
     }
 

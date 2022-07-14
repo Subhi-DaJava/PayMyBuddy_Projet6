@@ -45,9 +45,9 @@ public class UserBankAccountServiceImpl implements UserBankAccountService {
         UserBankAccount userBankAccount = userBankAccountRepository.findByCodeIBAN(codeIBAN);
         AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
 
-        if(appUser == null || userEmail == null ){
-            logger.debug("This User with UserEmail doesn't exist in DB or userEmail should not be null!! (from UserBankAccountServiceImpl)");
-            throw new RuntimeException("user with email="+userEmail+"doesn't exit or userEmail should not be null");
+        if(appUser == null){
+            logger.debug("This User with UserEmail doesn't exist in DB (from UserBankAccountServiceImpl)");
+            throw new RuntimeException("user with email="+userEmail+"doesn't exit");
         }
 
         if (userBankAccount != null){

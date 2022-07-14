@@ -47,19 +47,22 @@ public class UserController {
      * @return
      */
     @PostMapping("/addBuddy")
-    public String addBuddy(Model model, @RequestParam(name = "buddyEmail") String buddyEmail,
+    public String addBuddy(Model model,
+                           @RequestParam(name = "buddyEmail") String buddyEmail,
                            @RequestParam(defaultValue = "0") int page) {
 
         logger.debug("This method addContactToUser(from UserController) starts here !!");
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
 
         if(securityService.loadAppUserByUserEmail(buddyEmail) == null){
-            String userNotExist = "This the buddy not found";
-            model.addAttribute("userNotExist", userNotExist);
+            AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
+            String userName = appUser.getFirstName() + " " + " " + appUser.getLastName();
+            String userBuddyNotExist = "This buddy not found in DB!, please check your buddy email address!";
+            model.addAttribute("userBuddyNotExist", userBuddyNotExist);
+            model.addAttribute("userName", userName);
 
-            return "redirect:/addBuddy";
+            return "formAddConnection";
         }
 
        securityService.addAppUserToConnection(userEmail, buddyEmail);
@@ -85,7 +88,6 @@ public class UserController {
         AppUser appUser = securityService.loadAppUserByUserEmail(appUserEmail);
 
         String userName = appUser.getFirstName() + " " + " " + appUser.getLastName();
-
 
         model.addAttribute("buddyEmail", buddyEmail);
         model.addAttribute("userName", userName);
@@ -189,8 +191,9 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
         AppUser appUser = securityService.loadAppUserByUserEmail(userEmail);
-
+        String user_name = appUser.getFirstName() + " " + appUser.getLastName();
         model.addAttribute("appUser", appUser);
+        model.addAttribute("user_name", user_name);
 
         return "editUser";
     }
