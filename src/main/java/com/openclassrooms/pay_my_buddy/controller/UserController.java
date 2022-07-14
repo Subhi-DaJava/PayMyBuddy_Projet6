@@ -23,9 +23,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * UserController : rajouter un ami à sa liste d'amis, afficher la page principale(transfer), afficher le profile d'un user, mettre à jour un user
+ */
 @Controller
 @Transactional
-/*@RequestMapping("/pay-my-buddy")*/
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
@@ -36,6 +38,14 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Rajoute un ami (existe dans la bdd) à la liste d'un utilisateur, vérifie si cet ami existe ou not à la fois dans la bdd et dans la liste d'amis,
+     * si c'est réussit, retourne la page Transfer, sinon redirect addBuddy
+     * @param model
+     * @param buddyEmail
+     * @param page
+     * @return
+     */
     @PostMapping("/addBuddy")
     public String addBuddy(Model model, @RequestParam(name = "buddyEmail") String buddyEmail,
                            @RequestParam(defaultValue = "0") int page) {
@@ -59,6 +69,13 @@ public class UserController {
         return "redirect:/transfer?page=" + page;
     }
 
+    /**
+     * Renvoie le formulaire d'ajouter un ami à la liste des amis
+     * @param model
+     * @param buddyEmail
+     * @return
+     */
+
     @GetMapping("/addConnection")
     public String addConnection(Model model, String buddyEmail) {
         logger.debug("This GetMapping methode addConnection starts here");
@@ -75,6 +92,17 @@ public class UserController {
 
         return "formAddConnection";
     }
+
+    /**
+     * Afficher la page principale, dont le formulaire de transaction, la pagination pour les transactions etc
+     * @param model
+     * @param amount
+     * @param description
+     * @param buddyEmail
+     * @param page
+     * @param size
+     * @return
+     */
 
     @GetMapping("/transfer")
     public String showPageTransfer(Model model,
@@ -109,6 +137,11 @@ public class UserController {
         return "transfer";
     }
 
+    /**
+     * Renvoie le profile d'un utilisateur
+     * @param model
+     * @return
+     */
     @GetMapping("/myProfile")
     public String myProfile(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -125,6 +158,11 @@ public class UserController {
         return "profile";
     }
 
+    /**
+     * Revoie la liste des amis
+     * @param model
+     * @return
+     */
     @GetMapping("/myConnections")
     public String myConnections(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -141,6 +179,11 @@ public class UserController {
         return "myConnections";
     }
 
+    /**
+     * Affiche la page d'informations d'un user pour les mettre à jour
+     * @param model
+     * @return
+     */
     @GetMapping("/editUser")
     public String editUser(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -151,6 +194,14 @@ public class UserController {
 
         return "editUser";
     }
+
+    /**
+     * Mettre à jour les informations saisies par un utilisateur, vérifier si l'email est unique ou non
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @return
+     */
     @PostMapping("/editUser")
     public String editProfile(String firstName, String lastName, String email){
         logger.debug("This editProfile method(from UserController) starts here.");
@@ -169,6 +220,13 @@ public class UserController {
         return "login";
     }
 
+    /**
+     * Affiche le formulaire pour changer le mot de passe d'un utilisateur
+     * @param model
+     * @param password
+     * @param rePassword
+     * @return
+     */
     @GetMapping("/changePassword")
     public String changePassword(Model model, String password, String rePassword){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -181,6 +239,13 @@ public class UserController {
 
         return "updatePassword";
     }
+
+    /**
+     * Mette à jour le mot de passe, vérifier les deux mots de passe saisis sont identiques ou non
+     * @param password
+     * @param rePassword
+     * @return
+     */
 
     @PostMapping("/changePassword")
     public String updatePassword(@RequestParam(name = "password") String password,

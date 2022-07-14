@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * UserBankAccountController : Afficher l'informations d'une banque associée à un user, add un compte bancaire à un user
+ */
 
 @Controller
 @Transactional
@@ -25,7 +28,11 @@ public class UserBankAccountController {
     @Autowired
     private UserBankAccountService userBankAccountService;
 
-
+    /**
+     * Renvoie les informations d'un compte bancaire associé à un user
+     * @param model
+     * @return
+     */
     @GetMapping("/myBankAccount")
     public String myBankInfo(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,6 +55,16 @@ public class UserBankAccountController {
         return "my-bank-info";
     }
 
+    /**
+     * Affiche le formulaire de rajouter un compte bancaire à un utilisateur
+     * @param model
+     * @param userEmail
+     * @param bankName
+     * @param bankLocation
+     * @param codeIBAN
+     * @param codeBIC
+     * @return
+     */
     @GetMapping("/addBankAccount")
     public String addBankAccount(Model model,
                                  String userEmail,
@@ -63,6 +80,17 @@ public class UserBankAccountController {
 
         return "addBankAccount";
     }
+
+    /**
+     * Rajoute un compte bancaire à un utilisateur, vérifie également le code IBAN est unique ou non, et si un user est associé à un compte bancaire ou non
+     * @param model
+     * @param userEmail
+     * @param bankName
+     * @param bankLocation
+     * @param codeIBAN
+     * @param codeBIC
+     * @return
+     */
     @PostMapping("/addBankAccount")
     public String addBankAccountToPMB(Model model,
                                       @RequestParam(name = "userEmail") String  userEmail,
