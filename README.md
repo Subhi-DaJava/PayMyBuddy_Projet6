@@ -19,7 +19,7 @@
 #### Étape 5 : Démarrer l'app (PayMyBuddyApplication.java), puis se rendre sur le navigateur puis saisir `http://localhost:8089/` (par défaut: server.port=8089)
 #### Étape 6 : Entrer un utilisateur(`email`) et son mot de passe `(Note*)`
 
-## Démarrge avec le fichier Jar 
+## Démarrage avec le fichier Jar 
 #### Linge de commande ou avec un terminal exécute : `mvn package` dans le répertoir racine du projet, puis exécute `java -jar target/Pay_My_Buddy-0.0.1-SNAPSHOT.jar`, les démarches suivantes sont même au-dessus
 
 Pay_My_Buddy-0.0.1-SNAPSHOT.jar
