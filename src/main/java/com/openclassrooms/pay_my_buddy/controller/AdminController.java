@@ -1,6 +1,5 @@
 package com.openclassrooms.pay_my_buddy.controller;
 
-
 import com.openclassrooms.pay_my_buddy.model.AppUser;
 import com.openclassrooms.pay_my_buddy.security.SecurityService;
 import org.slf4j.Logger;
@@ -14,6 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * Admin controller gère afficher le tableau de bord admin et l'admin peut rajouter un ROLE à un user
+ */
 @Controller
 @Transactional
 public class AdminController {
@@ -25,8 +27,14 @@ public class AdminController {
         this.securityService = securityService;
     }
 
+    /**
+     * Affiche le tableau de board d'admin
+     * @param model
+     * @return
+     */
     @GetMapping("/admin/dashboard")
     String adminDashboard(Model model){
+        logger.info("This adminDashboard method starts here(AdminController)");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String adminEmail = authentication.getName();
         AppUser admin = securityService.loadAppUserByUserEmail(adminEmail);
@@ -35,6 +43,14 @@ public class AdminController {
 
         return "dashboard";
     }
+
+    /**
+     * Affiche le formulaire pour rajout d'un ROLE à un User
+     * @param model
+     * @param userEmail
+     * @param roleName
+     * @return
+     */
 
     @GetMapping("/admin/addRoleToUser")
     String addRoleToUser(Model model,
@@ -50,6 +66,13 @@ public class AdminController {
 
         return "addRoleToUser";
     }
+
+    /**
+     * Rajoute un ROLE à un Utilisateur
+     * @param email
+     * @param roleName
+     * @return
+     */
 
     @PostMapping("/admin/addRoleToUser")
     public String addRoleToUser(@RequestParam(name = "userEmail") String email,

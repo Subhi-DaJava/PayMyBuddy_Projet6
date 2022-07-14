@@ -6,6 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * ContactController affiche la page des informations et coordonnées concernant l'application
+ */
+
 @Controller
 public class ContactController {
     private static final Logger logger = LoggerFactory.getLogger(ContactController.class);

@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TransferController, affiche le formulaire d'une transaction entre l'Application et la Banque
+ * Faire le virement entre elles
+ */
 @Controller
 @Transactional
 public class TransferController {
@@ -32,6 +36,16 @@ public class TransferController {
     @Autowired
     private UserBankAccountService userBankAccountService;
 
+    /**
+     * Faire le virement entre la Pay My Buddy et une Banque associée avec un user, si c'est réussi tourne la page Transfer, si montant insuffisant reoutrne une erreur,
+     * si un user n'a pas de banque associée, retourne la page addBankAccount
+     * @param model
+     * @param amount
+     * @param description
+     * @param operationType
+     * @param page
+     * @return
+     */
     @PostMapping("/transfer/pmb-bank")
     public String transferMoneyToPayMyBuddyUser(Model model,
             @RequestParam(name = "amount") double amount,
@@ -54,6 +68,14 @@ public class TransferController {
         return "redirect:/transfer?page=" + page;
     }
 
+    /**
+     * Affiche le formulaire de transaction entre l'Application et de la banque associée avec un user
+     * @param model
+     * @param amount
+     * @param description
+     * @param operationType
+     * @return
+     */
     @GetMapping("/transfer/pmb-bank")
     public String transferBetweenBankAndPMB(Model model,
                                             String amount,
@@ -82,6 +104,12 @@ public class TransferController {
         return "transfersBetweenBankAndPMB";
         //TODO: améliorer GetMapping
     }
+
+    /**
+     * Renvoie toutes les transactions entre la banque et l'application d'un user
+     * @param model
+     * @return
+     */
 
     @GetMapping("/myTransfers")
     public String showMyTransfers(Model model){

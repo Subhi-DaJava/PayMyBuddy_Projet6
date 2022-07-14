@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+/**
+ * TransactionController, la méthode sendMoneyToBuddy qui fait la transaction, un User peut envoie l'argent à un des amis,
+ * la méthode myTransactions s'occupe de charger toutes les transactions d'un user
+ */
 @Controller
 @Transactional
-/*@RequestMapping("/pay-my-buddy")*/
 public class TransactionController {
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
@@ -29,6 +31,14 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
+    /**
+     * Envoyer l'argent vers un autre user
+     * @param buddyEmail
+     * @param amount
+     * @param description
+     * @param page
+     * @return
+     */
     @PostMapping("/user/send-money")
     public String sendMoneyToBuddy(@RequestParam(name = "buddyEmail") String buddyEmail,
                                    @RequestParam(name = "amount") double amount,
@@ -54,6 +64,11 @@ public class TransactionController {
         return "redirect:/transfer?page="+page;
     }
 
+    /**
+     * Renvoie toutes les transactions d'un user
+     * @param model
+     * @return
+     */
     @GetMapping("/myPayments")
     public String myTransactions(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
